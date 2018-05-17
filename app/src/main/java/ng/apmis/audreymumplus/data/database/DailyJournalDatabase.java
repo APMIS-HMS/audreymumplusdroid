@@ -3,12 +3,13 @@ package ng.apmis.audreymumplus.data.database;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
+import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 
 /**
  * Created by Thadeus-APMIS on 5/15/2018.
  */
-
+@TypeConverters({JournalConverters.class})
 @Database(entities = {DailyJournal.class}, version = 1)
 public abstract class DailyJournalDatabase extends RoomDatabase {
     public abstract DailyJournalDao dailyJournalDao();

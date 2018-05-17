@@ -8,7 +8,7 @@ import android.arch.persistence.room.PrimaryKey
  * Created by Thadeus-APMIS on 5/15/2018.
  */
 @Entity(tableName = "journal")
-data class DailyJournal (@PrimaryKey(autoGenerate = true) @ColumnInfo(name = "_id")var _id: Long?,
+data class DailyJournal (@PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id")var _id: Long?,
                          @ColumnInfo(name = "mood")val mood: String?,
                          @ColumnInfo(name = "baby_movement")val babyMovement: String?,
                          @ColumnInfo(name = "weight")val weight: String?,
@@ -16,4 +16,5 @@ data class DailyJournal (@PrimaryKey(autoGenerate = true) @ColumnInfo(name = "_i
                          @ColumnInfo(name = "pill_reminder")val pillReminder: String?,
                          @ColumnInfo(name = "cravings")val cravings: String?,
                          @ColumnInfo(name = "appointments")val appointments: String?,
-                         @ColumnInfo(name = "images")val images: String?)
+                         @ColumnInfo(name = "images")val images: String?,
+                         @ColumnInfo(name =  "date")val date: Long?)

@@ -17,19 +17,19 @@ import java.util.List;
 @Dao
 public interface DailyJournalDao {
 
-    @Query("SELECT * FROM weather WHERE date >= :date")
-    LiveData<List<DailyJournal>> getCurrentWeatherForecasts(Date date);
+    @Query("SELECT * FROM journal WHERE date >= :date")
+    LiveData<List<DailyJournal>> getAllJournalEntries(Date date);
 
-    @Query("SELECT COUNT(id) FROM weather WHERE date >= :date")
-    int countAllFutureWeather(Date date);
+    @Query("SELECT COUNT(id) FROM journal WHERE date <= :date")
+    int countAllPastJournal(Date date);
 
-    @Query("SELECT * FROM weather WHERE date = :date")
-    LiveData<DailyJournal> getWeatherByDate(Date date);
+    @Query("SELECT * FROM journal WHERE date = :date")
+    LiveData<DailyJournal> getJournalByDate(Date date);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void bulkInsert(DailyJournal... weatherEntries);
+    void bulkInsert(DailyJournal... dailyJournals);
 
-    @Query("DELETE FROM weather WHERE date < :date")
-    void deleteOldWeather(Date date);
+  /*  @Query("DELETE FROM journal WHERE date < :date")
+    void deleteOldWeather(String date);*/
 
 }

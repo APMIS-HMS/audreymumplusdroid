@@ -4,7 +4,6 @@ import android.arch.lifecycle.LiveData;
 import android.util.Log;
 
 import java.util.Date;
-import java.util.List;
 
 import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.data.database.DailyJournal;
@@ -48,7 +47,7 @@ public class AudreyRepository {
 
     public LiveData<DailyJournal> getWeatherByDate(Date date) {
         //initializeData();
-        return mDailyJournalDao.getWeatherByDate(date);
+        return mDailyJournalDao.getJournalByDate(date);
     }
 /*
 
