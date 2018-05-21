@@ -6,63 +6,73 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.ui.Dashboard.Home.HomeFragment;
 import ng.apmis.audreymumplus.ui.Dashboard.Journal.MyJournalFragment;
+import ng.apmis.audreymumplus.utils.BottomNavigationViewHelper;
 
 public class DashboardActivity extends AppCompatActivity {
-   /* @BindView(R.id.bottom_navigation)
-    BottomNavigationView bottomNavigationView;*/
+    @BindView(R.id.bottom_navigation)
+    BottomNavigationView bottomNavigationView;
 /*    @BindView(R.id.title_toolbar)
     TextView title_toolbar;*/
+
+    @BindView(R.id.global_toolbar)
+    Toolbar globalToolbar;
+
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawerLayout;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dashboard);
+        setContentView(R.layout.navigation_drawer);
         ButterKnife.bind(this);
 
-        BottomNavigationView navigationView = (BottomNavigationView)findViewById(R.id.bottom_navigation);
-        navigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                selectFragment(item);
-                return true;
-            }
-        });
+        setSupportActionBar(globalToolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_hamburger);
 
-
-
-        //bottomNavigationView.setOnNavigationItemSelectedListener(item -> false);
-
-
-
-
-/*
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             selectFragment(item);
             return true;
         });
-*/
 
-        // TODO: Create BottomNavViewHelper and implement here to stop bottom nav from moving
-
+        BottomNavigationViewHelper.disableShiftMode(bottomNavigationView);
 
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_container, new DashboardFragment())
+                .add(R.id.fragment_container, new HomeFragment())
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .commit();
 
 
+    }
 
-
-
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.drawable.ic_hamburger:
+                Toast.makeText(this, "You are tight it works", Toast.LENGTH_SHORT).show();
+                drawerLayout.openDrawer(GravityCompat.START);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 
@@ -91,7 +101,7 @@ public class DashboardActivity extends AppCompatActivity {
             case R.id.view_menu:
                 placeFragment(new HomeFragment());
                 break;
-            case R.id.buy_menu:
+            case R.id.journal_menu:
                 placeFragment(new MyJournalFragment());
                 break;
             /*case R.id.chat_menu:

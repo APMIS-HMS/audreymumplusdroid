@@ -1,6 +1,7 @@
 package ng.apmis.audreymumplus.ui.Dashboard.Journal;
 
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,12 +12,16 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
 
 public class MyJournalFragment extends Fragment {
 
     List<JournalModel>journalModelList = new ArrayList<>();
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
+
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container,
                               Bundle savedInstanceState) {
@@ -47,6 +52,14 @@ public class MyJournalFragment extends Fragment {
         listView.setOnItemClickListener((parent, view, position, id) -> {
             JournalModel clicked = (JournalModel) parent.getItemAtPosition(position);
             Toast.makeText(getActivity(), clicked.getTitle() , Toast.LENGTH_SHORT).show();
+        });
+
+        fab.setOnClickListener((view) -> {
+
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .add(R.id.fragment_container, new AddJournalFragment())
+                        .addToBackStack("ADD_NEW")
+                        .commit();
         });
 
         return rootView;
