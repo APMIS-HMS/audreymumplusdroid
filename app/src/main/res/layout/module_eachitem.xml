@@ -16,12 +16,12 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="16dp">
+                android:layout_margin="12dp">
         <ImageView
             android:layout_marginTop="20dp"
             android:id="@+id/list_image"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="45dp"
             android:layout_gravity="center"
             android:src="@drawable/ic_my_pregnancy"
             android:contentDescription="@string/pregnancy" />

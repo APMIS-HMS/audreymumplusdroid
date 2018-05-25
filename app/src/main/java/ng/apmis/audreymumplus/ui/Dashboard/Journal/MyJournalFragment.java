@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,8 @@ public class MyJournalFragment extends Fragment {
         ButterKnife.bind(this, rootView);
 
         //  ((DashboardActivity)getActivity()).setToolBarTitle(CLASSNAME);
+        Toolbar toolbar = rootView.findViewById(R.id.my_toolbar);
+
 
         ListView listView = rootView.findViewById(R.id.journal);
 

@@ -1,0 +1,187 @@
+
+<LinearLayout
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Welcome !"
+        android:textSize="24sp"
+        android:layout_gravity="center"
+        android:textColor="@color/colorPrimary"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Glad to have you here, please fill in"
+        android:layout_gravity="center"
+        android:textColor="#6d4d89"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="your details to continue"
+        android:layout_gravity="center"
+        android:textColor="#6d4d89"/>
+
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/edittext_background"
+                android:hint="@string/title"
+                android:imeOptions="actionNext"
+                android:maxLines="1"
+                android:layout_marginRight="24dp"
+                android:layout_marginLeft="24dp"
+                android:singleLine="true"
+                >
+
+
+                    <Spinner
+                    android:id="@+id/title_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:focusable="true"
+                    android:spinnerMode="dropdown"
+                    android:inputType="textCapSentences"
+                        android:paddingRight="24dp"
+                        android:paddingLeft="24dp"
+                        android:entries="@array/select"
+                     />
+
+
+
+            </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputEditText
+        android:layout_marginTop="24dp"
+        android:id="@+id/firstname_et"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/edittext_background"
+        android:hint="Firstname"
+        android:textSize="16sp"
+        android:imeOptions="actionNext"
+        android:inputType="textCapSentences"
+        android:maxLines="1"
+        android:paddingLeft="24dp"
+        android:layout_marginLeft="24dp"
+        android:paddingRight="24dp"
+        android:layout_marginRight="24dp"
+        android:singleLine="true" />
+
+    <android.support.design.widget.TextInputEditText
+        android:layout_marginTop="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/edittext_background"
+        android:hint="Lastname"
+        android:textSize="16sp"
+        android:imeOptions="actionNext"
+        android:inputType="textCapSentences"
+        android:maxLines="1"
+        android:paddingLeft="24dp"
+        android:layout_marginLeft="24dp"
+        android:paddingRight="24dp"
+        android:layout_marginRight="24dp"
+        android:singleLine="true" />
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/edittext_background"
+        android:imeOptions="actionNext"
+        android:maxLines="1"
+        android:layout_marginRight="24dp"
+        android:layout_marginLeft="24dp"
+        android:singleLine="true"
+        >
+
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:focusable="true"
+            android:spinnerMode="dropdown"
+            android:inputType="textCapSentences"
+            android:paddingRight="24dp"
+            android:paddingLeft="24dp"
+            android:entries="@array/Gender"
+            />
+
+
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputEditText
+        android:layout_marginTop="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/edittext_background"
+        android:hint="Date of Birth"
+        android:textSize="16sp"
+        android:imeOptions="actionNext"
+        android:inputType="textCapSentences"
+        android:maxLines="1"
+        android:paddingLeft="24dp"
+        android:layout_marginLeft="24dp"
+        android:paddingRight="24dp"
+        android:layout_marginRight="24dp"
+        android:singleLine="true" />
+
+
+    <Button
+        android:layout_marginRight="24dp"
+        android:layout_marginLeft="24dp"
+        android:id="@+id/continue_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/gradient"
+        android:text="Continue  ->"
+        android:textColor="#fff"
+        android:textStyle="bold" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+       android:gravity="center">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="I have an account already,"
+      />
+
+        <TextView
+            android:textColor="@android:color/black"
+            android:paddingLeft="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+
+            android:text="SignIn"/>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <TextView
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Powered by APMIS"
+        android:layout_margin="20dp"
+        />
+
+    </RelativeLayout>
+
+</LinearLayout>
+
+
+
+

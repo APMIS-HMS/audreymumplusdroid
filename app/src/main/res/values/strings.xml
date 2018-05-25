@@ -10,4 +10,23 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="pregnancy">pregnancy</string>
     <string name="craving_text">What are your cravings?</string>
+    <string name="mom_101">Mom_101</string>
+    <string name="text_content">Proin eget tortor risus. Proin eget tortor risus. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui.Proin eget tortor risus. Proin Proin eget tortor risus. Proin eget tortor risus. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui.</string>
+    <string name="todo">TODO</string>
+    <string name="type_something_to_contribute">type something to contribute</string>
+    <string name="general">General</string>
+    <string name="title">Title</string>
+    <string name="firstname">Firstname</string>
+    <string name="lastname">Lastname</string>
+    <string name="gender">Gender</string>
+    <string name="Continue"><![CDATA[Continue ->]]></string>
+    <string-array name="select">
+        <item>@string/title</item>
+    </string-array>
+
+    <string-array name="Gender">
+        <item>@string/gender</item>
+    </string-array>
+
+
 </resources>

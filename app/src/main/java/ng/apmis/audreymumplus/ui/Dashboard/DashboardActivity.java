@@ -1,7 +1,6 @@
 package ng.apmis.audreymumplus.ui.Dashboard;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -11,15 +10,13 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
+import ng.apmis.audreymumplus.ui.Dashboard.Chat.ChatFragment;
 import ng.apmis.audreymumplus.ui.Dashboard.Home.HomeFragment;
 import ng.apmis.audreymumplus.ui.Dashboard.Journal.MyJournalFragment;
 import ng.apmis.audreymumplus.utils.BottomNavigationViewHelper;
@@ -104,10 +101,10 @@ public class DashboardActivity extends AppCompatActivity {
             case R.id.journal_menu:
                 placeFragment(new MyJournalFragment());
                 break;
-            /*case R.id.chat_menu:
-                placeFragment(new HomeFragment());
+            case R.id.chat_menu:
+                placeFragment(new ChatFragment());
                 break;
-            case R.id.read_menu:
+            /*case R.id.read_menu:
                 placeFragment(new HomeFragment());
                 break;
             case R.id.find_menu:

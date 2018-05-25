@@ -10,7 +10,7 @@
         android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"
+        android:layout_weight="3"
         android:background="@drawable/gradient"
         android:elevation="4dp">
 
@@ -33,7 +33,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="6dp"
                 android:text="Hi Sarah,"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
                 android:textColor="@android:color/white" />
@@ -41,7 +41,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="4dp"
                 android:text="how are you feeling today?"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
                 android:textColor="@android:color/white" />
@@ -58,25 +58,26 @@
                     android:orientation="vertical">
 
                     <ImageButton
-                        android:scaleType="fitCenter"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginRight="24dp"
                         android:adjustViewBounds="true"
-                        android:maxWidth="42dp"
-                        android:maxHeight="60dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="12dp"
                         android:background="@null"
+                        android:maxHeight="60dp"
+                        android:maxWidth="42dp"
+                        android:scaleType="fitCenter"
                         android:src="@drawable/ic_happy__icon" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="12dp"
                         android:paddingLeft="4dp"
-                        android:paddingTop="4dp"
+                        android:paddingTop="2dp"
                         android:text="Happy"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                        android:textColor="@android:color/white"
-                        android:textSize="5sp" />
+                        android:textColor="@android:color/white" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -85,21 +86,21 @@
                     android:orientation="vertical">
 
                     <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginRight="12dp"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginRight="24dp"
                         android:background="@null"
+                        android:scaleType="fitCenter"
                         android:src="@drawable/ic_okay_icon" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="6dp"
-                        android:paddingTop="4dp"
+                        android:paddingLeft="4dp"
+                        android:paddingTop="2dp"
                         android:text="Okay"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                        android:textColor="@android:color/white"
-                        android:textSize="5sp" />
+                        android:textColor="@android:color/white" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -108,21 +109,23 @@
                     android:orientation="vertical">
 
                     <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginRight="12dp"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:layout_marginRight="24dp"
                         android:background="@null"
+                        android:scaleType="fitCenter"
                         android:src="@drawable/ic_sick_smiley" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:paddingLeft="6dp"
-                        android:paddingTop="4dp"
+                        android:layout_gravity="center"
+                        android:layout_marginRight="12dp"
+                        android:paddingLeft="2dp"
+                        android:paddingTop="2dp"
                         android:text="Sick"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                        android:textColor="@android:color/white"
-                        android:textSize="5sp" />
+                        android:textColor="@android:color/white" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -131,21 +134,21 @@
                     android:orientation="vertical">
 
                     <ImageButton
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
                         android:layout_marginRight="12dp"
                         android:background="@null"
+                        android:scaleType="fitCenter"
                         android:src="@drawable/ic_crying_smiley" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingLeft="8dp"
-                        android:paddingTop="4dp"
+                        android:paddingTop="2dp"
                         android:text="Sad"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                        android:textColor="@android:color/white"
-                        android:textSize="5sp" />
+                        android:textColor="@android:color/white" />
                 </LinearLayout>
 
 
