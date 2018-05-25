@@ -19,6 +19,7 @@
     <string name="firstname">Firstname</string>
     <string name="lastname">Lastname</string>
     <string name="gender">Gender</string>
+    <string name="security">Security Questions</string>
     <string name="Continue"><![CDATA[Continue ->]]></string>
     <string-array name="select">
         <item>@string/title</item>
@@ -27,6 +28,11 @@
     <string-array name="Gender">
         <item>@string/gender</item>
     </string-array>
+
+    <string-array name="Security">
+        <item>@string/security</item>
+    </string-array>
+
 
 
 </resources>
