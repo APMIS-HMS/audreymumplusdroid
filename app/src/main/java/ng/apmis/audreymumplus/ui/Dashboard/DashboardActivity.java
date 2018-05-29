@@ -16,6 +16,7 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
+import ng.apmis.audreymumplus.ui.Dashboard.Appointments.AppointmentFragment;
 import ng.apmis.audreymumplus.ui.Dashboard.Chat.ChatFragment;
 import ng.apmis.audreymumplus.ui.Dashboard.Home.HomeFragment;
 import ng.apmis.audreymumplus.ui.Dashboard.Journal.MyJournalFragment;
@@ -104,10 +105,10 @@ public class DashboardActivity extends AppCompatActivity {
             case R.id.chat_menu:
                 placeFragment(new ChatFragment());
                 break;
-            /*case R.id.read_menu:
-                placeFragment(new HomeFragment());
+            case R.id.pill_reminder:
+                placeFragment(new AppointmentFragment());
                 break;
-            case R.id.find_menu:
+            /*case R.id.find_menu:
                 placeFragment(new HomeFragment());
                 break;*/
         }

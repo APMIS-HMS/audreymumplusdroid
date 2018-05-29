@@ -1,6 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
+    android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+    <CalendarView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="12dp"
+        android:imeOptions="actionNext"
+        android:background="@drawable/edittext_background"
+        android:maxLines="1"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:singleLine="true"
+        >
+
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:focusable="true"
+            android:spinnerMode="dropdown"
+            android:inputType="textCapSentences"
+            android:paddingRight="24dp"
+            android:paddingLeft="4dp"
+            android:entries="@array/Select"
+            />
+
+
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputEditText
+        android:layout_marginTop="24dp"
+        android:id="@+id/firstname_et"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@drawable/edittext_background"
+        android:hint="Doctor's name"
+        android:gravity="top"
+        android:textSize="16sp"
+        android:imeOptions="actionNext"
+        android:inputType="textCapSentences"
+        android:maxLines="1"
+        android:padding="4dp"
+        android:layout_marginLeft="20dp"
+        android:paddingRight="24dp"
+        android:layout_marginRight="20dp"
+        android:singleLine="true" />
+
+    <android.support.design.widget.TextInputEditText
+        android:layout_marginTop="24dp"
+        android:id="@+id/appointment_name"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:background="@drawable/edittext_background"
+        android:hint="Appointment Name and Details"
+        android:gravity="top"
+        android:textSize="16sp"
+        android:imeOptions="actionNext"
+        android:inputType="textCapSentences"
+        android:maxLines="1"
+        android:padding="4dp"
+        android:layout_marginLeft="20dp"
+        android:paddingRight="24dp"
+        android:layout_marginRight="20dp"
+        android:singleLine="true" />
+
+    <Button
+        android:id="@+id/sign_up"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/gradient"
+        android:text="Submit"
+        android:textColor="#fff"
+        android:textStyle="bold" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+
+
 
 </LinearLayout>

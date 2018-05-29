@@ -31,15 +31,38 @@
 
     </LinearLayout>
 
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
     <ListView
         android:id="@+id/chat_listn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />
+
+    </FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Powered by APMIS"
+            android:layout_margin="20dp"
+            />
+
+    </RelativeLayout>
+
     <android.support.design.widget.TextInputEditText
         android:id="@+id/security_answer_et"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="30dp"
         android:background="@drawable/edittext_background"
         android:hint="type something to contribute"
         android:inputType="textCapSentences"
