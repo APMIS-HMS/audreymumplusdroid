@@ -18,6 +18,7 @@ import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.ui.Dashboard.Appointments.AppointmentFragment;
 import ng.apmis.audreymumplus.ui.Dashboard.Chat.ChatFragment;
+import ng.apmis.audreymumplus.ui.Dashboard.Faq.FaqFragment;
 import ng.apmis.audreymumplus.ui.Dashboard.Home.HomeFragment;
 import ng.apmis.audreymumplus.ui.Dashboard.Journal.MyJournalFragment;
 import ng.apmis.audreymumplus.utils.BottomNavigationViewHelper;
@@ -107,6 +108,9 @@ public class DashboardActivity extends AppCompatActivity {
                 break;
             case R.id.pill_reminder:
                 placeFragment(new AppointmentFragment());
+                break;
+            case R.id.profile_menu:
+                placeFragment(new FaqFragment());
                 break;
             /*case R.id.find_menu:
                 placeFragment(new HomeFragment());
