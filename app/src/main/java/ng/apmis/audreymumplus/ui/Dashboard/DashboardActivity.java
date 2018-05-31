@@ -16,14 +16,14 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
-import ng.apmis.audreymumplus.ui.Dashboard.Appointments.AppointmentFragment;
-import ng.apmis.audreymumplus.ui.Dashboard.Chat.ChatFragment;
-import ng.apmis.audreymumplus.ui.Dashboard.Faq.FaqFragment;
-import ng.apmis.audreymumplus.ui.Dashboard.Home.HomeFragment;
-import ng.apmis.audreymumplus.ui.Dashboard.Journal.MyJournalFragment;
+import ng.apmis.audreymumplus.ui.Appointments.AppointmentFragment;
+import ng.apmis.audreymumplus.ui.Chat.ChatFragment;
+import ng.apmis.audreymumplus.ui.Faq.FaqFragment;
+import ng.apmis.audreymumplus.ui.Home.HomeFragment;
+import ng.apmis.audreymumplus.ui.Journal.MyJournalFragment;
 import ng.apmis.audreymumplus.utils.BottomNavigationViewHelper;
 
-public class DashboardActivity extends AppCompatActivity {
+public class DashboardActivity extends AppCompatActivity implements HomeFragment.OnfragmentInteractionListener {
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottomNavigationView;
 /*    @BindView(R.id.title_toolbar)
@@ -34,6 +34,8 @@ public class DashboardActivity extends AppCompatActivity {
 
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
+
+    FragmentManager mFragmentManager;
 
 
     @Override
@@ -54,7 +56,9 @@ public class DashboardActivity extends AppCompatActivity {
 
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView);
 
-        getSupportFragmentManager().beginTransaction()
+        mFragmentManager = getSupportFragmentManager();
+
+        mFragmentManager.beginTransaction()
                 .add(R.id.fragment_container, new HomeFragment())
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .commit();
@@ -98,32 +102,35 @@ public class DashboardActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case R.id.view_menu:
-                placeFragment(new HomeFragment());
+                placeFragment(new HomeFragment(), true, mFragmentManager);
                 break;
             case R.id.journal_menu:
-                placeFragment(new MyJournalFragment());
+                placeFragment(new MyJournalFragment(), true, mFragmentManager);
                 break;
             case R.id.chat_menu:
-                placeFragment(new ChatFragment());
+                placeFragment(new ChatFragment(), true, mFragmentManager);
                 break;
             case R.id.pill_reminder:
-                placeFragment(new AppointmentFragment());
+                placeFragment(new AppointmentFragment(), true, mFragmentManager);
                 break;
             case R.id.profile_menu:
-                placeFragment(new FaqFragment());
+                placeFragment(new FaqFragment(),true, mFragmentManager);
                 break;
-            /*case R.id.find_menu:
-                placeFragment(new HomeFragment());
-                break;*/
         }
-
-
 
     }
 
-    private void placeFragment (Fragment fragment) {
-        getSupportFragmentManager().popBackStack("current", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        getSupportFragmentManager().beginTransaction()
+    private void placeFragment (Fragment fragment, boolean popBackStack, FragmentManager fm) {
+        if (popBackStack) {
+            fm.popBackStack("current", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            fm.beginTransaction()
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .replace(R.id.fragment_container, fragment)
+                    .addToBackStack("current")
+                    .commit();
+            return;
+        }
+        fm.beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.fragment_container, fragment)
                 .addToBackStack("current")
@@ -131,6 +138,22 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onGridItemClick(String selectedText) {
+        switch (selectedText) {
+            case "My Pregnancy":
+                //TODO launch pregnancy screen
+                break;
+            case "My Appointments":
+                placeFragment(new AppointmentFragment(), false, mFragmentManager);
+                break;
+            case "Chatrooms":
+                placeFragment(new ChatFragment(), false, mFragmentManager);
+                break;
+            case "FAQs":
+                placeFragment(new FaqFragment(), false, mFragmentManager);
+                break;
 
-
+        }
+    }
 }

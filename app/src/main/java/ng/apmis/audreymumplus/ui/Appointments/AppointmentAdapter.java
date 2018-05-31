@@ -1,4 +1,4 @@
-package ng.apmis.audreymumplus.ui.Dashboard.Appointments;
+package ng.apmis.audreymumplus.ui.Appointments;
 
 import android.content.Context;
 import android.view.LayoutInflater;

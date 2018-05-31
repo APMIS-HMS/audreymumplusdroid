@@ -1,4 +1,4 @@
-package ng.apmis.audreymumplus.ui.Dashboard.Faq;
+package ng.apmis.audreymumplus.ui.Faq;
 
 public class FaqModel {
     private String titleText;

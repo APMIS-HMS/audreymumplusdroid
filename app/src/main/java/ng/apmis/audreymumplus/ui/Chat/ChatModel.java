@@ -1,4 +1,4 @@
-package ng.apmis.audreymumplus.ui.Dashboard.Chat;
+package ng.apmis.audreymumplus.ui.Chat;
 
 public class ChatModel {
     private String username;

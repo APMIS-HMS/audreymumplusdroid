@@ -1,4 +1,4 @@
-package ng.apmis.audreymumplus.ui.Dashboard.Journal;
+package ng.apmis.audreymumplus.ui.Faq;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,22 +11,22 @@ import java.util.List;
 
 import ng.apmis.audreymumplus.R;
 
-public class JournalAdapter extends BaseAdapter {
-    List<JournalModel> modelList;
-    Context mCon;
-    public JournalAdapter(Context context, List<JournalModel>list){
-        mCon = context;
-        modelList = list;
+public class FaqAdapter extends BaseAdapter {
+    List<FaqModel> faqdata;
+    Context mContext;
+
+    public FaqAdapter(Context context, List<FaqModel>fdata){
+        mContext = context;
+        faqdata = fdata;
     }
 
     @Override
     public int getCount() {
-        return modelList.size();
+        return faqdata.size();
     }
-
     @Override
     public Object getItem(int position) {
-        return modelList.get(position);
+        return faqdata.get(position);
     }
 
     @Override
@@ -38,18 +38,19 @@ public class JournalAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         // inflate the layout for each list row
         if (convertView == null) {
-            convertView = LayoutInflater.from(mCon).
-                    inflate(R.layout.my_journal, parent, false);
+            convertView = LayoutInflater.from(mContext).
+                    inflate(R.layout.faq_each, parent, false);
         }
 
         // get current item to be displayed
-        JournalModel journalModel = (JournalModel) getItem(position);
+        FaqModel currentItem = (FaqModel) getItem(position);
 
         // get the TextView for item name and item description
-        TextView textViewItemDescription = convertView.findViewById(R.id.journal_text);
+        TextView textViewItem = convertView.findViewById(R.id.faq_text);
 
         //sets the text for item name and item description from the current item object
-        textViewItemDescription.setText(journalModel.getTitle());
+
+        textViewItem.setText(currentItem.getTitleText());
 
         // returns the view for the current row
         return convertView;

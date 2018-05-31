@@ -1,4 +1,4 @@
-package ng.apmis.audreymumplus.ui.Dashboard.Journal;
+package ng.apmis.audreymumplus.ui.Journal;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;

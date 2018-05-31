@@ -1,17 +1,14 @@
-package ng.apmis.audreymumplus.ui.Dashboard.Journal;
+package ng.apmis.audreymumplus.ui.Journal;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
-import ng.apmis.audreymumplus.utils.BottomNavigationViewHelper;
 
 /**
  * Created by Thadeus-APMIS on 5/21/2018.

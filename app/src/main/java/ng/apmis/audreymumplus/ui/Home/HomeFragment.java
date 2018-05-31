@@ -1,5 +1,6 @@
-package ng.apmis.audreymumplus.ui.Dashboard.Home;
+package ng.apmis.audreymumplus.ui.Home;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,8 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
+import ng.apmis.audreymumplus.SignupFragmentB;
+import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.ui.Dashboard.ModuleAdapter;
 import ng.apmis.audreymumplus.ui.Dashboard.ModuleModel;
 
@@ -22,6 +25,8 @@ public class HomeFragment extends android.support.v4.app.Fragment {
 */    private static final String CLASSNAME = "HOME";
 
     List<ModuleModel> items = new ArrayList<>();
+
+    OnfragmentInteractionListener onFragmentInteractionListener;
 
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container,
@@ -49,9 +54,25 @@ public class HomeFragment extends android.support.v4.app.Fragment {
         gridView.setOnItemClickListener((parent, view, position, id) -> {
             ModuleModel clicked = (ModuleModel) parent.getItemAtPosition(position);
             Toast.makeText(getActivity(), clicked.getTitle() , Toast.LENGTH_SHORT).show();
+            onFragmentInteractionListener.onGridItemClick(clicked.getTitle());
         });
 
         return rootView;
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnfragmentInteractionListener) {
+            onFragmentInteractionListener = (OnfragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    public interface OnfragmentInteractionListener {
+        void onGridItemClick (String selectedText);
+
+    }
 }

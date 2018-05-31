@@ -1,4 +1,4 @@
-package ng.apmis.audreymumplus.ui.Dashboard.Appointments;
+package ng.apmis.audreymumplus.ui.Appointments;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;

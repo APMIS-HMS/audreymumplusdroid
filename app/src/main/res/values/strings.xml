@@ -19,27 +19,26 @@
     <string name="firstname">Firstname</string>
     <string name="lastname">Lastname</string>
     <string name="gender">Gender</string>
-    <string name="search_view_hint">enter search</string>
-    <string name="Select">select time</string>
     <string name="security">Security Questions</string>
-    <string name="Continue"><![CDATA[Continue ->]]></string>
+    <string name="Continue"><![CDATA[Continue]]></string>
+    <string name="input_error">Check field</string>
+
     <string-array name="select">
         <item>@string/title</item>
     </string-array>
 
+    <string-array name="title">
+        <item>Mrs</item>
+        <item>Miss</item>
+    </string-array>
+
     <string-array name="Gender">
-        <item>@string/gender</item>
+        <item>Female</item>
     </string-array>
 
     <string-array name="Security">
         <item>@string/security</item>
     </string-array>
-
-
-    <string-array name="Select">
-        <item>@string/Select</item>
-    </string-array>
-
 
 
 </resources>

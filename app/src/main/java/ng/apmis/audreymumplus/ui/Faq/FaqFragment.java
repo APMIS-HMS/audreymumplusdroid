@@ -1,4 +1,4 @@
-package ng.apmis.audreymumplus.ui.Dashboard.Faq;
+package ng.apmis.audreymumplus.ui.Faq;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
