@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ng.apmis.audreymumplus.R;
@@ -16,9 +17,13 @@ public class ModuleAdapter extends BaseAdapter {
     List<ModuleModel>data;
     Context mContext;
 
-    public ModuleAdapter(Context context, List<ModuleModel>mdata){
+    public ModuleAdapter(Context context, List<ModuleModel> mdata){
         mContext = context;
+        if (data != null) {
+            data = new ArrayList<>();
+        }
         data = mdata;
+        notifyDataSetChanged();
     }
 
     @Override

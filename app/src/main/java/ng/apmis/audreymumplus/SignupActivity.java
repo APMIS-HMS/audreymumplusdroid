@@ -78,7 +78,7 @@ public class SignupActivity extends AppCompatActivity implements SignupFragmentB
 
     void signUp(JSONObject uniquePerson) {
 
-        if (true) startActivity(new Intent(this, DashboardActivity.class)); finish();
+        if (true) { progressDialog.dismiss(); startActivity(new Intent(this, DashboardActivity.class)); finish(); return; }
 
         JsonObjectRequest strRequest = new JsonObjectRequest(Request.Method.POST, "save-person", uniquePerson, response -> {
             progressDialog.dismiss();

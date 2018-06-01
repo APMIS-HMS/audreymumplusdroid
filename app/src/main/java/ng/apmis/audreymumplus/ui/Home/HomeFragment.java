@@ -26,6 +26,8 @@ public class HomeFragment extends android.support.v4.app.Fragment {
 
     List<ModuleModel> items = new ArrayList<>();
 
+    GridView gridView;
+
     OnfragmentInteractionListener onFragmentInteractionListener;
 
     @Override
@@ -37,7 +39,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
 
       //  ((DashboardActivity)getActivity()).setToolBarTitle(CLASSNAME);
 
-        GridView gridView = rootView.findViewById(R.id.grid);
+        gridView = rootView.findViewById(R.id.grid);
 
         items.add(new ModuleModel("My Pregnancy",R.drawable.ic_my_pregnancy));
         items.add(new ModuleModel("My Appointments", R.drawable.ic_my_appointments));

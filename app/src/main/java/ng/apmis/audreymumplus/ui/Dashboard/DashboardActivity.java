@@ -58,6 +58,8 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
         mFragmentManager = getSupportFragmentManager();
 
+       // placeFragment(new HomeFragment(), true, mFragmentManager);
+
         mFragmentManager.beginTransaction()
                 .add(R.id.fragment_container, new HomeFragment())
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
@@ -79,7 +81,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
     }
 
 
-/*
+    /*
     public void setToolBarTitle (String title) {
         title_toolbar.setText(title);
      */
@@ -121,20 +123,28 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
     }
 
     private void placeFragment (Fragment fragment, boolean popBackStack, FragmentManager fm) {
+        if (fragment instanceof HomeFragment) {
+            fm.popBackStack("current", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            fm.beginTransaction()
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .replace(R.id.fragment_container, fragment)
+                    .commit();
+            return;
+        }
         if (popBackStack) {
             fm.popBackStack("current", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            fm.beginTransaction()
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .add(R.id.fragment_container, fragment)
+                    .addToBackStack("current")
+                    .commit();
+        } else {
             fm.beginTransaction()
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .replace(R.id.fragment_container, fragment)
                     .addToBackStack("current")
                     .commit();
-            return;
         }
-        fm.beginTransaction()
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .replace(R.id.fragment_container, fragment)
-                .addToBackStack("current")
-                .commit();
     }
 
 
@@ -145,13 +155,13 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                 //TODO launch pregnancy screen
                 break;
             case "My Appointments":
-                placeFragment(new AppointmentFragment(), false, mFragmentManager);
+                placeFragment(new AppointmentFragment(), true, mFragmentManager);
                 break;
             case "Chatrooms":
-                placeFragment(new ChatFragment(), false, mFragmentManager);
+                placeFragment(new ChatFragment(), true, mFragmentManager);
                 break;
             case "FAQs":
-                placeFragment(new FaqFragment(), false, mFragmentManager);
+                placeFragment(new FaqFragment(), true, mFragmentManager);
                 break;
 
         }
