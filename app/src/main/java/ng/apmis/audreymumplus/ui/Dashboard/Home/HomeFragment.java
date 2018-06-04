@@ -1,5 +1,6 @@
 package ng.apmis.audreymumplus.ui.Dashboard.Home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.ui.Dashboard.ModuleAdapter;
 import ng.apmis.audreymumplus.ui.Dashboard.ModuleModel;
+import ng.apmis.audreymumplus.ui.PregnancyDetails.PregnancyDetailsActivity;
 
 public class HomeFragment extends android.support.v4.app.Fragment {
 
@@ -46,9 +48,14 @@ public class HomeFragment extends android.support.v4.app.Fragment {
 
         //gridItems.setDivider(null);
 
+
         gridView.setOnItemClickListener((parent, view, position, id) -> {
             ModuleModel clicked = (ModuleModel) parent.getItemAtPosition(position);
             Toast.makeText(getActivity(), clicked.getTitle() , Toast.LENGTH_SHORT).show();
+            if(position == 2){
+                Intent i = new Intent(getActivity(), PregnancyDetailsActivity.class);
+                startActivity(i);
+            }
         });
 
         return rootView;
