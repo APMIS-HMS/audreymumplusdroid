@@ -22,6 +22,7 @@
     <string name="gender">Gender</string>
     <string name="search_view_hint">enter search</string>
     <string name="Select">select time</string>
+    <string name="PregnancyBelly">Pregnancy Belly</string>
     <string name="Mypregnancy">My Pregnancy</string>
     <string name="Mygallery">My Gallery</string>
     <string name="pregJournal">Pregnancy Journal</string>
@@ -46,6 +47,10 @@
 
     <string-array name="week">
         <item>@string/week</item>
+    </string-array>
+
+    <string-array name="PregnancyBelly">
+        <item>@string/PregnancyBelly</item>
     </string-array>
 
 
