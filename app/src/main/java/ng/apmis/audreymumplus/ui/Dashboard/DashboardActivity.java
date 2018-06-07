@@ -1,5 +1,6 @@
 package ng.apmis.audreymumplus.ui.Dashboard;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -21,6 +22,7 @@ import ng.apmis.audreymumplus.ui.Chat.ChatFragment;
 import ng.apmis.audreymumplus.ui.Faq.FaqFragment;
 import ng.apmis.audreymumplus.ui.Home.HomeFragment;
 import ng.apmis.audreymumplus.ui.Journal.MyJournalFragment;
+import ng.apmis.audreymumplus.ui.PregnancyDetails.PregnancyDetailsActivity;
 import ng.apmis.audreymumplus.utils.BottomNavigationViewHelper;
 
 public class DashboardActivity extends AppCompatActivity implements HomeFragment.OnfragmentInteractionListener {
@@ -154,7 +156,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
     public void onGridItemClick(String selectedText) {
         switch (selectedText) {
             case "My Pregnancy":
-                //TODO launch pregnancy screen
+                startActivity(new Intent(this, PregnancyDetailsActivity.class));
                 break;
             case "My Appointments":
                 placeFragment(new AppointmentFragment(), true, mFragmentManager);

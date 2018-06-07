@@ -3,10 +3,7 @@ package ng.apmis.audreymumplus.data.network;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
-
-import java.net.URL;
 
 import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.data.database.DailyJournal;

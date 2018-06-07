@@ -13,8 +13,6 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
-import ng.apmis.audreymumplus.SignupFragmentB;
-import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.ui.Dashboard.ModuleAdapter;
 import ng.apmis.audreymumplus.ui.Dashboard.ModuleModel;
 
