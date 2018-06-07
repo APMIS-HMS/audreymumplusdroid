@@ -18,7 +18,14 @@
     <string name="title">Title</string>
     <string name="firstname">Firstname</string>
     <string name="lastname">Lastname</string>
+    <string name="week">Week 15</string>
     <string name="gender">Gender</string>
+    <string name="search_view_hint">enter search</string>
+    <string name="Select">select time</string>
+    <string name="PregnancyBelly">Pregnancy Belly</string>
+    <string name="Mypregnancy">My Pregnancy</string>
+    <string name="Mygallery">My Gallery</string>
+    <string name="pregJournal">Pregnancy Journal</string>
     <string name="security">Security Questions</string>
     <string name="Continue"><![CDATA[Continue]]></string>
     <string name="input_error">Check field</string>
@@ -39,6 +46,20 @@
     <string-array name="Security">
         <item>@string/security</item>
     </string-array>
+
+
+    <string-array name="Select">
+        <item>@string/Select</item>
+    </string-array>
+
+    <string-array name="week">
+        <item>@string/week</item>
+    </string-array>
+
+    <string-array name="PregnancyBelly">
+        <item>@string/PregnancyBelly</item>
+    </string-array>
+
 
 
 </resources>
