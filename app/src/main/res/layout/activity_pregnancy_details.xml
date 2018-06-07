@@ -48,12 +48,30 @@
             </LinearLayout>
 
             <TextView
+                android:layout_marginLeft="12dp"
+                android:id="@+id/day60"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="day 60"
                 android:textColor="@android:color/white"
                 android:layout_below="@id/pregnant_icon"
                 android:layout_toRightOf="@id/pregnant_icon"/>
+
+            <ImageView
+                android:id="@+id/progressbar"
+                android:layout_below="@id/day60"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_progresss_bar"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Expected delivery date : July 29"
+                android:layout_below="@id/progressbar"
+                android:layout_marginLeft="30dp"
+                android:textColor="@android:color/white"
+                android:layout_marginTop="8dp"/>
 
 
 
