@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import ng.apmis.audreymumplus.R;
-import ng.apmis.audreymumplus.ui.Dashboard.Journal.MyJournalFragment;
+import ng.apmis.audreymumplus.ui.Journal.MyJournalFragment;
 
 public class CategoryAdapter extends FragmentPagerAdapter {
 

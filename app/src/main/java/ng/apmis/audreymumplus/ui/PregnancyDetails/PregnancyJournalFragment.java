@@ -15,7 +15,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
-import ng.apmis.audreymumplus.ui.Dashboard.Journal.AddJournalFragment;
+import ng.apmis.audreymumplus.ui.Journal.AddJournalFragment;
 
 
 public class PregnancyJournalFragment extends Fragment {
