@@ -14,10 +14,11 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="ic_progresss_bar" />
+                            <entry key="height" value="188" />
+                            <entry key="outputName" value="ic_1st_onboarding" />
                             <entry key="overrideSize" value="true" />
-                            <entry key="sourceFile" value="C:\Users\HARNY\Desktop\apmisappassets\Progresss bar.svg" />
-                            <entry key="width" value="326" />
+                            <entry key="sourceFile" value="C:\Users\HARNY\Desktop\apmisappassets\1st Onboarding.svg" />
+                            <entry key="width" value="250" />
                           </map>
                         </option>
                       </PersistentState>
