@@ -15,7 +15,7 @@
             android:layout_height="30dp"
             android:scaleType="fitEnd"
             android:src="@drawable/ic_a_icon"
-            android:layout_marginLeft="4dp"
+            android:layout_marginLeft="40dp"
             android:layout_marginRight="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="4dp" />
@@ -36,6 +36,7 @@
         android:layout_height="wrap_content">
 
     <ListView
+        android:layout_marginLeft="4dp"
         android:id="@+id/chat_listn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

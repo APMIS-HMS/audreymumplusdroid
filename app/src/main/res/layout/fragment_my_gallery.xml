@@ -30,6 +30,7 @@
         android:id="@+id/list_gallery"
         android:layout_width="match_parent"
         android:drawSelectorOnTop="true"
+        android:layout_marginBottom="8dp"
         android:layout_height="wrap_content"
         android:stretchMode="columnWidth"
         android:numColumns="2"/>
