@@ -15,7 +15,7 @@
         android:layout_height="150dp"
         android:layout_gravity="center"
         android:src="@drawable/ic_pill_reminder"
-        app:civ_border_color=""
+        app:civ_border_color="@color/colorAccent"
         app:civ_border_width="2dp"
         app:civ_shadow="true"
         app:civ_shadow_color="#8BC34A"
