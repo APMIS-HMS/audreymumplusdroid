@@ -26,7 +26,6 @@
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
             android:text="@string/mom_101"
-            android:theme="@style/Base.TextAppearance.AppCompat.Small"
             />
 
         <TextView
@@ -34,8 +33,7 @@
             android:maxWidth="250dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/text_content"
-            android:theme="@style/Base.TextAppearance.AppCompat.Small"/>
+            android:text="@string/text_content"/>
 
     </LinearLayout>
 
