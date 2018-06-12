@@ -75,8 +75,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.drawable.ic_hamburger:
-                Toast.makeText(this, "You are tight it works", Toast.LENGTH_SHORT).show();
+            case android.R.id.home:
                 drawerLayout.openDrawer(GravityCompat.START);
                 return true;
             default:

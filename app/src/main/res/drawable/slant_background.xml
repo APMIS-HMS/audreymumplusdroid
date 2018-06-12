@@ -20,8 +20,8 @@
     <item>
         <rotate
             xmlns:android="http://schemas.android.com/apk/res/android"
-            android:fromDegrees="80"
-            android:pivotX="65%"
+            android:fromDegrees="85"
+            android:pivotX="75%"
             android:pivotY="20%">
             <shape android:shape="rectangle">
                 <solid android:color="@color/colorPrimaryDark" />

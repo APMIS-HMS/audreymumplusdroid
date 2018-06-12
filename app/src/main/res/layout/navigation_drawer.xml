@@ -48,8 +48,44 @@
         android:layout_height="match_parent"
         android:background="@drawable/slant_background"
         android:layout_gravity="start"
+        android:paddingLeft="10dp"
         android:fitsSystemWindows="true"
         app:menu="@menu/drawer_view"
-        app:headerLayout="@layout/navigation_header"/>
+        app:headerLayout="@layout/navigation_header"
+        android:paddingStart="10dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:clickable="true"
+            android:focusable="true">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/colorPrimary"/>
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                app:srcCompat="@drawable/ic_logout_icon"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/logout"
+                android:layout_toStartOf="@+id/logout" />
+
+            <Button
+                android:id="@+id/logout"
+                android:text="@string/logout"
+                android:background="@android:color/transparent"
+                android:layout_width="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_height="48dp"
+                android:gravity="center"
+                android:textColor="@color/colorPrimary" />
+        </RelativeLayout>
+
+    </android.support.design.widget.NavigationView>
 
 </android.support.v4.widget.DrawerLayout>
