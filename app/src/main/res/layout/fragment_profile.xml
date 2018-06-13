@@ -2,52 +2,8 @@
 <LinearLayout
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white">
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/arrow"
-                android:layout_margin="20dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_arrow_back_black_24dp"
-                />
-
-            <TextView
-                android:layout_toRightOf="@id/arrow"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:layout_marginTop="20dp"
-                android:textColor="@color/colorPrimaryDark"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="My Profile"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Edit"
-                android:textColor="@color/colorPrimaryDark"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="20dp"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
-
-        </RelativeLayout>
-
-        <View
-            android:background="@color/colorPrimaryDark"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"/>
-
-
-
-    </android.support.design.widget.AppBarLayout>
+    android:layout_height="match_parent"
+    android:background="#fff">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -60,7 +16,7 @@
             android:layout_height="116dp"
             android:layout_centerInParent="true"
             android:layout_marginTop="16dp"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@drawable/face_of_audrey" />
 
         <android.support.design.widget.FloatingActionButton
             android:layout_width="wrap_content"

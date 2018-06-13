@@ -44,7 +44,7 @@ public class MyGalleryFragment extends android.support.v4.app.Fragment {
             GalleryModel clicked = (ModuleModel) parent.getItemAtPosition(position);
             Toast.makeText(getActivity(), clicked.getTitle() , Toast.LENGTH_SHORT).show();
             *//*if(position == 2){
-                Intent i = new Intent(getActivity(), PregnancyDetailsActivity.class);
+                Intent i = new Intent(getActivity(), PregnancyFragment.class);
                 startActivity(i);
             }*//*
         });
