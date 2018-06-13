@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:orientation="vertical"
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/white"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#fff">
+    android:layout_height="match_parent">
+
     <LinearLayout
+        android:id="@+id/chat_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -14,49 +17,72 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:scaleType="fitEnd"
-            android:src="@drawable/ic_a_icon"
+            app:srcCompat="@drawable/ic_a_icon"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="4dp" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="General"/>
+
         <Spinner
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="30dp"
             android:spinnerMode="dropdown"
+            android:entries="@array/chat_groups"
             />
 
     </LinearLayout>
 
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+   <!-- <android.support.v7.widget.RecyclerView
+        android:id="@+id/chat_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>-->
 
     <ListView
-        android:layout_marginLeft="4dp"
         android:id="@+id/chat_listn"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_margin="8dp"
+        android:layout_below="@+id/chat_group"
+        android:layout_above="@+id/message_layout"
         />
 
-    </FrameLayout>
-
-    <android.support.design.widget.TextInputEditText
-        android:id="@+id/security_answer_et"
+    <LinearLayout
+        android:id="@+id/message_layout"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:background="@drawable/edittext_background"
-        android:hint="type something to contribute"
-        android:inputType="textCapSentences"
-        android:imeOptions="actionDone"
-        android:maxLines="1"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp"
-        android:singleLine="true" />
+        android:background="@color/user_transparent"
+        android:layout_marginTop="2dp"
+        android:layout_height="wrap_content"
+        android:paddingStart="20dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true">
 
+        <EditText
+            android:id="@+id/add_chat"
+            android:background="@drawable/chat_editor"
+            android:layout_width="0dp"
+            android:gravity="center_vertical"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:paddingLeft="12dp"
+            android:paddingStart="12dp"
+            android:hint="@string/contribute_message"/>
 
+        <ImageView
+            android:id="@+id/send_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/user_transparent"
+            app:srcCompat="@drawable/ic_send_black_24dp"
+            android:layout_marginLeft="8dp"
+            android:layout_gravity="center"
+            android:contentDescription="@string/send_button"
+            android:layout_marginStart="8dp" />
 
-</LinearLayout>
+    </LinearLayout>
+
+</RelativeLayout>

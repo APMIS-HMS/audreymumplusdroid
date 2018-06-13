@@ -1,8 +1,11 @@
 package ng.apmis.audreymumplus.ui.Dashboard;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -11,8 +14,20 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.mikhaellopez.circularimageview.CircularImageView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,6 +39,7 @@ import ng.apmis.audreymumplus.ui.Home.HomeFragment;
 import ng.apmis.audreymumplus.ui.Journal.MyJournalFragment;
 import ng.apmis.audreymumplus.ui.PregnancyDetails.PregnancyDetailsActivity;
 import ng.apmis.audreymumplus.utils.BottomNavigationViewHelper;
+import ng.apmis.audreymumplus.utils.Utils;
 
 public class DashboardActivity extends AppCompatActivity implements HomeFragment.OnfragmentInteractionListener {
     @BindView(R.id.bottom_navigation)
@@ -51,6 +67,24 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_hamburger);
 
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        View headerLayout = navigationView.getHeaderView(0);
+
+        navigationView.setNavigationItemSelectedListener(item -> selectNavigationItem(item));
+
+        CircularImageView profileCircularImageView = headerLayout.findViewById(R.id.user_image);
+
+        View logoutView = navigationView.findViewById(R.id.logout_view);
+
+        logoutView.setOnClickListener((View) -> Toast.makeText(this, "Logout", Toast.LENGTH_SHORT).show());
+
+        try {
+            JSONObject job =  new JSONObject(new Utils().loadJSONFromAsset(this));
+            Log.v("Job weekly", job.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             selectFragment(item);
             return true;
@@ -67,10 +101,30 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .commit();
 
-
-
+        Glide.with(DashboardActivity.this)
+                .load(R.drawable.profile_image)
+                .into(profileCircularImageView);
 
     }
+
+    boolean selectNavigationItem (MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.my_profile:
+                Toast.makeText(DashboardActivity.this, "Profile selected", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.about_us:
+                Toast.makeText(DashboardActivity.this, "About-us selected", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.help:
+                Toast.makeText(DashboardActivity.this, "Help selected", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.settings:
+                Toast.makeText(DashboardActivity.this, "Settings selected", Toast.LENGTH_SHORT).show();
+                return true;
+        }
+        return false;
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -117,9 +171,6 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                 break;
             case R.id.pill_reminder:
                 placeFragment(new AppointmentFragment(), true, mFragmentManager);
-                break;
-            case R.id.profile_menu:
-                placeFragment(new FaqFragment(),true, mFragmentManager);
                 break;
         }
 
