@@ -28,16 +28,16 @@
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="You are our concern."
+        android:text="Capture Progress Milestones."
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
         android:textColor="@android:color/white"
         android:textStyle="bold"
         />
     <TextView
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="We will help you get through your"
+        android:text="Document your moment  through "
         android:gravity="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         android:textColor="@android:color/white"/>
@@ -45,7 +45,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text=" pregnancy journey."
+        android:text=" out your journey."
         android:gravity="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         android:textColor="@android:color/white"/>
