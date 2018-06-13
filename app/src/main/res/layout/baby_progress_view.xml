@@ -36,7 +36,9 @@
             <TextView
                 android:layout_margin="8dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:maxWidth="200dp"
+                android:text="Your growing baby now measures about 4 inches long, crown to rump, and weighs in at about 2 1/2 ounces (about the size of an apple). Her legs are growing longer than her arms now, and she can move all of her joints and limbs. Although her eyelids are still fused shut, she can sense light."/>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
