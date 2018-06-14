@@ -36,6 +36,7 @@
     <string name="logout">Logout</string>
     <string name="contribute_message">type something to contribute</string>
     <string name="send_button">send button</string>
+    <string name="welcome_message">Glad to have you here, please fill\nin your details to continue</string>
 
     <string-array name="select">
         <item>@string/title</item>
@@ -44,6 +45,7 @@
     <string-array name="title">
         <item>Mrs</item>
         <item>Miss</item>
+        <item>Ms</item>
     </string-array>
 
     <string-array name="Gender">

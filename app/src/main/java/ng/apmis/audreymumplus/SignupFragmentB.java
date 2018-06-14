@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,15 +32,16 @@ public class SignupFragmentB extends Fragment {
     TextInputEditText maidenNameEditText;
     @BindView(R.id.phone)
     TextInputEditText phoneEditText;
-    @BindView(R.id.security_questions)
-    Spinner securityQuestionSpinner;
-    @BindView(R.id.security_answer)
-    TextInputEditText securityAnswer;
+    @BindView(R.id.email_edittext)
+    TextInputEditText emailEditText;
+    @BindView(R.id.password_edittext)
+    TextInputEditText passwordEditText;
+    @BindView(R.id.confirm_password_edittext)
+    TextInputEditText confirmPassword;
     @BindView(R.id.sign_up_btn)
     Button signupBtn;
 
-    String securityQuestionText;
-
+    boolean isPasswordMatch = false;
     OnFragmentInteractionListener onFragmentInteractionListener;
 
     public SignupFragmentB () {
@@ -50,26 +53,6 @@ public class SignupFragmentB extends Fragment {
         View rootView = inflater.inflate(R.layout.signup_b, container, false);
         ButterKnife.bind(this, rootView);
 
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_dropdown_item, getActivity().getResources().getStringArray(R.array.Security));
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
-        securityQuestionSpinner.setAdapter(spinnerAdapter);
-
-        securityQuestionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                String selectedString = adapterView.getItemAtPosition(i).toString();
-                if (!TextUtils.isEmpty(selectedString)) {
-                    securityQuestionText = selectedString;
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
         signupBtn.setOnClickListener((view) -> {
             try {
                 if (checkFields()) {
@@ -80,7 +63,29 @@ public class SignupFragmentB extends Fragment {
             }
         });
 
+        confirmPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                isPasswordMatch = editable.toString().equals(passwordEditText.getText().toString());
+            }
+        });
+
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((SignupActivity)getActivity()).setSupportActionTitle("Sign up", true);
     }
 
     @Override
@@ -96,8 +101,6 @@ public class SignupFragmentB extends Fragment {
 
     boolean checkFields() throws JSONException {
 
-        if (true) return  true;
-
         if (maidenNameEditText.getText().toString().length() < 2) {
             maidenNameEditText.setError(getString(R.string.input_error));
             return false;
@@ -106,19 +109,27 @@ public class SignupFragmentB extends Fragment {
             phoneEditText.setError(getString(R.string.input_error));
             return false;
         }
-        if (TextUtils.isEmpty(securityQuestionText)) {
-            Toast.makeText(this.getActivity(), "Select Gender", Toast.LENGTH_SHORT).show();
+        if (emailEditText.getText().toString().length() < 11 || !emailEditText.getText().toString().contains("@")) {
+            emailEditText.setError(getString(R.string.input_error));
             return false;
         }
-        if (TextUtils.isEmpty(securityAnswer.getText().toString())) {
-            securityAnswer.setError(getString(R.string.input_error));
+        if (TextUtils.isEmpty(passwordEditText.getText().toString())) {
+            passwordEditText.setError(getString(R.string.input_error));
+            return false;
+        }
+        if (TextUtils.isEmpty(confirmPassword.getText().toString())) {
+            confirmPassword.setError(getString(R.string.input_error));
+            return false;
+        }
+        if (!isPasswordMatch) {
+            confirmPassword.setError("Password do no match");
             return false;
         }
 
         SignupActivity.audreyMum.put("motherMaidenName", maidenNameEditText.getText().toString());
         SignupActivity.audreyMum.put("primaryContactPhoneNo", phoneEditText.getText().toString());
-        SignupActivity.audreyMum.put("securityQuestion", securityQuestionText);
-        SignupActivity.audreyMum.put("securityAnswer", securityAnswer.getText().toString());
+        SignupActivity.audreyMum.put("email", emailEditText.getText().toString());
+        SignupActivity.audreyMum.put("password", confirmPassword.getText().toString());
 
         return true;
     }
