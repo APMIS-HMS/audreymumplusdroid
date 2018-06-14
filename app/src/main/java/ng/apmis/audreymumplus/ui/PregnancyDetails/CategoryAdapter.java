@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import ng.apmis.audreymumplus.R;
-import ng.apmis.audreymumplus.ui.Journal.MyJournalFragment;
 
 public class CategoryAdapter extends FragmentPagerAdapter {
 
@@ -19,7 +18,7 @@ public class CategoryAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         if(position == 0){
-            return new MyJournalFragment();
+            return new MyPregnancyContext();
         }else if(position == 1){
             return new MyGalleryFragment();
         }else {return new PregnancyJournalFragment();}

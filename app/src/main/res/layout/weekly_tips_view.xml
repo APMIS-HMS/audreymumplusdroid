@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:orientation="vertical"
+<FrameLayout android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardElevation="12dp"
+        app:cardElevation="0dp"
         android:layout_margin="12dp">
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <TextView
+                android:id="@+id/weeklyupdate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="WEEKLY TIPS    (WEEK 15)"
@@ -32,16 +33,59 @@
                 android:layout_margin="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Eating Healthy !   🍲"/>
+                android:text="Eating Healthy !   "/>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageButton
+                    android:layout_marginLeft="36dp"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_marginTop="14dp"
+                    android:background="@drawable/bulletpoint"/>
 
             <TextView
                 android:id="@+id/content1"
                 android:layout_margin="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxWidth="200dp"
-                android:text="Your growing baby now measures about 4 inches long, crown to rump, and weighs in at about 2 1/2 ounces (about the size of an apple). Her legs are growing longer than her arms now, and she can move all of her joints and limbs. Although her eyelids are still fused shut, she can sense light."/>
+                android:paddingRight="50dp"
+                android:maxWidth="250dp"
+                android:gravity="center"
+                android:paddingLeft="20dp"
+                android:text="Try fortified ready-to-eat or cooked breakfast cereals with fruit. Fortified cereals have added nutrients, like calcium.
+"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageButton
+                    android:layout_marginLeft="36dp"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_marginTop="14dp"
+                    android:background="@drawable/bulletpoint"/>
+
+                <TextView
+                    android:id="@+id/content2"
+                    android:layout_margin="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="50dp"
+                    android:maxWidth="250dp"
+                    android:gravity="center"
+                    android:paddingLeft="20dp"
+                    android:text="Try fortified ready-to-eat or cooked breakfast cereals with fruit. Fortified cereals have added nutrients, like calcium.
+"/>
+
+            </LinearLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
-</LinearLayout>
+</FrameLayout>
