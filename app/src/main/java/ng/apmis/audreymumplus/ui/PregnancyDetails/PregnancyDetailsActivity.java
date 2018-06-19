@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import ng.apmis.audreymumplus.R;
+import ng.apmis.audreymumplus.ui.Dashboard.SettingFragment;
 
 public class PregnancyDetailsActivity extends AppCompatActivity {
 
@@ -15,6 +16,10 @@ public class PregnancyDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pregnancy_details);
+
+        getFragmentManager().beginTransaction()
+                .replace(android.R.id.content, new SettingFragment())
+                .commit();
 
         ViewPager viewPager = (ViewPager)findViewById(R.id.view_pager);
         CategoryAdapter adapter = new CategoryAdapter(this, getSupportFragmentManager());
@@ -90,6 +95,8 @@ public class PregnancyDetailsActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 
 
 }

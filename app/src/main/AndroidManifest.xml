@@ -17,7 +17,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.Dashboard.DashboardActivity" />
-        <activity android:name=".ui.PregnancyDetails.PregnancyDetailsActivity"></activity>
+        <activity android:name=".ui.PregnancyDetails.PregnancyDetailsActivity" />
+        <activity android:name=".ui.PreferenceActivity"></activity>
     </application>
 
 </manifest>

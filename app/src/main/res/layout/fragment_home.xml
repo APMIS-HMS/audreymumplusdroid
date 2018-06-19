@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="#fff"
     tools:context=".ui.Home.HomeFragment">
@@ -67,7 +68,7 @@
                         android:maxHeight="60dp"
                         android:maxWidth="42dp"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/ic_happy__icon" />
+                        app:srcCompat="@drawable/ic_happy__icon" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -92,7 +93,7 @@
                         android:layout_marginRight="24dp"
                         android:background="@null"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/ic_okay_icon" />
+                        app:srcCompat="@drawable/ic_okay_icon" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -115,7 +116,7 @@
                         android:layout_marginRight="24dp"
                         android:background="@null"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/ic_sick_smiley" />
+                        app:srcCompat="@drawable/ic_sick_smiley" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -140,7 +141,7 @@
                         android:layout_marginRight="12dp"
                         android:background="@null"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/ic_crying_smiley" />
+                        app:srcCompat="@drawable/ic_crying_smiley" />
 
                     <TextView
                         android:layout_width="wrap_content"

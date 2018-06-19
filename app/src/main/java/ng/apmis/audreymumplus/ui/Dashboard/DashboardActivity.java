@@ -2,6 +2,7 @@ package ng.apmis.audreymumplus.ui.Dashboard;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceFragment;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -22,6 +23,7 @@ import ng.apmis.audreymumplus.ui.Chat.ChatFragment;
 import ng.apmis.audreymumplus.ui.Faq.FaqFragment;
 import ng.apmis.audreymumplus.ui.Home.HomeFragment;
 import ng.apmis.audreymumplus.ui.Journal.MyJournalFragment;
+import ng.apmis.audreymumplus.ui.PreferenceActivity;
 import ng.apmis.audreymumplus.ui.PregnancyDetails.PregnancyDetailsActivity;
 import ng.apmis.audreymumplus.utils.BottomNavigationViewHelper;
 
@@ -45,6 +47,10 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.navigation_drawer);
         ButterKnife.bind(this);
+/*
+        getFragmentManager().beginTransaction()
+                .replace(android.R.id.content, new SettingFragment())
+                .commit();*/
 
         setSupportActionBar(globalToolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -120,6 +126,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                 placeFragment(new AppointmentFragment(), true, mFragmentManager);
                 break;
             case R.id.profile_menu:
+               //prefFragment(new SettingFragment());
                 placeFragment(new FaqFragment(),true, mFragmentManager);
                 break;
         }
@@ -150,6 +157,12 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                     .commit();
         }
     }
+    private void prefFragment(PreferenceFragment fragment){
+        getFragmentManager().beginTransaction().setTransition(android.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .replace(R.id.fragment_container, fragment)
+                .commit();
+        return;
+    }
 
 
     @Override
@@ -165,7 +178,9 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                 placeFragment(new ChatFragment(), true, mFragmentManager);
                 break;
             case "FAQs":
-                placeFragment(new FaqFragment(), true, mFragmentManager);
+                startActivity(new Intent(this, PreferenceActivity.class));
+
+                //placeFragment(new FaqFragment(), true, mFragmentManager);
                 break;
 
         }
