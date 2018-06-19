@@ -23,7 +23,6 @@ import ng.apmis.audreymumplus.ui.Chat.ChatFragment;
 import ng.apmis.audreymumplus.ui.Faq.FaqFragment;
 import ng.apmis.audreymumplus.ui.Home.HomeFragment;
 import ng.apmis.audreymumplus.ui.Journal.MyJournalFragment;
-import ng.apmis.audreymumplus.ui.PreferenceActivity;
 import ng.apmis.audreymumplus.ui.PregnancyDetails.PregnancyDetailsActivity;
 import ng.apmis.audreymumplus.utils.BottomNavigationViewHelper;
 
@@ -178,7 +177,8 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                 placeFragment(new ChatFragment(), true, mFragmentManager);
                 break;
             case "FAQs":
-                startActivity(new Intent(this, PreferenceActivity.class));
+               // startActivity(new Intent(this, PreferenceActivity.class));
+                prefFragment(new SettingFragment());
 
                 //placeFragment(new FaqFragment(), true, mFragmentManager);
                 break;
