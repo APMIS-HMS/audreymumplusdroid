@@ -89,6 +89,15 @@ public class SharedPreferencesManager {
         return EncryptionUtils.decrypt(pref.getString(APMIS_ID, ""));
     }
 
+    public void storeUserToken (String token) {
+        editor.putString(ACCESS_TOKEN, EncryptionUtils.encrypt(token));
+        editor.commit();
+    }
+
+    public String getUserToken () {
+        return EncryptionUtils.decrypt(pref.getString(ACCESS_TOKEN, ""));
+    }
+
     public void storeUserPassword (String password) {
         editor.putString(USER_PASSWORD, password);
         editor.commit();

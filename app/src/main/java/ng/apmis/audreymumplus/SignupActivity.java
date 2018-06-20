@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
@@ -21,6 +22,7 @@ import org.json.JSONObject;
 
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
+import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
 
 /**
  * Created by Thadeus-APMIS on 5/31/2018.
@@ -33,11 +35,14 @@ public class SignupActivity extends AppCompatActivity implements SignupFragmentB
     RequestQueue queue;
     private static final String BASE_URL = "https://audrey-mum.herokuapp.com/";
 
+    SharedPreferencesManager sharedPreferencesManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);
+        sharedPreferencesManager = new SharedPreferencesManager(this);
         audreyMum = new JSONObject();
         queue = Volley.newRequestQueue(this);
         progressDialog = new ProgressDialog(this);
@@ -90,16 +95,19 @@ public class SignupActivity extends AppCompatActivity implements SignupFragmentB
     void signUp(JSONObject uniquePerson) {
 
         JsonObjectRequest strRequest = new JsonObjectRequest(Request.Method.POST, BASE_URL + "save-person", uniquePerson, response -> {
-            progressDialog.dismiss();
+
             Log.v("Sign up response", String.valueOf(response));
             try {
                 JSONObject signUpJob = new JSONObject(response.toString());
                 if (signUpJob.getString("status").equals("error")) {
+                    progressDialog.dismiss();
                     Log.v("Sign up error", "There was an error");
                     Toast.makeText(SignupActivity.this, "There was an error try again", Toast.LENGTH_SHORT).show();
                 } else {
-                    startActivity(new Intent(SignupActivity.this, DashboardActivity.class));
-                    finish();
+                    /*finish();
+                    startActivity(new Intent(SignupActivity.this, DashboardActivity.class));*/
+                    progressDialog.dismiss();
+                    attemptLogin(uniquePerson.getJSONObject("person").getString("email"), uniquePerson.getJSONObject("person").getString("password"));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -116,7 +124,62 @@ public class SignupActivity extends AppCompatActivity implements SignupFragmentB
         getSupportActionBar().setTitle(title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(backButton);
         getSupportActionBar().setHomeButtonEnabled(backButton);
-        getSupportActionBar().setHomeAsUpIndicator(!backButton ? R.drawable.audrey_icon : R.drawable.ic_arrow_back_black_24dp);
+        getSupportActionBar().setHomeAsUpIndicator(!backButton ? R.mipmap.audrey_icon : R.drawable.ic_arrow_back_black_24dp);
+    }
+
+    private void attemptLogin(String email, String password) {
+
+        progressDialog.setIndeterminate(true);
+        progressDialog.setCancelable(false);
+        progressDialog.setTitle("Signing In");
+        progressDialog.setMessage("Please wait...");
+        progressDialog.show();
+
+        sharedPreferencesManager.storeUserEmail(email);
+
+        AudreyMumplus.getInstance().networkIO().execute(() -> {
+
+            JSONObject job = new JSONObject();
+            try {
+                job.put("email", email);
+                job.put("password", password);
+                job.put("strategy", "local");
+                Log.v("Person to Json", String.valueOf(job));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            JsonObjectRequest loginRequest = new JsonObjectRequest(Request.Method.POST, BASE_URL + "authentication", job, response -> {
+                Log.v("Login response", String.valueOf(response));
+
+                try {
+                    Log.v("accessToken", response.getString("accessToken"));
+                    String token = response.getString("accessToken");
+
+                    sharedPreferencesManager.storeUserToken(token);
+
+                    Log.v("sharedPRef", String.valueOf(sharedPreferencesManager.getUserToken()));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                progressDialog.dismiss();
+                finish();
+                startActivity(new Intent(this, DashboardActivity.class));
+            }, error -> {
+                Log.d("error", String.valueOf(error.getMessage()) + "Error");
+                progressDialog.dismiss();
+                new AlertDialog.Builder(this)
+                        .setTitle("Login Failed")
+                        .setMessage("Please try again !!!")
+                        .setPositiveButton("Login", (dialog, which) -> startActivity(new Intent(this, LoginActivity.class)))
+                        .show();
+            });
+
+            queue.add(loginRequest);
+
+        });
+
+
     }
 
 }

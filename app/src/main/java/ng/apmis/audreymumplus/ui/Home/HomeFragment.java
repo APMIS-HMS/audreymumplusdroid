@@ -1,7 +1,9 @@
 package ng.apmis.audreymumplus.ui.Home;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
+import ng.apmis.audreymumplus.LoginActivity;
 import ng.apmis.audreymumplus.R;
+import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.ui.Dashboard.ModuleAdapter;
 import ng.apmis.audreymumplus.ui.Dashboard.ModuleModel;
+import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
 
 public class HomeFragment extends android.support.v4.app.Fragment {
 
@@ -27,6 +32,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
     GridView gridView;
 
     OnfragmentInteractionListener onFragmentInteractionListener;
+
 
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container,
@@ -74,5 +80,12 @@ public class HomeFragment extends android.support.v4.app.Fragment {
     public interface OnfragmentInteractionListener {
         void onGridItemClick (String selectedText);
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((DashboardActivity)getActivity()).setActionBarButton(false, getString(R.string.app_name));
+        ((DashboardActivity)getActivity()).bottomNavVisibility(true);
     }
 }

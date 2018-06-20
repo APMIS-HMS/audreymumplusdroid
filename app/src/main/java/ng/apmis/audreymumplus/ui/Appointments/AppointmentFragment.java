@@ -15,12 +15,27 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
+import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 
 public class AppointmentFragment extends android.support.v4.app.Fragment {
 
     List<AppointmentModel> appointmentModelList = new ArrayList<>();
     @BindView(R.id.fab2)
     FloatingActionButton fab2;
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((DashboardActivity)getActivity()).setActionBarButton(false, "Appointments");
+        ((DashboardActivity)getActivity()).bottomNavVisibility(false);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ((DashboardActivity)getActivity()).setActionBarButton(false, getString(R.string.app_name));
+        ((DashboardActivity)getActivity()).bottomNavVisibility(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,16 +67,11 @@ public class AppointmentFragment extends android.support.v4.app.Fragment {
             Toast.makeText(getActivity(), clicked.getEvent(), Toast.LENGTH_SHORT).show();
         });
 
-        /*fab2.setOnClickListener((view) -> {
+        fab2.setOnClickListener((view) -> getActivity().getSupportFragmentManager().beginTransaction()
+                .add(R.id.fragment_container, new AddAppointmentFragment())
+                .addToBackStack("ADD_NEW")
+                .commit());
 
-
-*//*
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, new AddJournalFragment())
-                    .addToBackStack("ADD_NEW")
-                    .commit();*//*
-        });
-*/
         return rootView;
 
     }

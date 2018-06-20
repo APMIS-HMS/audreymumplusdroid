@@ -1,5 +1,6 @@
 package ng.apmis.audreymumplus.ui.Dashboard;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
@@ -24,6 +25,7 @@ import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ng.apmis.audreymumplus.LoginActivity;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.ui.Appointments.AppointmentFragment;
 import ng.apmis.audreymumplus.ui.Chat.ChatFragment;
@@ -33,6 +35,7 @@ import ng.apmis.audreymumplus.ui.Journal.MyJournalFragment;
 import ng.apmis.audreymumplus.ui.PregnancyDetails.PregnancyFragment;
 import ng.apmis.audreymumplus.ui.profile.ProfileFragment;
 import ng.apmis.audreymumplus.utils.BottomNavigationViewHelper;
+import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
 import ng.apmis.audreymumplus.utils.Utils;
 
 public class DashboardActivity extends AppCompatActivity implements HomeFragment.OnfragmentInteractionListener {
@@ -50,12 +53,15 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
     FragmentManager mFragmentManager;
     boolean goBackOrShowNavigationView = false;
 
+    SharedPreferencesManager sharedPreferencesManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.navigation_drawer);
         ButterKnife.bind(this);
+        sharedPreferencesManager = new SharedPreferencesManager(getApplicationContext());
 
         setActionBarButton(false, getString(R.string.app_name));
 
@@ -64,11 +70,24 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
         navigationView.setNavigationItemSelectedListener(this::selectNavigationItem);
 
+        Log.v("Is token empty", String.valueOf(sharedPreferencesManager.getUserToken().equals("")));
+/*
+        if (new SharedPreferencesManager(this).getStoredUserPassword().equals("")) {
+            Toast.makeText(this, "Session Expired... Please Login", Toast.LENGTH_SHORT).show();
+            finish();
+            startActivity(new Intent(this, LoginActivity.class));
+        }*/
+
         CircularImageView profileCircularImageView = headerLayout.findViewById(R.id.user_image);
 
         View logoutView = navigationView.findViewById(R.id.logout_view);
 
-        logoutView.setOnClickListener((View) -> Toast.makeText(this, "Logout", Toast.LENGTH_SHORT).show());
+        logoutView.setOnClickListener((View) -> {
+            Toast.makeText(this, "Logout", Toast.LENGTH_SHORT).show();
+            sharedPreferencesManager.storeUserToken("");
+            finish();
+            startActivity(new Intent(this, LoginActivity.class));
+        });
 
         try {
             JSONObject job =  new JSONObject(new Utils().loadJSONFromAsset(this));

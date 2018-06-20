@@ -1,6 +1,7 @@
 package ng.apmis.audreymumplus;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
@@ -15,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -40,6 +42,8 @@ public class SignupFragmentB extends Fragment {
     TextInputEditText confirmPassword;
     @BindView(R.id.sign_up_btn)
     Button signupBtn;
+    @BindView(R.id.sign_in_tv)
+    TextView signInTextView;
 
     boolean isPasswordMatch = false;
     OnFragmentInteractionListener onFragmentInteractionListener;
@@ -62,6 +66,11 @@ public class SignupFragmentB extends Fragment {
                 e.printStackTrace();
             }
         });
+
+        signInTextView.setOnClickListener((view) -> {
+                    getActivity().finish();
+                }
+        );
 
         confirmPassword.addTextChangedListener(new TextWatcher() {
             @Override
