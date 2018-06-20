@@ -10,8 +10,10 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -46,6 +48,10 @@ public class LoginActivity extends AppCompatActivity {
     EditText emailEditText;
     @BindView(R.id.password)
     EditText passswordEditText;
+    @BindView(R.id.sign_up)
+    TextView signupTv;
+    @BindView(R.id.forgot_password_tv)
+    TextView forgotPassword;
 
 
     @Override
@@ -68,17 +74,17 @@ public class LoginActivity extends AppCompatActivity {
             }
         });*/
 
-     /*   createAccount.setOnClickListener( (view) -> startActivity (new Intent(this, SignupActivity.class)) );
+        signupTv.setOnClickListener( (view) -> startActivity (new Intent(this, SignupActivity.class)) );
 
-        passwordEditText.setOnEditorActionListener((v, actionId, event) -> {
+        passswordEditText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 checkFields();
                 return true;
             }
             return false;
-        });*/
+        });
 
-
+        forgotPassword.setOnClickListener((view -> startActivity(new Intent(this, ForgotPasswordActivity.class)) ));
 
     }
 
@@ -109,19 +115,11 @@ public class LoginActivity extends AppCompatActivity {
 
                 try {
                     Log.v("accessToken", response.getString("accessToken"));
-                    Log.v("user", response.getString("user"));
                     String token = response.getString("accessToken");
 
-                    JSONObject userObj = response.getJSONObject("user");
+                    sharedPreferencesManager.storeUserToken(token);
 
-                    String personId = userObj.getString("personId");
-                    String mEmail = userObj.getString("email");
-                    String dbId = userObj.getString("_id");
-
-
-                    sharedPreferencesManager.storeLoggedInUserKeys(token, personId, mEmail, dbId);
-
-                    Log.v("sharedPRef", String.valueOf(sharedPreferencesManager.storedLoggedInUser()));
+                    Log.v("sharedPRef", String.valueOf(sharedPreferencesManager.getUserToken()));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -166,7 +164,8 @@ public class LoginActivity extends AppCompatActivity {
         String password = passswordEditText.getText().toString();
 
         if (!checkEmail(email)) {
-            emailEditText.setError("Check Apmis ID");
+            emailEditText.setError("Check email");
+            fieldsOk = false;
         } else {
             fieldsOk = true;
         }

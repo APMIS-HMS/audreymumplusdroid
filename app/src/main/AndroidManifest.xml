@@ -12,14 +12,20 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".SignupActivity"
-            android:theme="@style/SignupTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/SignupTheme" />
         <activity android:name=".ui.Dashboard.DashboardActivity" />
+        <activity android:name=".ForgotPasswordActivity"
+            android:theme="@style/SignupTheme"/>
+        <activity android:name=".LoginActivity"
+            android:theme="@style/SignupTheme">
+        </activity>
+        <activity android:name=".WelcomeActivity">
+            <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
     </application>
 
 </manifest>

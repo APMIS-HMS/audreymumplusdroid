@@ -50,12 +50,14 @@ public class ChatFragment extends Fragment {
     public void onResume() {
         super.onResume();
         ((DashboardActivity)getActivity()).setActionBarButton(false, "Chat Forums");
+        ((DashboardActivity)getActivity()).bottomNavVisibility(false);
     }
 
     @Override
     public void onStop() {
         super.onStop();
         ((DashboardActivity)getActivity()).setActionBarButton(false, getString(R.string.app_name));
+        ((DashboardActivity)getActivity()).bottomNavVisibility(false);
     }
 
 }

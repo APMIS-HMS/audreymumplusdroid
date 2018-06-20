@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
@@ -17,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -46,6 +48,8 @@ public class SignupFragmentA extends Fragment {
     TextInputEditText dobEditText;
     @BindView(R.id.continue_btn)
     Button continueBtn;
+    @BindView(R.id.sign_in_tv)
+    TextView signInTextView;
 
     String titleText;
     String genderText;
@@ -85,6 +89,11 @@ public class SignupFragmentA extends Fragment {
                 e.printStackTrace();
             }
         });
+
+        signInTextView.setOnClickListener((view) -> {
+                    getActivity().finish();
+                }
+        );
 
         return rootView;
     }

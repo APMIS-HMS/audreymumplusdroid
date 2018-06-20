@@ -55,7 +55,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         );
 
         signInTextView.setOnClickListener((view) ->
-                startActivity(new Intent(this, LoginActivity.class))
+                finish()
         );
 
 
