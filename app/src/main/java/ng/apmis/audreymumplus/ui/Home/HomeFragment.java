@@ -71,6 +71,19 @@ public class HomeFragment extends android.support.v4.app.Fragment {
         }
     }
 
+/*
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Settings");
+        ((DashboardActivity)getActivity()).setActionBarButton(false, getString(R.string.app_name));
+        ((DashboardActivity)getActivity()).bottomNavVisibility(true);
+
+
+    }
+*/
+
     public interface OnfragmentInteractionListener {
         void onGridItemClick (String selectedText);
 

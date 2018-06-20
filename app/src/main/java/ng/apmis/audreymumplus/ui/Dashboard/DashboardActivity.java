@@ -1,9 +1,9 @@
 package ng.apmis.audreymumplus.ui.Dashboard;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -12,8 +12,16 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.mikhaellopez.circularimageview.CircularImageView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,8 +31,10 @@ import ng.apmis.audreymumplus.ui.Chat.ChatFragment;
 import ng.apmis.audreymumplus.ui.Faq.FaqFragment;
 import ng.apmis.audreymumplus.ui.Home.HomeFragment;
 import ng.apmis.audreymumplus.ui.Journal.MyJournalFragment;
-import ng.apmis.audreymumplus.ui.PregnancyDetails.PregnancyDetailsActivity;
+import ng.apmis.audreymumplus.ui.PregnancyDetails.PregnancyFragment;
+import ng.apmis.audreymumplus.ui.profile.ProfileFragment;
 import ng.apmis.audreymumplus.utils.BottomNavigationViewHelper;
+import ng.apmis.audreymumplus.utils.Utils;
 
 public class DashboardActivity extends AppCompatActivity implements HomeFragment.OnfragmentInteractionListener {
     @BindView(R.id.bottom_navigation)
@@ -39,6 +49,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
     DrawerLayout drawerLayout;
 
     FragmentManager mFragmentManager;
+    boolean goBackOrShowNavigationView = false;
 
 
     @Override
@@ -46,15 +57,26 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.navigation_drawer);
         ButterKnife.bind(this);
-/*
-        getFragmentManager().beginTransaction()
-                .replace(android.R.id.content, new SettingFragment())
-                .commit();*/
 
-        setSupportActionBar(globalToolbar);
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_hamburger);
+        setActionBarButton(false, getString(R.string.app_name));
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        View headerLayout = navigationView.getHeaderView(0);
+
+        navigationView.setNavigationItemSelectedListener(this::selectNavigationItem);
+
+        CircularImageView profileCircularImageView = headerLayout.findViewById(R.id.user_image);
+
+        View logoutView = navigationView.findViewById(R.id.logout_view);
+
+        logoutView.setOnClickListener((View) -> Toast.makeText(this, "Logout", Toast.LENGTH_SHORT).show());
+
+        try {
+            JSONObject job =  new JSONObject(new Utils().loadJSONFromAsset(this));
+            Log.v("Job weekly", job.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             selectFragment(item);
@@ -72,22 +94,78 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .commit();
 
-
-
+        Glide.with(DashboardActivity.this)
+                .load(R.drawable.face_of_audrey)
+                .into(profileCircularImageView);
 
     }
+
+    public void setActionBarButton(boolean shouldShowBackButton, String title) {
+        setSupportActionBar(globalToolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        if (shouldShowBackButton) {
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);
+            actionBar.setTitle(title);
+            goBackOrShowNavigationView = shouldShowBackButton;
+        } else {
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_hamburger);
+            actionBar.setTitle(title);
+            goBackOrShowNavigationView = shouldShowBackButton;
+        }
+    }
+
+    boolean selectNavigationItem (MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.home:
+                placeFragment(new HomeFragment(), true, mFragmentManager);
+                drawerLayout.closeDrawers();
+                return true;
+            case R.id.my_profile:
+                placeFragment(new ProfileFragment(),true, mFragmentManager);
+                drawerLayout.closeDrawers();
+                return true;
+            case R.id.about_us:
+                Toast.makeText(DashboardActivity.this, "About-us selected", Toast.LENGTH_SHORT).show();
+                drawerLayout.closeDrawers();
+                return true;
+            case R.id.help:
+                Toast.makeText(DashboardActivity.this, "Help selected", Toast.LENGTH_SHORT).show();
+                drawerLayout.closeDrawers();
+                return true;
+            case R.id.settings:
+                prefFrag(new SettingFragment());
+                Toast.makeText(DashboardActivity.this, "Settings selected", Toast.LENGTH_SHORT).show();
+                drawerLayout.closeDrawers();
+                return true;
+        }
+        return false;
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.drawable.ic_hamburger:
-                Toast.makeText(this, "You are tight it works", Toast.LENGTH_SHORT).show();
-                drawerLayout.openDrawer(GravityCompat.START);
+            case android.R.id.home:
+                if (goBackOrShowNavigationView) {
+                    onBackPressed();
+                } else {
+                    drawerLayout.openDrawer(GravityCompat.START);
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    public void bottomNavVisibility (boolean show) {
+        if (show) {
+            bottomNavigationView.setVisibility(View.VISIBLE);
+            return;
+        }
+        bottomNavigationView.setVisibility(View.GONE);
+    }
+    //TODO add edit profile to edit to createoptionsmenu on profile before showing save button
 
 
     /*
@@ -124,10 +202,6 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
             case R.id.pill_reminder:
                 placeFragment(new AppointmentFragment(), true, mFragmentManager);
                 break;
-            case R.id.profile_menu:
-               //prefFragment(new SettingFragment());
-                placeFragment(new FaqFragment(),true, mFragmentManager);
-                break;
         }
 
     }
@@ -156,11 +230,8 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                     .commit();
         }
     }
-    private void prefFragment(PreferenceFragment fragment){
-        getFragmentManager().beginTransaction().setTransition(android.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .replace(R.id.fragment_container, fragment)
-                .commit();
-        return;
+    private void prefFrag(PreferenceFragment fragment){
+        getFragmentManager().beginTransaction().replace(R.id.fragment_container,fragment).addToBackStack("current").commit();
     }
 
 
@@ -168,7 +239,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
     public void onGridItemClick(String selectedText) {
         switch (selectedText) {
             case "My Pregnancy":
-                startActivity(new Intent(this, PregnancyDetailsActivity.class));
+                placeFragment(new PregnancyFragment(), true, mFragmentManager);
                 break;
             case "My Appointments":
                 placeFragment(new AppointmentFragment(), true, mFragmentManager);
@@ -177,10 +248,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                 placeFragment(new ChatFragment(), true, mFragmentManager);
                 break;
             case "FAQs":
-               // startActivity(new Intent(this, PreferenceActivity.class));
-                prefFragment(new SettingFragment());
-
-                //placeFragment(new FaqFragment(), true, mFragmentManager);
+                placeFragment(new FaqFragment(), true, mFragmentManager);
                 break;
 
         }

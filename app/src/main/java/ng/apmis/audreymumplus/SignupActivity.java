@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -30,6 +31,7 @@ public class SignupActivity extends AppCompatActivity implements SignupFragmentB
     static JSONObject audreyMum;
     ProgressDialog progressDialog;
     RequestQueue queue;
+    private static final String BASE_URL = "https://audrey-mum.herokuapp.com/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +62,6 @@ public class SignupActivity extends AppCompatActivity implements SignupFragmentB
     @Override
     public void onClickView (View view) {
         JSONObject uniquePerson = new JSONObject();
-        //Assign all values to an Object with a person key
         try {
             uniquePerson.put("person", audreyMum);
         } catch (JSONException e) {
@@ -69,22 +70,40 @@ public class SignupActivity extends AppCompatActivity implements SignupFragmentB
         Log.v("Person Obj", uniquePerson.toString());
         Log.v("Person Starts", "Here");
         progressDialog.setIndeterminate(true);
-        progressDialog.setTitle("Sign Up");
+        progressDialog.setTitle("Signing Up");
         progressDialog.setMessage("Please wait ...");
+        progressDialog.setCancelable(false);
         progressDialog.show();
         signUp(uniquePerson);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     void signUp(JSONObject uniquePerson) {
 
-        if (true) { progressDialog.dismiss(); startActivity(new Intent(this, DashboardActivity.class)); finish(); return; }
-
-        JsonObjectRequest strRequest = new JsonObjectRequest(Request.Method.POST, "save-person", uniquePerson, response -> {
+        JsonObjectRequest strRequest = new JsonObjectRequest(Request.Method.POST, BASE_URL + "save-person", uniquePerson, response -> {
             progressDialog.dismiss();
             Log.v("Sign up response", String.valueOf(response));
-            startActivity(new Intent(SignupActivity.this, DashboardActivity.class));
-            finish();
+            try {
+                JSONObject signUpJob = new JSONObject(response.toString());
+                if (signUpJob.getString("status").equals("error")) {
+                    Log.v("Sign up error", "There was an error");
+                    Toast.makeText(SignupActivity.this, "There was an error try again", Toast.LENGTH_SHORT).show();
+                } else {
+                    startActivity(new Intent(SignupActivity.this, DashboardActivity.class));
+                    finish();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }, error -> {
             progressDialog.dismiss();
             Log.v("Sign up error", String.valueOf(error.getMessage()));
@@ -92,4 +111,12 @@ public class SignupActivity extends AppCompatActivity implements SignupFragmentB
         });
         queue.add(strRequest);
     }
+
+    public void setSupportActionTitle (String title, boolean backButton) {
+        getSupportActionBar().setTitle(title);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(backButton);
+        getSupportActionBar().setHomeButtonEnabled(backButton);
+        getSupportActionBar().setHomeAsUpIndicator(!backButton ? R.drawable.audrey_icon : R.drawable.ic_arrow_back_black_24dp);
+    }
+
 }

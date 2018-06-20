@@ -1,20 +1,27 @@
 package ng.apmis.audreymumplus;
 
+import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 import org.json.JSONException;
 
+import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,11 +50,18 @@ public class SignupFragmentA extends Fragment {
     String titleText;
     String genderText;
 
+    DialogFragment dialogfragment;
+
 
     public SignupFragmentA() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((SignupActivity)getActivity()).setSupportActionTitle("Audrey Mumplus", false);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -81,6 +95,7 @@ public class SignupFragmentA extends Fragment {
         spinner.setAdapter(spinnerAdapter);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     void onSpinnerOptionsSelection(Spinner any, final String spinnerType) {
         any.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -103,11 +118,19 @@ public class SignupFragmentA extends Fragment {
 
             }
         });
+
+        dobEditText.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                dialogfragment = new DatePicker();
+                dialogfragment.show(getActivity().getFragmentManager(), "Select Date");
+                return true;
+            }
+            return false;
+        });
+
     }
 
     boolean checkFields() throws JSONException {
-        //TODO remove after test
-        if (true) return true;
 
         Pattern p = Pattern.compile("([0-9])");
         Matcher m = p.matcher(firstNameEditText.getText().toString());
@@ -140,6 +163,31 @@ public class SignupFragmentA extends Fragment {
         SignupActivity.audreyMum.put("dateOfBirth", dobEditText.getText().toString());
 
         return true;
+    }
+
+    public static class DatePicker extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+            return new DatePickerDialog(getActivity(), R.style.DialogTheme, this, year, month, day);
+        }
+
+        public void onDateSet(android.widget.DatePicker view, int year, int month, int day) {
+            EditText et = (EditText) getActivity().findViewById(R.id.dob_et);
+            et.setText(String.format("%d/%d/%d", month + 1, day, year));
+
+           /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                dobEditText = String.valueOf(new Date(year, month, day).toInstant().toString());
+            } else {
+                dobEditText = String.valueOf(new Date(year, month, day).toString());
+            }
+            Log.v("Date Iso", dateOfBirth);*/
+        }
+
     }
 
 

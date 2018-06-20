@@ -13,6 +13,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
+import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 
 public class ChatFragment extends Fragment {
     List<ChatModel> chats = new ArrayList<>();
@@ -43,6 +44,18 @@ public class ChatFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((DashboardActivity)getActivity()).setActionBarButton(false, "Chat Forums");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ((DashboardActivity)getActivity()).setActionBarButton(false, getString(R.string.app_name));
     }
 
 }

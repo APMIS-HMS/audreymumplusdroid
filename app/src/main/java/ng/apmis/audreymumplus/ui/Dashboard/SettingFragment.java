@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +38,17 @@ public class SettingFragment extends PreferenceFragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Settings");
+        //((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Settings");
+        ((DashboardActivity)getActivity()).setActionBarButton(true, "Settings");
+        ((DashboardActivity)getActivity()).bottomNavVisibility(false);
+
+    }
+
+   @Override
+    public void onStop() {
+        super.onStop();
+        ((DashboardActivity)getActivity()).setActionBarButton(false, getString(R.string.app_name));
+        ((DashboardActivity)getActivity()).bottomNavVisibility(true);
+
     }
 }

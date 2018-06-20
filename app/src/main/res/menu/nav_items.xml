@@ -24,10 +24,5 @@
         app:showAsAction="always"
         android:icon="@drawable/ic_pill_reminder" />
 
-    <item android:id="@+id/profile_menu"
-        android:title="@string/profile"
-        app:showAsAction="always"
-        android:icon="@drawable/ic_profile" />
-
 
 </menu>
