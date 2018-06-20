@@ -22,7 +22,9 @@
         android:layout_gravity="center"/>
 
     <EditText
-        android:hint="User ID or Email address "
+        android:id="@+id/email_edit_text"
+        android:hint="Email address "
+        android:inputType="textEmailAddress"
         android:layout_margin="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
@@ -60,6 +62,7 @@
         android:paddingTop="10dp"/>
 
     <Button
+        android:id="@+id/sign_in_btn"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
