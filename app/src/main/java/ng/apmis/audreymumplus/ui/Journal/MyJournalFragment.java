@@ -16,12 +16,11 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
+import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 
 public class MyJournalFragment extends Fragment {
 
     List<JournalModel>journalModelList = new ArrayList<>();
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
 
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container,
@@ -57,28 +56,9 @@ public class MyJournalFragment extends Fragment {
             Toast.makeText(getActivity(), clicked.getTitle() , Toast.LENGTH_SHORT).show();
         });
 
-        fab.setOnClickListener((view) -> {
-
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .add(R.id.fragment_container, new AddJournalFragment())
-                        .addToBackStack("ADD_NEW")
-                        .commit();
-        });
-
         return rootView;
     }
 
-   /* @Override
-    public void onResume() {
-        super.onResume();
-        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
-    }
-    @Override
-    public void onStop() {
-        super.onStop();
-        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
-    }
 
-*/
 
 }

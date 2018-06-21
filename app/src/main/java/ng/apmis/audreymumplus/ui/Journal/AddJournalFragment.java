@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
+import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 
 /**
  * Created by Thadeus-APMIS on 5/21/2018.
@@ -28,5 +29,19 @@ public class AddJournalFragment extends Fragment {
 
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((DashboardActivity)getActivity()).setActionBarButton(false, "Add Pregnancy");
+        ((DashboardActivity)getActivity()).bottomNavVisibility(false);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ((DashboardActivity)getActivity()).setActionBarButton(false, "My Pregnancy");
+        ((DashboardActivity)getActivity()).bottomNavVisibility(true);
     }
 }
