@@ -33,6 +33,7 @@ public class FaqFragment  extends Fragment {
 
 
         ListView listView = rootView.findViewById(R.id.faq);
+        listView.setDivider(null);
 
         faqModelList.add(new FaqModel("I feel swelling in my feet as my pregnancy advances"));
         faqModelList.add(new FaqModel("I can’t feel my face, what’s wrong ?"));

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#fff">
+    <ListPreference
+        android:defaultValue="0"
+        android:key="password"
+        android:summary="Change your account password"
+        android:title="Password" />
+    <ListPreference
+        android:defaultValue="1"
+        android:key="delete"
+        android:summary="Temporarily deactivate your account"
+        android:title="Delete account"/>
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="updateReminderSetting"
+        android:summary="Turn on reminder for your appointments"
+        android:title="Set Reminder" />
+
+
+
+</PreferenceScreen>

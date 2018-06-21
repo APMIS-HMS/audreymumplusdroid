@@ -25,7 +25,7 @@
                 android:id="@+id/pregnant_icon"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:src="@drawable/ic_my_pregnancy"/>
+                app:srcCompat="@drawable/ic_my_pregnancy"/>
 
             <LinearLayout
                 android:orientation="vertical"
@@ -59,15 +59,23 @@
                 android:textColor="@android:color/white"
                 android:layout_below="@id/pregnant_icon"
                 android:layout_toRightOf="@id/pregnant_icon"/>
-
-            <ImageView
-                android:id="@+id/progressbar"
+            <ProgressBar
                 android:layout_below="@id/day60"
+                android:id="@+id/progressbar"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="24dp"
+                style="@android:style/Widget.ProgressBar.Horizontal"
                 android:layout_width="match_parent"
+                android:progressBackgroundTint="@android:color/white"
+                android:progress="22"
+                android:progressTint="#e7516e"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_progresss_bar"/>
+                android:indeterminate="false"
+                android:minHeight="10dp"
+                />
 
             <TextView
+                android:id="@+id/datedelivery"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Expected delivery date : July 29"

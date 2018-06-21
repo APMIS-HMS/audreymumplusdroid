@@ -2,6 +2,7 @@ package ng.apmis.audreymumplus.ui.Dashboard;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceFragment;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -144,6 +145,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                 drawerLayout.closeDrawers();
                 return true;
             case R.id.settings:
+                prefFrag(new SettingFragment());
                 Toast.makeText(DashboardActivity.this, "Settings selected", Toast.LENGTH_SHORT).show();
                 drawerLayout.closeDrawers();
                 return true;
@@ -238,6 +240,9 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                     .addToBackStack("current")
                     .commit();
         }
+    }
+    private void prefFrag(PreferenceFragment fragment){
+        getFragmentManager().beginTransaction().replace(R.id.fragment_container,fragment).addToBackStack("current").commit();
     }
 
 

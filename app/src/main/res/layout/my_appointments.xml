@@ -43,7 +43,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" android:src="@drawable/ic_baseline_more_vert_24px"
+                    android:layout_height="wrap_content" app:srcCompat="@drawable/ic_baseline_more_vert_24px"
                     />
                 <LinearLayout
                     android:layout_marginRight="16dp"
@@ -114,7 +114,7 @@
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" android:src="@drawable/ic_baseline_more_vert_24px"
+                    android:layout_height="wrap_content" app:srcCompat="@drawable/ic_baseline_more_vert_24px"
                     />
                 <LinearLayout
                     android:layout_marginRight="16dp"
