@@ -19,7 +19,7 @@ public class PregnancyFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_pregnancy_details, container, false);
         ViewPager viewPager = rootView.findViewById(R.id.view_pager);
-        CategoryAdapter adapter = new CategoryAdapter(getActivity(), getActivity().getSupportFragmentManager());
+        CategoryAdapter adapter = new CategoryAdapter(getActivity(), getChildFragmentManager());
 
 
         TabLayout tabLayout = rootView.findViewById(R.id.tabview);

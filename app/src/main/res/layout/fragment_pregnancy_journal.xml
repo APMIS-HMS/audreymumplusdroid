@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -28,10 +28,6 @@
 
 
 
-
-
-
-
     <ListView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_below="@id/textJ"
         android:id="@+id/list_pregjournal"
@@ -51,7 +47,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_alignParentEnd="true"
-        android:src="@android:drawable/ic_input_add" />
+        app:srcCompat="@drawable/ic_add_black_24dp" />
 
 
 

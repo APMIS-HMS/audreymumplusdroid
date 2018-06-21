@@ -189,12 +189,6 @@ public class SignupFragmentA extends Fragment {
             EditText et = (EditText) getActivity().findViewById(R.id.dob_et);
             et.setText(String.format("%d/%d/%d", month + 1, day, year));
 
-           /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                dobEditText = String.valueOf(new Date(year, month, day).toInstant().toString());
-            } else {
-                dobEditText = String.valueOf(new Date(year, month, day).toString());
-            }
-            Log.v("Date Iso", dateOfBirth);*/
         }
 
     }

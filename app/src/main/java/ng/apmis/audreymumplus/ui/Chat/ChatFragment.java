@@ -57,7 +57,7 @@ public class ChatFragment extends Fragment {
     public void onStop() {
         super.onStop();
         ((DashboardActivity)getActivity()).setActionBarButton(false, getString(R.string.app_name));
-        ((DashboardActivity)getActivity()).bottomNavVisibility(false);
+        ((DashboardActivity)getActivity()).bottomNavVisibility(true);
     }
 
 }

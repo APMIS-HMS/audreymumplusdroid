@@ -1,7 +1,16 @@
 package ng.apmis.audreymumplus.ui.Appointments;
 
+import android.Manifest;
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +18,10 @@ import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
@@ -26,15 +38,15 @@ public class AppointmentFragment extends android.support.v4.app.Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((DashboardActivity)getActivity()).setActionBarButton(false, "Appointments");
-        ((DashboardActivity)getActivity()).bottomNavVisibility(false);
+        ((DashboardActivity) getActivity()).setActionBarButton(false, "Appointments");
+        ((DashboardActivity) getActivity()).bottomNavVisibility(false);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        ((DashboardActivity)getActivity()).setActionBarButton(false, getString(R.string.app_name));
-        ((DashboardActivity)getActivity()).bottomNavVisibility(true);
+        ((DashboardActivity) getActivity()).setActionBarButton(false, getString(R.string.app_name));
+        ((DashboardActivity) getActivity()).bottomNavVisibility(true);
     }
 
     @Override
@@ -72,7 +84,63 @@ public class AppointmentFragment extends android.support.v4.app.Fragment {
                 .addToBackStack("ADD_NEW")
                 .commit());
 
+        databaseQuery();
+
         return rootView;
 
     }
+
+    public void databaseQuery() {
+
+        final int PROJECTION_ID_INDEX = 0;
+        final int PROJECTION_BEGIN_INDEX = 1;
+        final int PROJECTION_TITLE_INDEX = 2;
+
+        final String[] INSTANCE_PROJECTION = new String[]{
+                CalendarContract.Instances.EVENT_ID,      // 0
+                CalendarContract.Instances.BEGIN,         // 1
+                CalendarContract.Instances.TITLE,          // 2
+                CalendarContract.Instances.START_DAY,       //3
+                CalendarContract.Instances.DESCRIPTION,     //4
+                CalendarContract.Instances.EVENT_LOCATION   //5
+        };
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CALENDAR}, 9000);
+        }
+
+
+        Cursor cur;
+        ContentResolver cr = getActivity().getContentResolver();
+
+        Uri.Builder builder = CalendarContract.Instances.CONTENT_URI.buildUpon();
+       /* ContentUris.appendId(builder, startMillis);
+        ContentUris.appendId(builder, endMillis);*/
+
+        cur = cr.query(builder.build(),
+                INSTANCE_PROJECTION,
+                null,
+                null,
+                null);
+
+        while (cur.moveToNext()) {
+            String title = null;
+            long eventID = 0;
+            long beginVal = 0;
+
+            // Get the field values
+            eventID = cur.getLong(PROJECTION_ID_INDEX);
+            beginVal = cur.getLong(PROJECTION_BEGIN_INDEX);
+            title = cur.getString(PROJECTION_TITLE_INDEX);
+
+            // Do something with the values.
+            Log.i("TITLE", "Event:  " + title);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(beginVal);
+            DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+            Log.v("DATE", "Date: " + formatter.format(calendar.getTime()));
+        }
+    }
+
+
 }

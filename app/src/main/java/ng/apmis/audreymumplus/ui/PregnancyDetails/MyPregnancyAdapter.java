@@ -17,13 +17,9 @@ public class MyPregnancyAdapter extends RecyclerView.Adapter<MyPregnancyAdapter.
     ArrayList<MyPregnancyModel> myPregnancyModels = new ArrayList<>();
     Context mContext;
 
-    MyPregnancyAdapter (Context context) {
+    MyPregnancyAdapter (Context context, ArrayList<MyPregnancyModel> pregnancies) {
         mContext = context;
-    }
-
-    public void setAllChats (ArrayList<MyPregnancyModel> pregs) {
-        myPregnancyModels = pregs;
-        notifyDataSetChanged();
+        myPregnancyModels = pregnancies;
     }
 
     public void addChats (ArrayList<MyPregnancyModel> newPregs) {
