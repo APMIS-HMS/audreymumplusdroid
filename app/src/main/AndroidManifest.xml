@@ -13,13 +13,14 @@
         android:theme="@style/AppTheme">
         <activity android:name=".SignupActivity"
             android:theme="@style/SignupTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
-        <activity android:name=".ui.Dashboard.DashboardActivity" />
+        <activity android:name=".ui.Dashboard.DashboardActivity">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
     </application>
 
 </manifest>
