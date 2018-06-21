@@ -12,8 +12,10 @@ import android.util.Patterns;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -32,12 +34,10 @@ import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
  * Created by Thadeus on 6/15/2018.
  */
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
 
     private static final String BASE_URL = "https://audrey-mum.herokuapp.com/";
     RequestQueue queue;
-
-    boolean fieldsOk = false;
 
     SharedPreferencesManager sharedPreferencesManager;
     ProgressDialog progressDialog;
@@ -47,11 +47,13 @@ public class LoginActivity extends AppCompatActivity {
     @BindView(R.id.email_edit_text)
     EditText emailEditText;
     @BindView(R.id.password)
-    EditText passswordEditText;
+    EditText passwordEditText;
     @BindView(R.id.sign_up)
     TextView signupTv;
     @BindView(R.id.forgot_password_tv)
     TextView forgotPassword;
+    @BindView(R.id.remember_me)
+    CheckBox rememberMe;
 
 
     @Override
@@ -64,21 +66,33 @@ public class LoginActivity extends AppCompatActivity {
 
         sharedPreferencesManager = new SharedPreferencesManager(this.getApplicationContext());
 
-        signInBtn.setOnClickListener((view) -> checkFields());
+        if (!sharedPreferencesManager.getStoredEmail().equals("")) {
+            emailEditText.setText(sharedPreferencesManager.getStoredEmail());
+        }
 
-     /*   rememberMe.setOnClickListener((view) -> {
-            if (((CheckBox) view).isChecked()) {
-                sharedPreferencesManager.storeUserPassword(passwordEditText.getText().toString());
-            } else {
-                sharedPreferencesManager.storeUserPassword("");
+        if (!sharedPreferencesManager.getStoredUserPassword().equals("")) {
+            passwordEditText.setText(sharedPreferencesManager.getStoredUserPassword());
+            rememberMe.setChecked(true);
+        }
+
+
+        rememberMe.setOnClickListener(this);
+
+        signInBtn.setOnClickListener((view) -> {
+            if (checkFields()) {
+                isRememberChecked();
+                attemptLogin(emailEditText.getText().toString(), passwordEditText.getText().toString());
             }
-        });*/
+        });
 
         signupTv.setOnClickListener( (view) -> startActivity (new Intent(this, SignupActivity.class)) );
 
-        passswordEditText.setOnEditorActionListener((v, actionId, event) -> {
+        passwordEditText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                checkFields();
+                if (checkFields()) {
+                    isRememberChecked();
+                    attemptLogin(emailEditText.getText().toString(), passwordEditText.getText().toString());
+                }
                 return true;
             }
             return false;
@@ -86,6 +100,14 @@ public class LoginActivity extends AppCompatActivity {
 
         forgotPassword.setOnClickListener((view -> startActivity(new Intent(this, ForgotPasswordActivity.class)) ));
 
+    }
+
+    void isRememberChecked () {
+        if (rememberMe.isChecked()) {
+            sharedPreferencesManager.storeUserPassword(passwordEditText.getText().toString());
+        } else {
+            sharedPreferencesManager.storeUserPassword("");
+        }
     }
 
     private void attemptLogin(String email, String password) {
@@ -147,41 +169,35 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean checkEmail (String email) {
-            return !email.contains("@") || email.equals("") || !Patterns.EMAIL_ADDRESS.matcher(email).matches();
+            return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     private boolean checkPassword (String password) {
         return !TextUtils.isEmpty(password);
     }
 
-    public void forgotPassword(View view) {
-       // startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class));
-    }
-
-
-    private void checkFields() {
+    private boolean checkFields() {
         String email = emailEditText.getText().toString();
-        String password = passswordEditText.getText().toString();
+        String password = passwordEditText.getText().toString();
 
         if (!checkEmail(email)) {
             emailEditText.setError("Check email");
-            fieldsOk = false;
-        } else {
-            fieldsOk = true;
+            return false;
         }
-
         if (!checkPassword(password)) {
-            passswordEditText.setError("Check password !!!");
-            fieldsOk = false;
-        } else {
-            fieldsOk = true;
+            passwordEditText.setError("Check password !!!");
+            return false;
         }
-
-        if (fieldsOk) {
-            attemptLogin(email, password);
-        }
-
+        return true;
     }
 
 
+    @Override
+    public void onClick(View view) {
+            if (((CheckBox) view).isChecked()) {
+                sharedPreferencesManager.storeUserPassword(passwordEditText.getText().toString());
+            } else {
+                sharedPreferencesManager.storeUserPassword("");
+            }
+    }
 }

@@ -86,7 +86,7 @@ public class SharedPreferencesManager {
     }
 
     public String getStoredEmail () {
-        return EncryptionUtils.decrypt(pref.getString(APMIS_ID, ""));
+        return EncryptionUtils.decrypt(pref.getString(EMAIL, ""));
     }
 
     public void storeUserToken (String token) {

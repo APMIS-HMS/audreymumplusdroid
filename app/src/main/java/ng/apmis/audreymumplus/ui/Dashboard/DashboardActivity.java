@@ -70,14 +70,6 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
         navigationView.setNavigationItemSelectedListener(this::selectNavigationItem);
 
-        Log.v("Is token empty", String.valueOf(sharedPreferencesManager.getUserToken().equals("")));
-/*
-        if (new SharedPreferencesManager(this).getStoredUserPassword().equals("")) {
-            Toast.makeText(this, "Session Expired... Please Login", Toast.LENGTH_SHORT).show();
-            finish();
-            startActivity(new Intent(this, LoginActivity.class));
-        }*/
-
         CircularImageView profileCircularImageView = headerLayout.findViewById(R.id.user_image);
 
         View logoutView = navigationView.findViewById(R.id.logout_view);

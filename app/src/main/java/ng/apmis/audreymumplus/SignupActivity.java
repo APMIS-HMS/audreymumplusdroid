@@ -43,6 +43,7 @@ public class SignupActivity extends AppCompatActivity implements SignupFragmentB
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);
         sharedPreferencesManager = new SharedPreferencesManager(this);
+        sharedPreferencesManager.storeUserPassword("");
         audreyMum = new JSONObject();
         queue = Volley.newRequestQueue(this);
         progressDialog = new ProgressDialog(this);
@@ -104,9 +105,6 @@ public class SignupActivity extends AppCompatActivity implements SignupFragmentB
                     Log.v("Sign up error", "There was an error");
                     Toast.makeText(SignupActivity.this, "There was an error try again", Toast.LENGTH_SHORT).show();
                 } else {
-                    /*finish();
-                    startActivity(new Intent(SignupActivity.this, DashboardActivity.class));*/
-                    progressDialog.dismiss();
                     attemptLogin(uniquePerson.getJSONObject("person").getString("email"), uniquePerson.getJSONObject("person").getString("password"));
                 }
             } catch (JSONException e) {
@@ -128,12 +126,7 @@ public class SignupActivity extends AppCompatActivity implements SignupFragmentB
     }
 
     private void attemptLogin(String email, String password) {
-
-        progressDialog.setIndeterminate(true);
-        progressDialog.setCancelable(false);
         progressDialog.setTitle("Signing In");
-        progressDialog.setMessage("Please wait...");
-        progressDialog.show();
 
         sharedPreferencesManager.storeUserEmail(email);
 

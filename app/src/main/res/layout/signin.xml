@@ -73,15 +73,39 @@
 
             </android.support.design.widget.TextInputLayout>
 
-
-            <TextView
-                android:id="@+id/forgot_password_tv"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:paddingRight="40dp"
-                android:paddingTop="10dp"
-                android:text="Forgot password?" />
+                android:orientation="horizontal"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="24dp"
+                android:paddingLeft="20dp"
+                android:paddingStart="20dp"
+                android:paddingRight="20dp"
+                android:paddingEnd="20dp">
+
+                <CheckBox
+                    android:id="@+id/remember_me"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="Remember"
+                    android:checked="false"
+                    android:textColor="#95989a" />
+
+                <TextView
+                    android:id="@+id/forgot_password_tv"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:paddingTop="10dp"
+                    android:text="Forgot password?" />
+
+
+            </LinearLayout>
+
 
             <Button
                 android:id="@+id/sign_in_btn"
