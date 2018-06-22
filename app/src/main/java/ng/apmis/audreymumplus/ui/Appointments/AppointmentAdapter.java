@@ -12,11 +12,16 @@ import java.util.List;
 import ng.apmis.audreymumplus.R;
 
 public class AppointmentAdapter extends BaseAdapter {
-    List<AppointmentModel> appointmentModels;
+    List<Appointment> appointmentModels;
     Context mCon;
-    public AppointmentAdapter(Context context, List<AppointmentModel>appoint){
+    public AppointmentAdapter(Context context, List<Appointment>appoint){
         mCon = context;
         appointmentModels = appoint;
+    }
+
+    public void setAppointmentModels(List<Appointment> appointmentModels) {
+        this.appointmentModels = appointmentModels;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -43,41 +48,23 @@ public class AppointmentAdapter extends BaseAdapter {
         }
 
         // get current item to be displayed
-        AppointmentModel appointmentModel = (AppointmentModel) getItem(position);
-
-        // get the TextView for item name and item description
-        TextView textViewItemDescription = convertView.findViewById(R.id.month);
+        Appointment appointmentModel = (Appointment) getItem(position);
 
         //sets the text for item name and item description from the current item object
-        textViewItemDescription.setText(appointmentModel.getMonth());
+     //   textViewItemDescription.setText(appointmentModel.getT);
 
         TextView appointmentText = convertView.findViewById(R.id.appointment_text);
 
-        appointmentText.setText(appointmentModel.getEvent());
+        appointmentText.setText(appointmentModel.getTitle());
 
         TextView appointmentTime = convertView.findViewById(R.id.time1);
-        appointmentTime.setText(appointmentModel.getTime());
+        appointmentTime.setText(appointmentModel.getStartTime());
 
         TextView appointmentDate = convertView.findViewById(R.id.date1);
-        appointmentDate.setText(appointmentModel.getDate());
+        appointmentDate.setText(appointmentModel.getDateMonth());
 
         TextView appointmentDay = convertView.findViewById(R.id.day1);
-        appointmentDay.setText(appointmentModel.getDay());
-
-        TextView appointmentEvent2 = convertView.findViewById(R.id.appointment_text2);
-        appointmentEvent2.setText(appointmentModel.getEvent2());
-
-        TextView appointmentTime2 = convertView.findViewById(R.id.time2);
-        appointmentTime2.setText(appointmentModel.getTime2());
-
-        TextView appointmentDate2 = convertView.findViewById(R.id.date2);
-        appointmentDate2.setText(appointmentModel.getDate2());
-
-        TextView appointmentDay2 = convertView.findViewById(R.id.day2);
-        appointmentDay2.setText(appointmentModel.getDay2());
-
-
-
+        appointmentDay.setText(appointmentModel.getDayOfWeek());
 
 
         // returns the view for the current row

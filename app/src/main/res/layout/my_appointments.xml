@@ -5,13 +5,6 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:id="@+id/month"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="November 2018"
-        android:layout_gravity="center"/>
-
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,13 +21,16 @@
             <TextView
                 android:id="@+id/appointment_text"
                 android:textSize="20sp"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:maxWidth="200dp"
                 android:layout_height="match_parent"
-                android:text="Antenatal" />
+                android:text="Antenatal sdkfjalsjk dflajs ldjflajsd lfjasldjfals jdfljas ldfj" />
 
             <RelativeLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="2"
                 >
 
                 <ImageView
@@ -54,104 +50,32 @@
 
                     <TextView
                         android:id="@+id/time1"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="0dp"
+                        android:gravity="center"
                         android:layout_weight="1"
                         android:text="11:30Am"/>
                     <TextView
                         android:id="@+id/date1"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:layout_gravity="center"
+                        android:gravity="center"
                         android:text="30"
                         android:textSize="20sp"/>
 
                 <TextView
                     android:id="@+id/day1"
                     android:paddingTop="8dp"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Monday"
+                    android:gravity="center"
+                    android:text="Wednesday"
                     />
                 </LinearLayout>
             </RelativeLayout>
         </LinearLayout>
 
     </android.support.v7.widget.CardView>
-
-    <android.support.v7.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardElevation="12dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginBottom="8dp">
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp">
-
-
-            <TextView
-                android:id="@+id/appointment_text2"
-                android:textSize="20sp"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Antenatal" />
-
-            <RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                >
-
-                <ImageView
-                    android:id="@+id/more2"
-                    android:layout_centerInParent="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" app:srcCompat="@drawable/ic_baseline_more_vert_24px"
-                    />
-                <LinearLayout
-                    android:layout_marginRight="16dp"
-                    android:layout_toLeftOf="@id/more2"
-                    android:orientation="vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/time2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:text="11:30Am"/>
-                    <TextView
-                        android:id="@+id/date2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:layout_gravity="center"
-                        android:text="20"
-                        android:textSize="20sp"/>
-
-                    <TextView
-                        android:id="@+id/day2"
-                        android:paddingTop="8dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Saturday"
-                        />
-                </LinearLayout>
-            </RelativeLayout>
-        </LinearLayout>
-
-    </android.support.v7.widget.CardView>
-
-
-
 
 </LinearLayout>

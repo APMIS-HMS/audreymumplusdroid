@@ -11,7 +11,7 @@ import android.provider.CalendarContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
-import android.text.format.DateUtils;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +29,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 
@@ -37,7 +38,9 @@ public class AppointmentFragment extends android.support.v4.app.Fragment {
     List<AppointmentModel> appointmentModelList = new ArrayList<>();
     @BindView(R.id.fab2)
     FloatingActionButton fab2;
-    List<AppointmentModel> appointmentFromAndroidCalendar = new ArrayList<>();
+    List<Appointment> appointmentFromAndroidCalendar = new ArrayList<>();
+    Cursor cur;
+    AppointmentAdapter appointmentAdapter;
 
     @Override
     public void onResume() {
@@ -61,26 +64,15 @@ public class AppointmentFragment extends android.support.v4.app.Fragment {
 
         ButterKnife.bind(this, rootView);
 
-        //  ((DashboardActivity)getActivity()).setToolBarTitle(CLASSNAME);
-        Toolbar toolbar = rootView.findViewById(R.id.my_toolbar);
-
-
         ListView listView = rootView.findViewById(R.id.appointment);
 
-        appointmentModelList.add(new AppointmentModel("November 2018", "Antenatal", "11:30am", "30", "Monday", "Baby Scan", "11:30am", "20", "Saturday"));
-        appointmentModelList.add(new AppointmentModel("January 2019", "Registration", "11:30am", "1", "Saturday", "General Checkup", "09:00am", "22", "Tuesday"));
-        appointmentModelList.add(new AppointmentModel("February 2019", "Lab Test", "01:40am", "22", "Saturday", "Blood Test", "10:00am", "21", "Wednesday"));
-        appointmentModelList.add(new AppointmentModel("November 2018", "Antenatal", "11:30am", "30", "Monday", "Baby Scan", "11:30am", "20", "Saturday"));
-        AppointmentAdapter appointmentAdapter = new AppointmentAdapter(getActivity(), appointmentModelList);
+        appointmentAdapter = new AppointmentAdapter(getActivity(), new ArrayList<>());
         listView.setAdapter(appointmentAdapter);
 
-//        gridView.setColumnWidth(1);
-
-        //gridItems.setDivider(null);
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
-            AppointmentModel clicked = (AppointmentModel) parent.getItemAtPosition(position);
-            Toast.makeText(getActivity(), clicked.getEvent(), Toast.LENGTH_SHORT).show();
+            Appointment clicked = (Appointment) parent.getItemAtPosition(position);
+            Toast.makeText(getActivity(), clicked.getTitle(), Toast.LENGTH_SHORT).show();
         });
 
         fab2.setOnClickListener((view) -> getActivity().getSupportFragmentManager().beginTransaction()
@@ -115,49 +107,55 @@ public class AppointmentFragment extends android.support.v4.app.Fragment {
         };
 
 
-        Cursor cur;
-        ContentResolver cr = getActivity().getContentResolver();
+        AudreyMumplus.getInstance().diskIO().execute(() -> {
 
-        Uri.Builder builder = CalendarContract.Instances.CONTENT_URI.buildUpon();
-        ContentUris.appendId(builder, new Date().getTime());
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.MONTH, 1);
-        Date oneMonthAhead = new Date(cal.getTimeInMillis());
-        ContentUris.appendId(builder, oneMonthAhead.getTime());
+            ContentResolver cr = getActivity().getContentResolver();
 
-        cur = cr.query(builder.build(),
-                INSTANCE_PROJECTION,
-                null,
-                null,
-                null);
+            Uri.Builder builder = CalendarContract.Instances.CONTENT_URI.buildUpon();
+            ContentUris.appendId(builder, new Date().getTime());
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.MONTH, 1);
+            Date oneMonthAhead = new Date(cal.getTimeInMillis());
+            ContentUris.appendId(builder, oneMonthAhead.getTime());
 
-        if (cur != null) {
-            while (cur.moveToNext()) {
-                String title = null;
-                long eventID = 0;
-                long beginVal = 0;
+            cur = cr.query(builder.build(),
+                    INSTANCE_PROJECTION,
+                    null,
+                    null,
+                    INSTANCE_PROJECTION[3] + " ASC");
 
-                // Get the field values
-                eventID = cur.getLong(PROJECTION_ID_INDEX);
-                beginVal = cur.getLong(PROJECTION_BEGIN_INDEX);
+            if (cur != null) {
+                while (cur.moveToNext()) {
+                    String title = null;
+                    long eventID = 0;
+                    long beginVal = 0;
+
+                    // Get the field values
+                    eventID = cur.getLong(PROJECTION_ID_INDEX);
+                    beginVal = cur.getLong(PROJECTION_BEGIN_INDEX);
 
 
-                String appointmentTitle = cur.getString(PROJECTION_TITLE_INDEX);
+                    String appointmentTitle = cur.getString(PROJECTION_TITLE_INDEX);
+                    String appointmentTime = new SimpleDateFormat("h:mma").format(beginVal);
 
-                // Do something with the values.
-                Log.i("TITLE", "Event:  " + appointmentTitle);
-                Log.i("Time", new SimpleDateFormat("h:mma").format(beginVal));
-                Log.i("Date", new SimpleDateFormat("mm dd").format(beginVal));
+                    // Do something with the values.
+                    String []monthDate = TextUtils.split(DateFormat.getDateInstance().format(beginVal).toString(), ",");
+                    String dayOfWeek = new SimpleDateFormat("EEEE").format(beginVal);
 
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(beginVal);
-                DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-                Log.v("DATE", "Date: " + formatter.format(calendar.getTime()));
+
+                    Appointment thisAppointment = new Appointment(eventID, appointmentTitle, appointmentTime, monthDate[0], dayOfWeek);
+                    appointmentFromAndroidCalendar.add(thisAppointment);
+                    Log.v("This appointment", thisAppointment.toString());
+                }
             }
-        }
-        if (cur != null) {
-            cur.close();
-        }
+            if (cur != null) {
+                cur.close();
+            }
+            getActivity().runOnUiThread(()-> {
+                appointmentAdapter.setAppointmentModels(appointmentFromAndroidCalendar);
+            });
+        });
+
     }
 
 
