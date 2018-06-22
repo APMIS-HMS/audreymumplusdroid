@@ -35,7 +35,6 @@ import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 
 public class AppointmentFragment extends android.support.v4.app.Fragment {
 
-    List<AppointmentModel> appointmentModelList = new ArrayList<>();
     @BindView(R.id.fab2)
     FloatingActionButton fab2;
     List<Appointment> appointmentFromAndroidCalendar = new ArrayList<>();
@@ -72,7 +71,7 @@ public class AppointmentFragment extends android.support.v4.app.Fragment {
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Appointment clicked = (Appointment) parent.getItemAtPosition(position);
-            Toast.makeText(getActivity(), clicked.getTitle(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), String.valueOf(clicked.getID()), Toast.LENGTH_SHORT).show();
         });
 
         fab2.setOnClickListener((view) -> getActivity().getSupportFragmentManager().beginTransaction()
