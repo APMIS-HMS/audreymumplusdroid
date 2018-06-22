@@ -8,8 +8,10 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +24,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -34,6 +37,7 @@ public class AppointmentFragment extends android.support.v4.app.Fragment {
     List<AppointmentModel> appointmentModelList = new ArrayList<>();
     @BindView(R.id.fab2)
     FloatingActionButton fab2;
+    List<AppointmentModel> appointmentFromAndroidCalendar = new ArrayList<>();
 
     @Override
     public void onResume() {
@@ -84,7 +88,12 @@ public class AppointmentFragment extends android.support.v4.app.Fragment {
                 .addToBackStack("ADD_NEW")
                 .commit());
 
-        databaseQuery();
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CALENDAR}, 9000);
+        } else {
+            databaseQuery();
+        }
+
 
         return rootView;
 
@@ -105,17 +114,16 @@ public class AppointmentFragment extends android.support.v4.app.Fragment {
                 CalendarContract.Instances.EVENT_LOCATION   //5
         };
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CALENDAR}, 9000);
-        }
-
 
         Cursor cur;
         ContentResolver cr = getActivity().getContentResolver();
 
         Uri.Builder builder = CalendarContract.Instances.CONTENT_URI.buildUpon();
-       /* ContentUris.appendId(builder, startMillis);
-        ContentUris.appendId(builder, endMillis);*/
+        ContentUris.appendId(builder, new Date().getTime());
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.MONTH, 1);
+        Date oneMonthAhead = new Date(cal.getTimeInMillis());
+        ContentUris.appendId(builder, oneMonthAhead.getTime());
 
         cur = cr.query(builder.build(),
                 INSTANCE_PROJECTION,
@@ -123,24 +131,43 @@ public class AppointmentFragment extends android.support.v4.app.Fragment {
                 null,
                 null);
 
-        while (cur.moveToNext()) {
-            String title = null;
-            long eventID = 0;
-            long beginVal = 0;
+        if (cur != null) {
+            while (cur.moveToNext()) {
+                String title = null;
+                long eventID = 0;
+                long beginVal = 0;
 
-            // Get the field values
-            eventID = cur.getLong(PROJECTION_ID_INDEX);
-            beginVal = cur.getLong(PROJECTION_BEGIN_INDEX);
-            title = cur.getString(PROJECTION_TITLE_INDEX);
+                // Get the field values
+                eventID = cur.getLong(PROJECTION_ID_INDEX);
+                beginVal = cur.getLong(PROJECTION_BEGIN_INDEX);
 
-            // Do something with the values.
-            Log.i("TITLE", "Event:  " + title);
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(beginVal);
-            DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-            Log.v("DATE", "Date: " + formatter.format(calendar.getTime()));
+
+                String appointmentTitle = cur.getString(PROJECTION_TITLE_INDEX);
+
+                // Do something with the values.
+                Log.i("TITLE", "Event:  " + appointmentTitle);
+                Log.i("Time", new SimpleDateFormat("h:mma").format(beginVal));
+                Log.i("Date", new SimpleDateFormat("mm dd").format(beginVal));
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(beginVal);
+                DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+                Log.v("DATE", "Date: " + formatter.format(calendar.getTime()));
+            }
+        }
+        if (cur != null) {
+            cur.close();
         }
     }
 
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 9000 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            databaseQuery();
+        } else {
+            Toast.makeText(getActivity(), "you need to grant permission to view appointments", Toast.LENGTH_SHORT).show();
+        }
+    }
 }
