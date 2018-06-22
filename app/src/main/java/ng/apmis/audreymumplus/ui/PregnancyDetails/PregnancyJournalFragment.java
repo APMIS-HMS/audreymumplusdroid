@@ -1,5 +1,6 @@
 package ng.apmis.audreymumplus.ui.PregnancyDetails;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -16,9 +17,15 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.ui.Journal.AddJournalFragment;
+import ng.apmis.audreymumplus.ui.Journal.JournalAdapter;
+import ng.apmis.audreymumplus.ui.Journal.JournalFactory;
+import ng.apmis.audreymumplus.ui.Journal.JournalViewModel;
+import ng.apmis.audreymumplus.utils.InjectorUtils;
 
 
 public class PregnancyJournalFragment extends Fragment {
+
+    JournalViewModel journalViewModel;
     List<PregnancyModel> pregnancyModelList = new ArrayList<>();
     @BindView(R.id.fab3)
     FloatingActionButton fab3;
@@ -36,20 +43,19 @@ public class PregnancyJournalFragment extends Fragment {
 
         ListView listView = rootView.findViewById(R.id.list_pregjournal);
 
-        pregnancyModelList.add(new PregnancyModel("Day 1"));
-        pregnancyModelList.add(new PregnancyModel("Day 2"));
-        pregnancyModelList.add(new PregnancyModel("Day 3"));
-        pregnancyModelList.add(new PregnancyModel("Day 4"));
-        pregnancyModelList.add(new PregnancyModel("Day 5"));
-        /*journalModelList.add(new JournalModel("My week 36 Journal"));
-        journalModelList.add(new JournalModel("My week 40 Journal"));
-*/
-        PregnancyDetailsAdapter pregnancyDetailsAdapter = new PregnancyDetailsAdapter(getActivity(),pregnancyModelList);
-        listView.setAdapter(pregnancyDetailsAdapter);
+        JournalAdapter journalAdapter = new JournalAdapter(getActivity(), new ArrayList<>());
+        listView.setAdapter(journalAdapter);
 
-//        gridView.setColumnWidth(1);
+        JournalFactory journalFactory = InjectorUtils.provideJournalFactory(getActivity());
+        journalViewModel = ViewModelProviders.of(getActivity(), journalFactory).get(JournalViewModel.class);
 
-        //gridItems.setDivider(null);
+        journalViewModel.getmJournalEntry().observe(getActivity(), journalModels -> {
+            if (journalModels != null) {
+                journalAdapter.setJournals(journalModels);
+            } else {
+                Toast.makeText(getActivity(), "No journals found", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             PregnancyModel clicked = (PregnancyModel) parent.getItemAtPosition(position);

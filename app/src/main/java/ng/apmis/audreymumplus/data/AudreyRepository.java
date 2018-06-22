@@ -4,11 +4,13 @@ import android.arch.lifecycle.LiveData;
 import android.util.Log;
 
 import java.util.Date;
+import java.util.List;
 
 import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.data.database.DailyJournal;
-import ng.apmis.audreymumplus.data.database.DailyJournalDao;
+import ng.apmis.audreymumplus.data.database.JournalDao;
 import ng.apmis.audreymumplus.data.network.MumplusNetworkDataSource;
+import ng.apmis.audreymumplus.ui.Journal.JournalModel;
 
 /**
  * Created by Thadeus-APMIS on 5/15/2018.
@@ -21,33 +23,41 @@ public class AudreyRepository {
     // For Singleton instantiation
     private static final Object LOCK = new Object();
     private static AudreyRepository sInstance;
-    private final DailyJournalDao mDailyJournalDao;
+    private final JournalDao mJournalDao;
     private final MumplusNetworkDataSource mJournalNetworkData;
     private final AudreyMumplus mExecutors;
     private boolean mInitialized = false;
 
-    private AudreyRepository(DailyJournalDao weatherDao,
+    private AudreyRepository(JournalDao weatherDao,
                                MumplusNetworkDataSource weatherNetworkDataSource,
                                AudreyMumplus executors) {
-        mDailyJournalDao = weatherDao;
+        mJournalDao = weatherDao;
         mJournalNetworkData = weatherNetworkDataSource;
         mExecutors = executors;
-        LiveData<DailyJournal[]> networkData = mJournalNetworkData.getCurrentDailyJournal();
+        LiveData<List<JournalModel>> networkData = mJournalNetworkData.getCurrentDailyJournal();
 
         networkData.observeForever(networkdata -> mExecutors.diskIO().execute(() -> {
             // Insert our new weather data into Sunshine's database
             //deleteOldData();
             Log.d(LOG_TAG, "Old weather deleted");
             // Insert our new weather data into Sunshine's database
-            mDailyJournalDao.bulkInsert(networkdata);
+            mJournalDao.bulkInsert(networkdata);
             Log.d(LOG_TAG, "New values inserted");
         }));
 
     }
 
-    public LiveData<DailyJournal> getWeatherByDate(Date date) {
+    public LiveData<JournalModel> getWeatherByDate(Date date) {
         //initializeData();
-        return mDailyJournalDao.getJournalByDate(date);
+        return mJournalDao.getJournalByDate(date);
+    }
+
+    public LiveData<List<JournalModel>> getAllJournals () {
+        return mJournalDao.getAllJournalEntries();
+    }
+
+    public void saveJournal (JournalModel journalModel) {
+        mJournalDao.insertJournal(journalModel);
     }
 /*
 
@@ -58,11 +68,11 @@ public class AudreyRepository {
     }
 */
 
-    public synchronized static AudreyRepository getInstance (DailyJournalDao dailyJournalDao, MumplusNetworkDataSource mumplusNetworkDataSource, AudreyMumplus audreyMumplus) {
+    public synchronized static AudreyRepository getInstance (JournalDao journalDao, MumplusNetworkDataSource mumplusNetworkDataSource, AudreyMumplus audreyMumplus) {
         Log.d(LOG_TAG, "Getting the repository");
         if (sInstance == null) {
             synchronized (LOCK) {
-                sInstance = new AudreyRepository(dailyJournalDao, mumplusNetworkDataSource,
+                sInstance = new AudreyRepository(journalDao, mumplusNetworkDataSource,
                         audreyMumplus);
                 Log.d(LOG_TAG, "Made new repository");
             }

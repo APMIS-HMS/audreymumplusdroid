@@ -1,13 +1,13 @@
 package ng.apmis.audreymumplus.ui.PregnancyDetails;
 
 public class GalleryModel {
-    private int imageUrl;
+    private String imageUrl;
 
-    public GalleryModel(int mImage){
+    public GalleryModel(String mImage){
         imageUrl = mImage;
     }
 
-    public int getImageUrl() {
+    public String getImageUrl() {
         return imageUrl;
     }
 }

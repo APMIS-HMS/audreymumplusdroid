@@ -5,8 +5,11 @@ import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.util.Log;
 
+import java.util.List;
+
 import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.data.database.DailyJournal;
+import ng.apmis.audreymumplus.ui.Journal.JournalModel;
 
 /**
  * Created by Thadeus-APMIS on 5/15/2018.
@@ -14,7 +17,7 @@ import ng.apmis.audreymumplus.data.database.DailyJournal;
 
 public class MumplusNetworkDataSource {
 
-    private static Object LOCK;
+    private static final Object LOCK = new Object();
     private static MumplusNetworkDataSource sInstance;
     private final Context mContext;
 
@@ -22,7 +25,7 @@ public class MumplusNetworkDataSource {
 
     private final AudreyMumplus mExecutors;
 
-    private final MutableLiveData<DailyJournal[]> mDownloadedDailyJournal;
+    private final MutableLiveData<List<JournalModel>> mDownloadedDailyJournal;
 
     MumplusNetworkDataSource(Context context, AudreyMumplus executors) {
         mContext = context;
@@ -30,7 +33,7 @@ public class MumplusNetworkDataSource {
         mDownloadedDailyJournal = new MutableLiveData<>();
     }
 
-    public LiveData<DailyJournal[]> getCurrentDailyJournal() {
+    public LiveData<List<JournalModel>> getCurrentDailyJournal() {
         return mDownloadedDailyJournal;
     }
 

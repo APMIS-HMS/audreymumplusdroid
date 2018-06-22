@@ -19,6 +19,10 @@ public class JournalAdapter extends BaseAdapter {
         modelList = list;
     }
 
+    public void setJournals (List<JournalModel> journalModels) {
+        modelList = journalModels;
+    }
+
     @Override
     public int getCount() {
         return modelList.size();
@@ -49,7 +53,7 @@ public class JournalAdapter extends BaseAdapter {
         TextView textViewItemDescription = convertView.findViewById(R.id.journal_text);
 
         //sets the text for item name and item description from the current item object
-        textViewItemDescription.setText(journalModel.getTitle());
+        textViewItemDescription.setText(journalModel.getMood());
 
         // returns the view for the current row
         return convertView;

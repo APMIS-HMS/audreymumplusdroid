@@ -72,15 +72,15 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 app:srcCompat="@drawable/ic_logout_icon"
+                android:layout_marginLeft="20dp"
                 android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/logout"
-                android:layout_toStartOf="@+id/logout" />
+                android:layout_marginStart="100dp" />
 
             <Button
                 android:id="@+id/logout"
                 android:text="@string/logout"
                 android:background="@android:color/transparent"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_centerInParent="true"
                 android:layout_height="48dp"
                 android:gravity="center"

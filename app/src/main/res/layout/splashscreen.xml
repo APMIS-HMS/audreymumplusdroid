@@ -10,15 +10,15 @@
     <ImageView
         android:layout_width="100dp"
         android:layout_height="100dp"
-        app:srcCompat="@drawable/audrey_icon"
+        android:src="@drawable/audrey_icon"
         android:layout_gravity="center"
        />
 
 
     <ImageView
         android:layout_gravity="center"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        app:srcCompat="@drawable/ic_audrey_text"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/audrey_text"/>
 
 </LinearLayout>

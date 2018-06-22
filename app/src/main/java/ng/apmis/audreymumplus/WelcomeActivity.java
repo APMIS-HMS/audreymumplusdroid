@@ -23,7 +23,7 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.baby_progress_view);
+        setContentView(R.layout.splashscreen);
 
         sharedPreferencesManager = new SharedPreferencesManager(this);
         if (Build.VERSION.SDK_INT >= 21) {
@@ -40,8 +40,7 @@ public class WelcomeActivity extends AppCompatActivity {
                 finish();
             } else {
                 if (sharedPreferencesManager.getUserToken().equals("")) {
-                    startActivity(new Intent(this, DashboardActivity.class));
-                   // startActivity(new Intent(this, LoginActivity.class));
+                    startActivity(new Intent(this, LoginActivity.class));
                     finish();
                 } else {
                     startActivity(new Intent(this, DashboardActivity.class));
@@ -49,7 +48,6 @@ public class WelcomeActivity extends AppCompatActivity {
                 }
             }
         }, 1000);
-
 
 
     }

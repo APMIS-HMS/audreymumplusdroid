@@ -61,9 +61,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.signin);
         ButterKnife.bind(this);
 
-
-
-
         queue = Volley.newRequestQueue(this.getApplicationContext());
 
         sharedPreferencesManager = new SharedPreferencesManager(this.getApplicationContext());

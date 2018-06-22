@@ -25,6 +25,13 @@
         android:layout_marginRight="12dp"
         />
 
+    <TextView
+        android:id="@+id/empty_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NO ITEM FOUND"
+        android:layout_centerInParent="true"/>
+
     <GridView
         android:layout_below="@id/gallerytext"
         android:id="@+id/list_gallery"

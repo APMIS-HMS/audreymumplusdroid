@@ -1,21 +1,41 @@
 package ng.apmis.audreymumplus.ui.PregnancyDetails;
 
+import android.app.Activity;
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.design.widget.BottomSheetDialog;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
+import ng.apmis.audreymumplus.ui.Journal.JournalFactory;
+import ng.apmis.audreymumplus.ui.Journal.JournalModel;
+import ng.apmis.audreymumplus.ui.Journal.JournalViewModel;
+import ng.apmis.audreymumplus.utils.InjectorUtils;
+
+import static android.app.Activity.RESULT_OK;
 
 public class MyGalleryFragment extends android.support.v4.app.Fragment {
     private static final String CLASSNAME = "HOME";
 
-    List<GalleryModel> galleryModelList = new ArrayList<>();
+    JournalViewModel journalViewModel;
+    List<GalleryModel> galleryList;
 
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container,
@@ -28,27 +48,32 @@ public class MyGalleryFragment extends android.support.v4.app.Fragment {
 
         GridView gridView = rootView.findViewById(R.id.list_gallery);
 
-        galleryModelList.add(new GalleryModel(R.drawable.ic_first_square));
-        galleryModelList.add(new GalleryModel(R.drawable.ic_first_square));
-        galleryModelList.add(new GalleryModel(R.drawable.ic_first_square));
-        galleryModelList.add(new GalleryModel(R.drawable.ic_first_square));
-        GalleryAdapter galleryAdapter = new GalleryAdapter(getActivity(), galleryModelList);
+        GalleryAdapter galleryAdapter = new GalleryAdapter(getActivity(), new ArrayList<>());
 
         gridView.setAdapter(galleryAdapter);
-//        gridView.setColumnWidth(1);
 
-        //gridItems.setDivider(null);
+        JournalFactory journalFactory = InjectorUtils.provideJournalFactory(getActivity());
+        journalViewModel = ViewModelProviders.of(getActivity(), journalFactory).get(JournalViewModel.class);
+        View emptyView = rootView.findViewById(R.id.empty_view);
 
+        journalViewModel.getmJournalEntry().observe(getActivity(), journalModels -> {
+            if (journalModels != null) {
+            for (JournalModel x : journalModels) {
+                if (!TextUtils.isEmpty(x.getPregnancyBellyUri())) {
+                    galleryList.add(new GalleryModel(x.getPregnancyBellyUri()));
+                }
+                if (!TextUtils.isEmpty(x.getBabyScanUri())) {
+                    galleryList.add(new GalleryModel(x.getBabyScanUri()));
+                }
+            }
+                galleryAdapter.setGalleryModels(galleryList == null ? new ArrayList<>() : galleryList);
 
-        /*gridView.setOnItemClickListener((parent, view, position, id) -> {
-            GalleryModel clicked = (ModuleModel) parent.getItemAtPosition(position);
-            Toast.makeText(getActivity(), clicked.getTitle() , Toast.LENGTH_SHORT).show();
-            *//*if(position == 2){
-                Intent i = new Intent(getActivity(), PregnancyFragment.class);
-                startActivity(i);
-            }*//*
+            } else {
+
+                gridView.setEmptyView(emptyView);
+            }
         });
-*/
+
         return rootView;
     }
 

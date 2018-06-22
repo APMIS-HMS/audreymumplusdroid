@@ -9,24 +9,32 @@ import android.arch.persistence.room.Query;
 import java.util.Date;
 import java.util.List;
 
+import ng.apmis.audreymumplus.ui.Journal.JournalModel;
+
 /**
  * Created by Thadeus-APMIS on 5/15/2018.
  */
 
 @Dao
-public interface DailyJournalDao {
+public interface JournalDao {
 
-    @Query("SELECT * FROM journal WHERE date >= :date")
-    LiveData<List<DailyJournal>> getAllJournalEntries(Date date);
+    @Query("SELECT * FROM journal")
+    LiveData<List<JournalModel>> getAllJournalEntries();
+/*
 
     @Query("SELECT COUNT(id) FROM journal WHERE date <= :date")
     int countAllPastJournal(Date date);
+*/
+
 
     @Query("SELECT * FROM journal WHERE date = :date")
-    LiveData<DailyJournal> getJournalByDate(Date date);
+    LiveData<JournalModel> getJournalByDate(Date date);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void bulkInsert(DailyJournal... dailyJournals);
+    void bulkInsert(List<JournalModel> allJournals);
+
+    @Insert()
+    void insertJournal (JournalModel journalModel);
 
   /*  @Query("DELETE FROM journal WHERE date < :date")
     void deleteOldWeather(String date);*/

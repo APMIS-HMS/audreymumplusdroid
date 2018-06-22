@@ -1,6 +1,7 @@
 package ng.apmis.audreymumplus.ui.Dashboard;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.support.design.widget.BottomNavigationView;
@@ -16,13 +17,19 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.net.URISyntaxException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,6 +62,14 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
     boolean goBackOrShowNavigationView = false;
 
     SharedPreferencesManager sharedPreferencesManager;
+    private Socket mSocket;
+    private Emitter.Listener onMessage;
+
+    {
+        try {
+            mSocket = IO.socket("https://audrey-mum.herokuapp.com/");
+        } catch (URISyntaxException e) {}
+    }
 
 
     @Override
@@ -65,15 +80,19 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         sharedPreferencesManager = new SharedPreferencesManager(getApplicationContext());
 
         setActionBarButton(false, getString(R.string.app_name));
+        mSocket.connect();
+
+        mSocket.on("connect", callback());
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         View headerLayout = navigationView.getHeaderView(0);
+        //new GetVersionCode().execute();
 
         navigationView.setNavigationItemSelectedListener(this::selectNavigationItem);
 
         CircularImageView profileCircularImageView = headerLayout.findViewById(R.id.user_image);
 
-        View logoutView = navigationView.findViewById(R.id.logout_view);
+        Button logoutView = navigationView.findViewById(R.id.logout);
 
         logoutView.setOnClickListener((View) -> {
             Toast.makeText(this, "Logout", Toast.LENGTH_SHORT).show();
@@ -109,6 +128,14 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                 .load(R.drawable.face_of_audrey)
                 .into(profileCircularImageView);
 
+    }
+
+    private Emitter.Listener callback () {
+        return args -> runOnUiThread(() -> {
+         //   JSONObject data = (JSONObject) args[0];
+            Log.v("something happened", String.valueOf(args));
+
+        });
     }
 
     public void setActionBarButton(boolean shouldShowBackButton, String title) {
@@ -264,4 +291,74 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
         }
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+   /* private class GetVersionCode extends AsyncTask<Void, String, String> {
+        @Override
+        protected String doInBackground(Void... voids) {
+
+            String newVersion = null;
+            try {
+                newVersion = Jsoup.connect("https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID *//*MainActivity.this.getPackageName() + "&hl=it"*//*)
+                        .timeout(30000)
+                        .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
+                        .referrer("http://www.google.com")
+                        .get()
+                        .select("div[itemprop=softwareVersion]")
+                        .first()
+                        .ownText();
+                return newVersion;
+            } catch (Exception e) {
+                return newVersion;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String onlineVersion) {
+            super.onPostExecute(onlineVersion);
+            if (onlineVersion != null && !onlineVersion.isEmpty()) {
+                if (!BuildConfig.VERSION_NAME.equalsIgnoreCase(onlineVersion)) {
+                    Toast.makeText(getApplicationContext(), BuildConfig.VERSION_NAME, Toast.LENGTH_SHORT).show();
+                    showUpdateDialog();
+                }
+            }
+        }
+    }*
+
+    private void showUpdateDialog() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("A New Update is Available");
+        builder.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.container, new OperatingProcedureFragment())
+                        .commit();
+                startActivity(new Intent(MainActivity.this, SettingActivity.class));
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse
+                        ("https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID)));
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.container, new OperatingProcedureFragment())
+                        .commit();
+                startActivity(new Intent(MainActivity.this, SettingActivity.class));
+                dialog.dismiss();
+            }
+        })
+                .setCancelable(false)
+                .show();
+    }
+
+    */
+
 }
