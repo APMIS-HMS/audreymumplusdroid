@@ -73,8 +73,7 @@ public class SignupActivity extends AppCompatActivity implements SignupFragmentB
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.v("Person Obj", uniquePerson.toString());
-        Log.v("Person Starts", "Here");
+
         progressDialog.setIndeterminate(true);
         progressDialog.setTitle("Signing Up");
         progressDialog.setMessage("Please wait ...");
@@ -102,7 +101,6 @@ public class SignupActivity extends AppCompatActivity implements SignupFragmentB
                 JSONObject signUpJob = new JSONObject(response.toString());
                 if (signUpJob.getString("status").equals("error")) {
                     progressDialog.dismiss();
-                    Log.v("Sign up error", "There was an error");
                     Toast.makeText(SignupActivity.this, "There was an error try again", Toast.LENGTH_SHORT).show();
                 } else {
                     attemptLogin(uniquePerson.getJSONObject("person").getString("email"), uniquePerson.getJSONObject("person").getString("password"));
@@ -112,7 +110,6 @@ public class SignupActivity extends AppCompatActivity implements SignupFragmentB
             }
         }, error -> {
             progressDialog.dismiss();
-            Log.v("Sign up error", String.valueOf(error.getMessage()));
             Toast.makeText(SignupActivity.this, "There was an error try again", Toast.LENGTH_SHORT).show();
         });
         queue.add(strRequest);
@@ -137,12 +134,10 @@ public class SignupActivity extends AppCompatActivity implements SignupFragmentB
                 job.put("email", email);
                 job.put("password", password);
                 job.put("strategy", "local");
-                Log.v("Person to Json", String.valueOf(job));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             JsonObjectRequest loginRequest = new JsonObjectRequest(Request.Method.POST, BASE_URL + "authentication", job, response -> {
-                Log.v("Login response", String.valueOf(response));
 
                 try {
                     Log.v("accessToken", response.getString("accessToken"));

@@ -20,13 +20,16 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
+import ng.apmis.audreymumplus.utils.InjectorUtils;
 import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
 
 /**
@@ -127,7 +130,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 job.put("email", email);
                 job.put("password", password);
                 job.put("strategy", "local");
-                Log.v("Person to Json", String.valueOf(job));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -135,12 +137,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 Log.v("Login response", String.valueOf(response));
 
                 try {
-                    Log.v("accessToken", response.getString("accessToken"));
                     String token = response.getString("accessToken");
+                    Person user = new Gson().fromJson(response.getJSONObject("user").toString(), Person.class);
+
+                    AudreyMumplus.getInstance().diskIO().execute(() ->
+                            InjectorUtils.provideRepository(this).savePerson(user));
 
                     sharedPreferencesManager.storeUserToken(token);
 
-                    Log.v("sharedPRef", String.valueOf(sharedPreferencesManager.getUserToken()));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

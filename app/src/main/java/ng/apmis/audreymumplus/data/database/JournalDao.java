@@ -36,6 +36,12 @@ public interface JournalDao {
     @Insert()
     void insertJournal (JournalModel journalModel);
 
+    @Insert()
+    void insertPerson (Person person);
+
+    @Query("SELECT * FROM person")
+    LiveData<Person> getPerson();
+
   /*  @Query("DELETE FROM journal WHERE date < :date")
     void deleteOldWeather(String date);*/
 

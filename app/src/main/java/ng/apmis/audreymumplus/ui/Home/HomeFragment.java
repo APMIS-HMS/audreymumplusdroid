@@ -8,11 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.LoginActivity;
 import ng.apmis.audreymumplus.R;
@@ -30,6 +32,8 @@ public class HomeFragment extends android.support.v4.app.Fragment {
     List<ModuleModel> items = new ArrayList<>();
 
     GridView gridView;
+    @BindView(R.id.hi_message)
+    TextView hiMessage;
 
     OnfragmentInteractionListener onFragmentInteractionListener;
 
@@ -40,6 +44,9 @@ public class HomeFragment extends android.support.v4.app.Fragment {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
         ButterKnife.bind(this, rootView);
+
+        hiMessage.setText(getContext().getString(R.string.hi_message, ((DashboardActivity)getActivity()).userNameString));
+
 
       //  ((DashboardActivity)getActivity()).setToolBarTitle(CLASSNAME);
 

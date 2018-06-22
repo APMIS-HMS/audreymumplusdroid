@@ -12,7 +12,7 @@ import ng.apmis.audreymumplus.ui.Journal.JournalModel;
  * Created by Thadeus-APMIS on 5/15/2018.
  */
 @TypeConverters({JournalConverters.class})
-@Database(entities = {JournalModel.class}, version = 1, exportSchema = false)
+@Database(entities = {JournalModel.class, Person.class}, version = 1, exportSchema = false)
 public abstract class JournalDatabase extends RoomDatabase {
     public abstract JournalDao dailyJournalDao();
 

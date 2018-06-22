@@ -11,6 +11,7 @@
     <string name="pregnancy">pregnancy</string>
     <string name="craving_text">What are your cravings?</string>
     <string name="mom_101">Mom_101</string>
+    <string name="hi_message">Hi %s</string>
     <string name="text_content">Proin eget tortor risus. Proin eget tortor risus. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui.Proin eget tortor risus. Proin Proin eget tortor risus. Proin eget tortor risus. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui.</string>
     <string name="todo">TODO</string>
     <string name="type_something_to_contribute">type something to contribute</string>

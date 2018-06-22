@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -33,6 +34,7 @@ import java.net.URISyntaxException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.LoginActivity;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.ui.Appointments.AppointmentFragment;
@@ -43,6 +45,7 @@ import ng.apmis.audreymumplus.ui.Journal.MyJournalFragment;
 import ng.apmis.audreymumplus.ui.PregnancyDetails.PregnancyFragment;
 import ng.apmis.audreymumplus.ui.profile.ProfileFragment;
 import ng.apmis.audreymumplus.utils.BottomNavigationViewHelper;
+import ng.apmis.audreymumplus.utils.InjectorUtils;
 import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
 import ng.apmis.audreymumplus.utils.Utils;
 
@@ -64,6 +67,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
     SharedPreferencesManager sharedPreferencesManager;
     private Socket mSocket;
     private Emitter.Listener onMessage;
+    public String userNameString;
 
     {
         try {
@@ -86,7 +90,14 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         View headerLayout = navigationView.getHeaderView(0);
+        TextView userName = navigationView.findViewById(R.id.user_name);
         //new GetVersionCode().execute();
+
+        AudreyMumplus.getInstance().diskIO().execute(() -> InjectorUtils.provideRepository(this).getPerson().observe(this, person -> {
+                userNameString = person.getFirstName();
+                //userName.setText(person.getFirstName() + " " + person.getLastName());
+        })
+        );
 
         navigationView.setNavigationItemSelectedListener(this::selectNavigationItem);
 

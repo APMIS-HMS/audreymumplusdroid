@@ -112,12 +112,12 @@ public class SignupFragmentA extends Fragment {
                 if (spinnerType.equals(getString(R.string.title))) {
                     String selectedString = adapterView.getItemAtPosition(i).toString();
                     if (!TextUtils.isEmpty(selectedString)) {
-                        genderText = selectedString;
+                        titleText = selectedString;
                     }
                 } else {
                     String selectedString = adapterView.getItemAtPosition(i).toString();
                     if (!TextUtils.isEmpty(selectedString)) {
-                        titleText = selectedString;
+                        genderText = selectedString;
                     }
                 }
             }

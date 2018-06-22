@@ -9,6 +9,7 @@ import java.util.List;
 import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.data.database.DailyJournal;
 import ng.apmis.audreymumplus.data.database.JournalDao;
+import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.data.network.MumplusNetworkDataSource;
 import ng.apmis.audreymumplus.ui.Journal.JournalModel;
 
@@ -59,6 +60,15 @@ public class AudreyRepository {
     public void saveJournal (JournalModel journalModel) {
         mJournalDao.insertJournal(journalModel);
     }
+
+    public void savePerson (Person person) {
+        mJournalDao.insertPerson(person);
+    }
+
+    public LiveData<Person> getPerson () {
+        return mJournalDao.getPerson();
+    }
+
 /*
 
     public LiveData<List<DailyJournal>> getCurrentWeatherForecasts() {
