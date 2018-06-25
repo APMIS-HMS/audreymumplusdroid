@@ -10,6 +10,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
+import ng.apmis.audreymumplus.ui.onboarding.OnboardingActivity;
 import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
 
 /**
@@ -34,9 +35,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
         new Handler().postDelayed(() -> {
             if (sharedPreferencesManager.isFirstTimeLaunch()) {
-                sharedPreferencesManager.setFirstTimeLaunch(false);
-
-                //TODO launch onboarding screen activities
+                startActivity(new Intent(this, OnboardingActivity.class));
                 finish();
             } else {
                 if (sharedPreferencesManager.getUserToken().equals("")) {

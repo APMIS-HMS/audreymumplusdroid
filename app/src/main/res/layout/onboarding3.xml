@@ -53,6 +53,7 @@
 
 
     <Button
+        android:id="@+id/get_started"
         android:layout_width="168dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -75,7 +76,7 @@
             android:layout_height="wrap_content">
 
             <ImageButton
-                android:layout_width="32dp"
+                android:layout_width="20dp"
                 android:layout_height="wrap_content"
                 />
 
@@ -83,7 +84,7 @@
                 android:layout_width="20dp"
                 android:layout_height="wrap_content" />
             <ImageButton
-                android:layout_width="20dp"
+                android:layout_width="32dp"
                 android:layout_height="wrap_content" />
 
         </LinearLayout>
