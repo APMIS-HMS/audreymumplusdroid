@@ -1,9 +1,7 @@
 package ng.apmis.audreymumplus.ui.Home;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +14,10 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import ng.apmis.audreymumplus.LoginActivity;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.ui.Dashboard.ModuleAdapter;
 import ng.apmis.audreymumplus.ui.Dashboard.ModuleModel;
-import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
 
 public class HomeFragment extends android.support.v4.app.Fragment {
 
@@ -45,10 +41,9 @@ public class HomeFragment extends android.support.v4.app.Fragment {
 
         ButterKnife.bind(this, rootView);
 
-        hiMessage.setText(getContext().getString(R.string.hi_message, ((DashboardActivity)getActivity()).userNameString));
-
-
-      //  ((DashboardActivity)getActivity()).setToolBarTitle(CLASSNAME);
+        ((DashboardActivity)getActivity()).person.observe(getActivity(), person -> {
+            hiMessage.setText(getContext().getString(R.string.hi_message, person.getFirstName()));
+        });
 
         gridView = rootView.findViewById(R.id.grid);
 

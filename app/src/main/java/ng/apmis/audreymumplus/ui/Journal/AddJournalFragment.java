@@ -207,7 +207,7 @@ public class AddJournalFragment extends Fragment {
                 "file" + String.valueOf(System.currentTimeMillis()) + ".jpg");
         uri = Uri.fromFile(file);
 
-        CamIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+       // CamIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
         CamIntent.putExtra(MediaStore.ACTION_IMAGE_CAPTURE, uri);
 

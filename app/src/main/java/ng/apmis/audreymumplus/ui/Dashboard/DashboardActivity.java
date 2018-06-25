@@ -1,7 +1,7 @@
 package ng.apmis.audreymumplus.ui.Dashboard;
 
+import android.arch.lifecycle.MutableLiveData;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.support.design.widget.BottomNavigationView;
@@ -37,6 +37,7 @@ import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.LoginActivity;
 import ng.apmis.audreymumplus.R;
+import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.ui.Appointments.AppointmentFragment;
 import ng.apmis.audreymumplus.ui.Chat.ChatFragment;
 import ng.apmis.audreymumplus.ui.Faq.FaqFragment;
@@ -67,12 +68,13 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
     SharedPreferencesManager sharedPreferencesManager;
     private Socket mSocket;
     private Emitter.Listener onMessage;
-    public String userNameString;
+    public MutableLiveData<Person> person = new MutableLiveData<>();
 
     {
         try {
             mSocket = IO.socket("https://audrey-mum.herokuapp.com/");
-        } catch (URISyntaxException e) {}
+        } catch (URISyntaxException e) {
+        }
     }
 
 
@@ -90,14 +92,13 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         View headerLayout = navigationView.getHeaderView(0);
-        TextView userName = navigationView.findViewById(R.id.user_name);
+        TextView userName = headerLayout.findViewById(R.id.user_name);
         //new GetVersionCode().execute();
 
-        AudreyMumplus.getInstance().diskIO().execute(() -> InjectorUtils.provideRepository(this).getPerson().observe(this, person -> {
-                userNameString = person.getFirstName();
-                //userName.setText(person.getFirstName() + " " + person.getLastName());
-        })
+        AudreyMumplus.getInstance().diskIO().execute(() -> InjectorUtils.provideRepository(this).getPerson().observe(this, person -> this.person.postValue(person))
         );
+
+        person.observe(this, theUser -> userName.setText(theUser.getFirstName() + " " + theUser.getLastName()));
 
         navigationView.setNavigationItemSelectedListener(this::selectNavigationItem);
 
@@ -113,7 +114,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         });
 
         try {
-            JSONObject job =  new JSONObject(new Utils().loadJSONFromAsset(this));
+            JSONObject job = new JSONObject(new Utils().loadJSONFromAsset(this));
             Log.v("Job weekly", job.toString());
         } catch (JSONException e) {
             e.printStackTrace();
@@ -128,7 +129,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
         mFragmentManager = getSupportFragmentManager();
 
-       // placeFragment(new HomeFragment(), true, mFragmentManager);
+        // placeFragment(new HomeFragment(), true, mFragmentManager);
 
         mFragmentManager.beginTransaction()
                 .add(R.id.fragment_container, new HomeFragment())
@@ -141,9 +142,9 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
     }
 
-    private Emitter.Listener callback () {
+    private Emitter.Listener callback() {
         return args -> runOnUiThread(() -> {
-         //   JSONObject data = (JSONObject) args[0];
+            //   JSONObject data = (JSONObject) args[0];
             Log.v("something happened", String.valueOf(args));
 
         });
@@ -164,14 +165,14 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         }
     }
 
-    boolean selectNavigationItem (MenuItem item) {
+    boolean selectNavigationItem(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.home:
                 placeFragment(new HomeFragment(), true, mFragmentManager);
                 drawerLayout.closeDrawers();
                 return true;
             case R.id.my_profile:
-                placeFragment(new ProfileFragment(),true, mFragmentManager);
+                placeFragment(new ProfileFragment(), true, mFragmentManager);
                 drawerLayout.closeDrawers();
                 return true;
             case R.id.about_us:
@@ -207,7 +208,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         }
     }
 
-    public void bottomNavVisibility (boolean show) {
+    public void bottomNavVisibility(boolean show) {
         if (show) {
             bottomNavigationView.setVisibility(View.VISIBLE);
             return;
@@ -255,7 +256,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
     }
 
-    private void placeFragment (Fragment fragment, boolean popBackStack, FragmentManager fm) {
+    private void placeFragment(Fragment fragment, boolean popBackStack, FragmentManager fm) {
         if (fragment instanceof HomeFragment) {
             fm.popBackStack("current", FragmentManager.POP_BACK_STACK_INCLUSIVE);
             fm.beginTransaction()
@@ -279,8 +280,9 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                     .commit();
         }
     }
-    private void prefFrag(PreferenceFragment fragment){
-        getFragmentManager().beginTransaction().replace(R.id.fragment_container,fragment).addToBackStack("current").commit();
+
+    private void prefFrag(PreferenceFragment fragment) {
+        getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack("current").commit();
     }
 
 

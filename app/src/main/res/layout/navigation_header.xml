@@ -33,13 +33,13 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         android:textColor="@android:color/white" />
 
-    <TextView
+ <!--   <TextView
         android:id="@+id/user_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="User ID: HN-72465"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/white" />-->
 
 </LinearLayout>
