@@ -40,6 +40,9 @@
     <string name="send_button">send button</string>
     <string name="welcome_message">Glad to have you here, please fill\nin your details to continue</string>
     <string name="user_email">%s</string>
+    <string name="week_title">(Week %s)</string>
+    <string name="todays_progress">%s %s</string>
+    <string name="todays_day_placeholder">(Day %s)</string>
 
     <string-array name="select">
         <item>@string/title</item>

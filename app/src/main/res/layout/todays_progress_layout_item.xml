@@ -28,14 +28,14 @@
 
             <TextView
                 android:textColor="@android:color/black"
-                android:id="@+id/header_text"
+                android:id="@+id/todays_progress_title"
                 android:layout_margin="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Bigger baby, heavier baby !"/>
 
             <TextView
-                android:id="@+id/content1"
+                android:id="@+id/todays_progress_intro"
                 android:layout_margin="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

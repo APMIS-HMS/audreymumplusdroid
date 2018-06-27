@@ -39,7 +39,8 @@ public class WelcomeActivity extends AppCompatActivity {
                 finish();
             } else {
                 if (sharedPreferencesManager.getUserToken().equals("")) {
-                    startActivity(new Intent(this, LoginActivity.class));
+                    startActivity(new Intent(this, DashboardActivity.class));
+                    //startActivity(new Intent(this, LoginActivity.class));
                     finish();
                 } else {
                     startActivity(new Intent(this, DashboardActivity.class));

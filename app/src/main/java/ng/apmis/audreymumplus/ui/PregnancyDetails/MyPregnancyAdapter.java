@@ -35,10 +35,10 @@ public class MyPregnancyAdapter extends RecyclerView.Adapter<MyPregnancyAdapter.
         View view;
         switch (viewType) {
             case 0:
-                view = LayoutInflater.from(mContext).inflate(R.layout.baby_progress_view, parent, false);
+                view = LayoutInflater.from(mContext).inflate(R.layout.todays_progress_layout_item, parent, false);
                 return new MyPregnancyViewHolder(view);
             case 1:
-                view = LayoutInflater.from(mContext).inflate(R.layout.weekly_tips_view, parent, false);
+                view = LayoutInflater.from(mContext).inflate(R.layout.weekly_tip_item, parent, false);
                 return new MyPregnancyViewHolder(view);
         }
         return null;
@@ -46,6 +46,8 @@ public class MyPregnancyAdapter extends RecyclerView.Adapter<MyPregnancyAdapter.
 
     @Override
     public int getItemViewType(int position) {
+        //TODO get today's date to determine what shows in the top viewand not pregnancy model
+        int today = 3;
         if (myPregnancyModels.get(position).getViewId().equals("0")) {
             return 0;
         } else {
@@ -79,8 +81,8 @@ public class MyPregnancyAdapter extends RecyclerView.Adapter<MyPregnancyAdapter.
         MyPregnancyViewHolder(View itemView) {
             super(itemView);
             textHeader = (TextView) itemView.findViewById(R.id.weeklyupdate);
-            contentupdate=  itemView.findViewById(R.id.header_text);
-            contentBody1 = (TextView) itemView.findViewById(R.id.content1);
+            contentupdate=  itemView.findViewById(R.id.todays_progress_title);
+            contentBody1 = (TextView) itemView.findViewById(R.id.todays_progress_intro);
             contentBody2 = itemView.findViewById(R.id.content2);
 
         }

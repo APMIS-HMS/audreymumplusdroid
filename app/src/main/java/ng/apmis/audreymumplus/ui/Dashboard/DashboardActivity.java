@@ -86,9 +86,17 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         sharedPreferencesManager = new SharedPreferencesManager(getApplicationContext());
 
         setActionBarButton(false, getString(R.string.app_name));
-        mSocket.connect();
 
-        mSocket.on("connect", callback());
+        mSocket.connect();
+        mSocket.emit("connection", "Hello world");
+        mSocket.on("news", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                JSONObject jsonObject = (JSONObject) args[0];
+                Log.v("JsonObject", String.valueOf(jsonObject));
+                mSocket.emit("feedback", ("Lizzy is stubborn"));
+            }
+        });
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         View headerLayout = navigationView.getHeaderView(0);
@@ -113,12 +121,12 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
             startActivity(new Intent(this, LoginActivity.class));
         });
 
-        try {
+       /* try {
             JSONObject job = new JSONObject(new Utils().loadJSONFromAsset(this));
             Log.v("Job weekly", job.toString());
         } catch (JSONException e) {
             e.printStackTrace();
-        }
+        }*/
 
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             selectFragment(item);
