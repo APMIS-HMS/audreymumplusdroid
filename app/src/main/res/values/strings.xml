@@ -48,6 +48,7 @@
     <string name="BabyScan">Baby Scan</string>
     <string name="day_indicator">DAY %s</string>
     <string name="week_indicator">%s Weeks Pregnant</string>
+    <string name="detail_week_progress">Day %s\n%s\n%s\n%s</string>
 
     <string-array name="select">
         <item>@string/title</item>

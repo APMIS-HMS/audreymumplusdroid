@@ -3,6 +3,7 @@ package ng.apmis.audreymumplus.ui.PregnancyDetails.pregnancyweeklyprogress;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -38,6 +39,8 @@ public class PregnancyWeeklyProgressFragment extends Fragment{
     RecyclerView weeklyProgressRecycler;
     @BindView(R.id.todays_day)
     TextView todaysDay;
+    @BindView(R.id.today_progress_group_card)
+    CardView todaysProgressCard;
 
     PregnancyWeeklyProgressModel todaysModelItem;
     String currentWeek = "2";
@@ -51,7 +54,7 @@ public class PregnancyWeeklyProgressFragment extends Fragment{
         weeklyProgressModelArrayList = new ArrayList<>();
 
         weeklyProgressRecycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,false));
-        weeklyProgressAdapter = new PregnancyWeeklyProgressAdapter(getActivity());
+        weeklyProgressAdapter = new PregnancyWeeklyProgressAdapter(getActivity(), getChildFragmentManager());
         weeklyProgressRecycler.setAdapter(weeklyProgressAdapter);
 
         try {
@@ -91,6 +94,13 @@ public class PregnancyWeeklyProgressFragment extends Fragment{
         }
 
         weeklyProgressAdapter.addPregnancyProgress(weeklyProgressModelArrayList);
+        todaysProgressCard.setOnClickListener(view -> {
+            Bundle detailBundle = new Bundle();
+            detailBundle.putParcelable("today", todaysModelItem);
+            PregnancyWeeklyProgressDetail pregWeekDetail = new PregnancyWeeklyProgressDetail();
+            pregWeekDetail.setArguments(detailBundle);
+            pregWeekDetail.show(getChildFragmentManager(), "Day Details");
+        });
 
         return rootView;
     }

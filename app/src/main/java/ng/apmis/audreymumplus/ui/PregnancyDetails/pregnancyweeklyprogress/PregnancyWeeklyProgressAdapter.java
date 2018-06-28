@@ -1,6 +1,9 @@
 package ng.apmis.audreymumplus.ui.PregnancyDetails.pregnancyweeklyprogress;
 
+import android.app.DialogFragment;
 import android.content.Context;
+import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -12,6 +15,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import ng.apmis.audreymumplus.R;
+import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 
 /**
  * Created by Thadeus-APMIS on 6/27/2018.
@@ -22,10 +26,12 @@ public class PregnancyWeeklyProgressAdapter extends RecyclerView.Adapter<Pregnan
 
     Context mContext;
     ArrayList<PregnancyWeeklyProgressModel> weeklyProgressModels;
+    FragmentManager fragmentManager;
 
-    PregnancyWeeklyProgressAdapter(Context context) {
+    PregnancyWeeklyProgressAdapter(Context context, FragmentManager fragmentManager) {
         mContext = context;
         weeklyProgressModels = new ArrayList<>();
+        this.fragmentManager = fragmentManager;
     }
 
     public void addPregnancyProgress (ArrayList<PregnancyWeeklyProgressModel> weekProgress) {
@@ -70,8 +76,14 @@ public class PregnancyWeeklyProgressAdapter extends RecyclerView.Adapter<Pregnan
 
         @Override
         public void onClick(View view) {
-            Toast.makeText(mContext, "Selected" + weeklyProgressModels.get(getAdapterPosition()).getTitle(), Toast.LENGTH_SHORT).show();
+            Bundle detailBundle = new Bundle();
+            detailBundle.putParcelable("today", weeklyProgressModels.get(getAdapterPosition()));
+            PregnancyWeeklyProgressDetail pregWeekDetail = new PregnancyWeeklyProgressDetail();
+            pregWeekDetail.setArguments(detailBundle);
+            pregWeekDetail.show(fragmentManager, "Day Details");
+
         }
     }
+
 
 }
