@@ -18,7 +18,7 @@
 
 
             <TextView
-                android:id="@+id/journal_text"
+                android:id="@+id/week_day_cravings"
                 android:textSize="13sp"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"

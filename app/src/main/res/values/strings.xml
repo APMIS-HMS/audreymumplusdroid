@@ -43,6 +43,11 @@
     <string name="week_title">(Week %s)</string>
     <string name="todays_progress">%s %s</string>
     <string name="todays_day_placeholder">(Day %s)</string>
+    <string name="set_journal_list_title"><b>Week %s Day %s</b>\n\t%s</string>
+    <string name="All">All</string>
+    <string name="BabyScan">Baby Scan</string>
+    <string name="day_indicator">DAY %s</string>
+    <string name="week_indicator">%s Weeks Pregnant</string>
 
     <string-array name="select">
         <item>@string/title</item>
@@ -71,8 +76,10 @@
         <item>@string/week</item>
     </string-array>
 
-    <string-array name="PregnancyBelly">
+    <string-array name="gallery_options">
+        <item>@string/All</item>
         <item>@string/PregnancyBelly</item>
+        <item>@string/BabyScan</item>
     </string-array>
 
     <string-array name="chat_groups">

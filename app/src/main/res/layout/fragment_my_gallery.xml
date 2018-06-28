@@ -3,8 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.PregnancyDetails.MyGalleryFragment">
-
+    tools:context=".ui.PregnancyDetails.pregnancyimagegallery.MyGalleryFragment">
 
     <TextView
         android:id="@+id/gallerytext"
@@ -12,25 +11,21 @@
         android:layout_height="wrap_content"
         android:padding="12dp"
         android:textSize="16sp"
-        android:text="Uploaded Pictures"/>
+        android:text="SORT UPLOADS"/>
 
     <Spinner
+        android:id="@+id/gallery_option_spinner"
         android:layout_marginTop="10dp"
         android:layout_alignParentRight="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:focusable="true"
         android:spinnerMode="dropdown"
-        android:entries="@array/PregnancyBelly"
+        android:entries="@array/gallery_options"
         android:layout_marginRight="12dp"
+        android:background="@drawable/edittext_background"
         />
 
-    <TextView
-        android:id="@+id/empty_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="NO ITEM FOUND"
-        android:layout_centerInParent="true"/>
 
     <GridView
         android:layout_below="@id/gallerytext"

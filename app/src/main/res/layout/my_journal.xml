@@ -10,7 +10,7 @@
             app:cardElevation="12dp"
             android:layout_margin="12dp">
 
-            <LinearLayout
+            <RelativeLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -18,16 +18,17 @@
 
 
                 <TextView
-                    android:id="@+id/journal_text"
+                    android:id="@+id/week_day_cravings"
                     android:textSize="13sp"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:maxWidth="250dp"
+                    android:maxHeight="100dp"
+                    android:layout_height="wrap_content"
                     android:text="My week 3 Journal" />
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    >
+                    android:layout_height="wrap_content">
 
                 <ImageView
                     android:layout_alignParentEnd="true"
@@ -42,10 +43,10 @@
                         android:paddingTop="40dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="View more"
+                        android:text="Details"
                         />
                 </RelativeLayout>
-            </LinearLayout>
+            </RelativeLayout>
 
         </android.support.v7.widget.CardView>
 

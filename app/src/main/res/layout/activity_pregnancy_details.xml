@@ -19,48 +19,47 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageView
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:id="@+id/pregnant_icon"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                app:srcCompat="@drawable/ic_my_pregnancy"/>
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_toRightOf="@id/pregnant_icon"
-                android:layout_width="wrap_content"
-                android:paddingLeft="4dp"
+            <RelativeLayout
+                android:id="@+id/preg_week_container"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="16dp"
-                    android:text="you’re currently"
-                    android:textColor="@android:color/white" />
+                <ImageView
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="16dp"
+                    android:id="@+id/pregnant_icon"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_centerVertical="true"
+                    app:srcCompat="@drawable/ic_my_pregnancy"
+                    android:layout_marginStart="16dp" />
+
 
                 <TextView
+                    android:id="@+id/week_indicator"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="15 weeks pregnant"
+                    android:layout_centerInParent="true"
                     android:textColor="@android:color/white"
                     android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
+            </RelativeLayout>
 
-            </LinearLayout>
+
+
 
             <TextView
                 android:layout_marginLeft="12dp"
-                android:id="@+id/day60"
+                android:id="@+id/day_indicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="day 60"
                 android:textColor="@android:color/white"
-                android:layout_below="@id/pregnant_icon"
-                android:layout_toRightOf="@id/pregnant_icon"/>
+                android:layout_below="@id/preg_week_container"
+                android:layout_marginStart="80dp" />
+
             <ProgressBar
-                android:layout_below="@id/day60"
+                android:layout_below="@id/day_indicator"
                 android:id="@+id/progressbar"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="24dp"
@@ -84,10 +83,7 @@
                 android:textColor="@android:color/white"
                 android:layout_marginTop="8dp"/>
 
-
-
         </RelativeLayout>
-
 
 
         <android.support.design.widget.TabLayout

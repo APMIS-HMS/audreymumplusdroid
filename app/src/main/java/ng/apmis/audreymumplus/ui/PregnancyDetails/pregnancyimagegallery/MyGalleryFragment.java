@@ -1,27 +1,19 @@
-package ng.apmis.audreymumplus.ui.PregnancyDetails;
+package ng.apmis.audreymumplus.ui.PregnancyDetails.pregnancyimagegallery;
 
-import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.ActivityNotFoundException;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.support.design.widget.BottomSheetDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.ImageButton;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.Spinner;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.ui.Journal.JournalFactory;
@@ -29,13 +21,14 @@ import ng.apmis.audreymumplus.ui.Journal.JournalModel;
 import ng.apmis.audreymumplus.ui.Journal.JournalViewModel;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 
-import static android.app.Activity.RESULT_OK;
-
 public class MyGalleryFragment extends android.support.v4.app.Fragment {
     private static final String CLASSNAME = "HOME";
 
     JournalViewModel journalViewModel;
     List<GalleryModel> galleryList;
+    List<GalleryModel> pregnancyBelly, babyScan;
+    @BindView(R.id.gallery_option_spinner)
+    Spinner galleryOptionSpinner;
 
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container,
@@ -43,8 +36,8 @@ public class MyGalleryFragment extends android.support.v4.app.Fragment {
         View rootView = inflater.inflate(R.layout.fragment_my_gallery, container, false);
 
         ButterKnife.bind(this, rootView);
-
-        //  ((DashboardActivity)getActivity()).setToolBarTitle(CLASSNAME);
+        galleryList = new ArrayList<>();
+        pregnancyBelly = babyScan = new ArrayList<>();
 
         GridView gridView = rootView.findViewById(R.id.list_gallery);
 
@@ -54,23 +47,42 @@ public class MyGalleryFragment extends android.support.v4.app.Fragment {
 
         JournalFactory journalFactory = InjectorUtils.provideJournalFactory(getActivity());
         journalViewModel = ViewModelProviders.of(getActivity(), journalFactory).get(JournalViewModel.class);
-        View emptyView = rootView.findViewById(R.id.empty_view);
 
         journalViewModel.getmJournalEntry().observe(getActivity(), journalModels -> {
             if (journalModels != null) {
             for (JournalModel x : journalModels) {
                 if (!TextUtils.isEmpty(x.getPregnancyBellyUri())) {
                     galleryList.add(new GalleryModel(x.getPregnancyBellyUri()));
+                    pregnancyBelly.add(new GalleryModel(x.getPregnancyBellyUri()));
                 }
                 if (!TextUtils.isEmpty(x.getBabyScanUri())) {
                     galleryList.add(new GalleryModel(x.getBabyScanUri()));
+                    babyScan.add(new GalleryModel(x.getBabyScanUri()));
                 }
             }
                 galleryAdapter.setGalleryModels(galleryList == null ? new ArrayList<>() : galleryList);
 
-            } else {
+            }
+        });
 
-                gridView.setEmptyView(emptyView);
+        galleryOptionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                switch (((String)adapterView.getItemAtPosition(i))) {
+                    case  "ALL":
+                        galleryAdapter.setGalleryModels(galleryList);
+                        break;
+                    case "Baby Scan":
+                        galleryAdapter.setGalleryModels(babyScan);
+                        break;
+                    case "Pregnancy Belly":
+                        galleryAdapter.setGalleryModels(pregnancyBelly);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
 

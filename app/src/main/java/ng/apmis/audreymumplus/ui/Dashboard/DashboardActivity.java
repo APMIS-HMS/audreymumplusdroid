@@ -103,7 +103,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         TextView userName = headerLayout.findViewById(R.id.user_name);
         //new GetVersionCode().execute();
 
-        AudreyMumplus.getInstance().diskIO().execute(() -> InjectorUtils.provideRepository(this).getPerson().observe(this, person -> this.person.postValue(person))
+        AudreyMumplus.getInstance().diskIO().execute(() -> InjectorUtils.provideRepository(this).getPerson().observe(this, person -> this.person.postValue(person == null ? new Person("", "", "") : person))
         );
 
         person.observe(this, theUser -> userName.setText(theUser.getFirstName() + " " + theUser.getLastName()));

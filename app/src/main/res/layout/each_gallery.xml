@@ -9,8 +9,10 @@
                 android:id="@+id/gallery_image"
                 android:layout_width="match_parent"
                 android:layout_height="156dp"
+                android:maxHeight="156dp"
                 android:layout_gravity="center"
                 tools:src="@drawable/ic_my_pregnancy"
+                android:scaleType="fitCenter"
                 android:contentDescription="@string/pregnancy" />
 
 

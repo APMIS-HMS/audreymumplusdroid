@@ -1,4 +1,4 @@
-package ng.apmis.audreymumplus.ui.PregnancyDetails;
+package ng.apmis.audreymumplus.ui.PregnancyDetails.pregnancyimagegallery;
 
 public class GalleryModel {
     private String imageUrl;

@@ -14,6 +14,8 @@ import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,11 +25,15 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.AudreyMumplus;
+import ng.apmis.audreymumplus.BuildConfig;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.data.AudreyRepository;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
@@ -72,6 +78,7 @@ public class AddJournalFragment extends Fragment {
 
     ImageView imageViewToUpdate;
     String uriToSet, pregScan, pregBelly = "";
+    String imageFilePath;
 
 
 
@@ -80,12 +87,6 @@ public class AddJournalFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.new_journal, container, false);
         ButterKnife.bind(this, rootView);
-
-        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-        StrictMode.setVmPolicy(builder.build());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            builder.detectFileUriExposure();
-        }
 
 
         saveJournal.setOnClickListener((view) -> {
@@ -98,7 +99,7 @@ public class AddJournalFragment extends Fragment {
                 String symtom = symtoms.getText().toString();
                 String baby = babyMovement.getText().toString();
 
-                JournalModel newJournal = new JournalModel(mood, crav, heavy, symtom, pregScan, pregBelly, baby, date);
+                JournalModel newJournal = new JournalModel(mood, crav, heavy, symtom, pregScan, pregBelly, baby, date, "2");
 
                 AudreyMumplus.getInstance().diskIO().execute(() ->
                         InjectorUtils.provideRepository(getActivity()).saveJournal(newJournal));
@@ -180,14 +181,14 @@ public class AddJournalFragment extends Fragment {
             }
         });
 
-        ImageButton btnCamera = (ImageButton) dialogView.findViewById(R.id.btnSelectCamera);
+      /*  ImageButton btnCamera = (ImageButton) dialogView.findViewById(R.id.btnSelectCamera);
         btnCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ClickImageFromCamera();
                 builder.dismiss();
             }
-        });
+        });*/
 
         ImageButton btnX = (ImageButton) dialogView.findViewById(R.id.btnCancel);
         btnX.setOnClickListener(new View.OnClickListener() {
@@ -201,19 +202,44 @@ public class AddJournalFragment extends Fragment {
 
     public void ClickImageFromCamera() {
 
-        CamIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            CamIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 
-        file = new File(Environment.getExternalStorageDirectory(),
-                "file" + String.valueOf(System.currentTimeMillis()) + ".jpg");
-        uri = Uri.fromFile(file);
+            file = new File(Environment.getExternalStorageDirectory(),
+                    "file" + String.valueOf(System.currentTimeMillis()) + ".jpg");
+            uri = Uri.fromFile(file);
 
-       // CamIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            CamIntent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, uri);
 
-        CamIntent.putExtra(MediaStore.ACTION_IMAGE_CAPTURE, uri);
+            CamIntent.putExtra("return-data", true);
 
-        CamIntent.putExtra("return-data", true);
+            startActivityForResult(CamIntent, 0);
+        } else {
+            CamIntent = new Intent(
+                    MediaStore.ACTION_IMAGE_CAPTURE);
+            if(CamIntent.resolveActivity(getActivity().getPackageManager()) != null){
+                //Create a file to store the image
+                File photoFile = null;
+                try {
+                    photoFile = createImageFile();
+                } catch (IOException ex) {
+                    // Error occurred while creating the File
+                }
+                if (photoFile != null) {
+                        uri = FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".my.package.name.provider", photoFile);
+                        CamIntent.putExtra(MediaStore.EXTRA_OUTPUT,
+                                uri);
+                    CamIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-        startActivityForResult(CamIntent, 0);
+                    getActivity().grantUriPermission("com.android.camera",uri,
+                            Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    startActivityForResult(CamIntent,
+                            0);
+                }
+            }
+        }
+
+
 
     }
 
@@ -240,18 +266,20 @@ public class AddJournalFragment extends Fragment {
             }
         } else if (requestCode == 1) {
 
+
             if (data != null) {
 
                 Bundle bundle = data.getExtras();
-
                 Bitmap bitmap = bundle.getParcelable("data");
                 if (uriToSet.equals("baby-scan")) {
-
+                    Toast.makeText(getActivity(), "Baby scan "+ uri.toString() , Toast.LENGTH_SHORT).show();
+                    pregScan = uri.toString();
                 } else {
-
+                    Toast.makeText(getActivity(), "Belly scan "+ uri.toString() , Toast.LENGTH_SHORT).show();
+                    pregBelly = uri.toString();
                 }
-
                 imageViewToUpdate.setImageBitmap(bitmap);
+
                 try {
                    // upload(bitmap);
                 } catch (Exception ignored) {
@@ -264,6 +292,7 @@ public class AddJournalFragment extends Fragment {
     }
 
     public void ImageCropFunction() {
+
 
         // Image Crop Code
         try {
@@ -286,6 +315,23 @@ public class AddJournalFragment extends Fragment {
         } catch (ActivityNotFoundException ignored) {
 
         }
+    }
+
+    private File createImageFile() throws IOException {
+        String timeStamp =
+                new SimpleDateFormat("yyyyMMdd_HHmmss",
+                        Locale.getDefault()).format(new Date());
+        String imageFileName = "IMG_" + timeStamp + "_";
+        File storageDir =
+                getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        imageFilePath = image.getAbsolutePath();
+        return image;
     }
 
 }

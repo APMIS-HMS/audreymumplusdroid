@@ -18,9 +18,10 @@ public class JournalModel {
     private String pregnancyBellyUri;
     private String babyMovement;
     private long date;
+    private String day;
 
     @Ignore
-    public JournalModel(String mood, String cravings, String weight, String symptoms, String babyScanUri, String pregnancyBellyUri, String babyMovement, long date) {
+    public JournalModel(String mood, String cravings, String weight, String symptoms, String babyScanUri, String pregnancyBellyUri, String babyMovement, long date, String day) {
         this.mood = mood;
         this.cravings = cravings;
         this.weight = weight;
@@ -29,9 +30,10 @@ public class JournalModel {
         this.pregnancyBellyUri = pregnancyBellyUri;
         this.babyMovement = babyMovement;
         this.date = date;
+        this.day = day;
     }
 
-    public JournalModel(int id, String mood, String cravings, String weight, String symptoms, String babyScanUri, String pregnancyBellyUri, String babyMovement, long date) {
+    public JournalModel(int id, String mood, String cravings, String weight, String symptoms, String babyScanUri, String pregnancyBellyUri, String babyMovement, long date, String day) {
         this.id = id;
         this.mood = mood;
         this.cravings = cravings;
@@ -41,6 +43,7 @@ public class JournalModel {
         this.pregnancyBellyUri = pregnancyBellyUri;
         this.babyMovement = babyMovement;
         this.date = date;
+        this.day = day;
     }
 
 
@@ -80,6 +83,8 @@ public class JournalModel {
         return date;
     }
 
+    public String getDay () {return day; }
+
     @Override
     public String toString() {
         return "JournalModel{" +
@@ -91,7 +96,8 @@ public class JournalModel {
                 ", babyScanUri='" + babyScanUri + '\'' +
                 ", pregnancyBellyUri='" + pregnancyBellyUri + '\'' +
                 ", babyMovement='" + babyMovement + '\'' +
-                ", date=" + date +
+                ", date=" + date + '\'' +
+                ", day=" + day +
                 '}';
     }
 }

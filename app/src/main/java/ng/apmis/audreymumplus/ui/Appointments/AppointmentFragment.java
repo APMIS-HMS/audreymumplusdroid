@@ -165,6 +165,7 @@ public class AppointmentFragment extends android.support.v4.app.Fragment {
             databaseQuery();
         } else {
             Toast.makeText(getActivity(), "you need to grant permission to view appointments", Toast.LENGTH_SHORT).show();
+            getActivity().onBackPressed();
         }
     }
 }

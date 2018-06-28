@@ -1,4 +1,4 @@
-package ng.apmis.audreymumplus.ui.PregnancyDetails;
+package ng.apmis.audreymumplus.ui.PregnancyDetails.pregnancyweeklyprogress;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -25,7 +25,7 @@ import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.utils.Utils;
 
-public class MyPregnancyContext extends Fragment{
+public class PregnancyWeeklyProgressFragment extends Fragment{
 
     private static String CLASSNAME = "MOM plus";
     PregnancyWeeklyProgressAdapter weeklyProgressAdapter;

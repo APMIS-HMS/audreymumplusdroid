@@ -50,10 +50,10 @@ public class JournalAdapter extends BaseAdapter {
         JournalModel journalModel = (JournalModel) getItem(position);
 
         // get the TextView for item name and item description
-        TextView textViewItemDescription = convertView.findViewById(R.id.journal_text);
+        TextView textViewItemDescription = convertView.findViewById(R.id.week_day_cravings);
 
         //sets the text for item name and item description from the current item object
-        textViewItemDescription.setText(journalModel.getMood());
+        textViewItemDescription.setText(mCon.getString(R.string.set_journal_list_title, "34", "2", journalModel.getMood()));
 
         // returns the view for the current row
         return convertView;

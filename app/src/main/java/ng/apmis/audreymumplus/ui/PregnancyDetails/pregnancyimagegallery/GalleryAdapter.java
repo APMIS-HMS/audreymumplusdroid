@@ -1,4 +1,4 @@
-package ng.apmis.audreymumplus.ui.PregnancyDetails;
+package ng.apmis.audreymumplus.ui.PregnancyDetails.pregnancyimagegallery;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -15,12 +15,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ng.apmis.audreymumplus.R;
-import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
-import ng.apmis.audreymumplus.ui.Journal.JournalModel;
 
 public class GalleryAdapter extends BaseAdapter {
     List<GalleryModel> galleryModels;

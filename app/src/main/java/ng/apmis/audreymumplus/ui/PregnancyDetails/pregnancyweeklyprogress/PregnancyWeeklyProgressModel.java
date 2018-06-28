@@ -1,4 +1,4 @@
-package ng.apmis.audreymumplus.ui.PregnancyDetails;
+package ng.apmis.audreymumplus.ui.PregnancyDetails.pregnancyweeklyprogress;
 
 /**
  * Created by Thadeus-APMIS on 6/27/2018.
