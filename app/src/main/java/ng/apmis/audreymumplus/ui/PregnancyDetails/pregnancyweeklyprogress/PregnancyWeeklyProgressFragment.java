@@ -27,9 +27,8 @@ import ng.apmis.audreymumplus.utils.Utils;
 
 public class PregnancyWeeklyProgressFragment extends Fragment{
 
-    private static String CLASSNAME = "MOM plus";
     PregnancyWeeklyProgressAdapter weeklyProgressAdapter;
-    ArrayList<PregnancyWeeklyProgressModel> weeklyProgressModelArrayList = new ArrayList<>();
+    ArrayList<PregnancyWeeklyProgressModel> weeklyProgressModelArrayList;
 
     @BindView(R.id.todays_progress_intro)
     TextView todaysProgressTitle;
@@ -49,6 +48,7 @@ public class PregnancyWeeklyProgressFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.mypregnancy_list,container,false);
         ButterKnife.bind(this, rootView);
+        weeklyProgressModelArrayList = new ArrayList<>();
 
         weeklyProgressRecycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,false));
         weeklyProgressAdapter = new PregnancyWeeklyProgressAdapter(getActivity());

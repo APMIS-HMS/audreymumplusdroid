@@ -110,6 +110,7 @@ public class SignupActivity extends AppCompatActivity implements SignupFragmentB
             }
         }, error -> {
             progressDialog.dismiss();
+            Log.v("Error", String.valueOf(error));
             Toast.makeText(SignupActivity.this, "There was an error try again", Toast.LENGTH_SHORT).show();
         });
         queue.add(strRequest);

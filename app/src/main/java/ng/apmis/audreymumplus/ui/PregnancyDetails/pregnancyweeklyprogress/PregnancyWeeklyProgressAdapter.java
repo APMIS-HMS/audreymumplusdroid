@@ -29,6 +29,9 @@ public class PregnancyWeeklyProgressAdapter extends RecyclerView.Adapter<Pregnan
     }
 
     public void addPregnancyProgress (ArrayList<PregnancyWeeklyProgressModel> weekProgress) {
+        if (weeklyProgressModels != null) {
+            weeklyProgressModels = new ArrayList<>();
+        }
         weeklyProgressModels.addAll(weekProgress);
         notifyDataSetChanged();
     }

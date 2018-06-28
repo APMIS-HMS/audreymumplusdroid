@@ -68,11 +68,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         sharedPreferencesManager = new SharedPreferencesManager(this.getApplicationContext());
 
-        if (!sharedPreferencesManager.getStoredEmail().equals("")) {
+        if (!TextUtils.isEmpty(sharedPreferencesManager.getStoredEmail())) {
             emailEditText.setText(sharedPreferencesManager.getStoredEmail());
         }
 
-        if (!sharedPreferencesManager.getStoredUserPassword().equals("")) {
+        if (!TextUtils.isEmpty(sharedPreferencesManager.getStoredUserPassword())) {
             passwordEditText.setText(sharedPreferencesManager.getStoredUserPassword());
             rememberMe.setChecked(true);
         }
