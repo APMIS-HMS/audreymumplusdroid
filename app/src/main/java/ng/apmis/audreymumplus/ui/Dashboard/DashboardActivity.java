@@ -173,6 +173,15 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawers();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     boolean selectNavigationItem(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.home:

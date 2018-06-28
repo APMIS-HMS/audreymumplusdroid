@@ -6,17 +6,18 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 import android.content.Context;
 
+import ng.apmis.audreymumplus.ui.Appointments.Appointment;
 import ng.apmis.audreymumplus.ui.Journal.JournalModel;
 
 /**
  * Created by Thadeus-APMIS on 5/15/2018.
  */
 @TypeConverters({JournalConverters.class})
-@Database(entities = {JournalModel.class, Person.class}, version = 1, exportSchema = false)
+@Database(entities = {JournalModel.class, Person.class, Appointment.class}, version = 1, exportSchema = false)
 public abstract class JournalDatabase extends RoomDatabase {
     public abstract JournalDao dailyJournalDao();
 
-    private static final String DATABASE_NAME = "dailyjournal";
+    private static final String DATABASE_NAME = "audrey-db";
 
     // For Singleton instantiation
     private static final Object LOCK = new Object();

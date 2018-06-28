@@ -9,6 +9,7 @@ import android.arch.persistence.room.Query;
 import java.util.Date;
 import java.util.List;
 
+import ng.apmis.audreymumplus.ui.Appointments.Appointment;
 import ng.apmis.audreymumplus.ui.Journal.JournalModel;
 
 /**
@@ -26,6 +27,11 @@ public interface JournalDao {
     int countAllPastJournal(Date date);
 */
 
+    @Query("SELECT * FROM appointments")
+    LiveData<List<Appointment>> getSavedAppointments();
+
+    @Insert()
+    void insertAppointment(Appointment appointment);
 
     @Query("SELECT * FROM journal WHERE date = :date")
     LiveData<JournalModel> getJournalByDate(Date date);

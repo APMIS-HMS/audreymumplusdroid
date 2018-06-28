@@ -25,8 +25,10 @@ import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
+import ng.apmis.audreymumplus.utils.InjectorUtils;
 
 import static android.app.Activity.RESULT_OK;
 import static java.lang.Integer.parseInt;
@@ -56,7 +58,9 @@ public class AddAppointmentFragment extends Fragment {
     TextInputEditText appointmentTime;
 
 
-    android.app.DialogFragment dialogfragment;
+    DialogFragment dialogfragment;
+
+    Appointment thisAppointment;
 
 
     int mYear, mMonth, mDate = 0;
@@ -112,6 +116,7 @@ public class AddAppointmentFragment extends Fragment {
             return false;
         }
 
+
         return true;
     }
 
@@ -121,6 +126,7 @@ public class AddAppointmentFragment extends Fragment {
         beginTime.set(mYear, mMonth, mDate, parseInt(time[0]), parseInt(time[1]));
         Calendar endTime = Calendar.getInstance();
         endTime.set(mYear, mMonth, mDate, parseInt(time[0]) + 1, parseInt(time[1]));
+        thisAppointment = new Appointment(appointmentTitle.getText().toString(),"","","");
         Intent intent = new Intent(Intent.ACTION_INSERT)
                 .setData(CalendarContract.Events.CONTENT_URI)
                 .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis())
@@ -171,6 +177,7 @@ public class AddAppointmentFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1000 && resultCode == RESULT_OK) {
+            AudreyMumplus.getInstance().diskIO().execute(() -> InjectorUtils.provideRepository(getActivity()).saveAppointment(thisAppointment));
             getActivity().onBackPressed();
         }
     }

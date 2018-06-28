@@ -7,31 +7,36 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ng.apmis.audreymumplus.R;
 
 public class AppointmentAdapter extends BaseAdapter {
-    List<Appointment> appointmentModels;
+    List<Appointment> mAppointmentModels;
     Context mCon;
-    public AppointmentAdapter(Context context, List<Appointment>appoint){
+    public AppointmentAdapter(Context context){
         mCon = context;
-        appointmentModels = appoint;
+        mAppointmentModels = new ArrayList<>();
     }
 
     public void setAppointmentModels(List<Appointment> appointmentModels) {
-        this.appointmentModels = appointmentModels;
+        if (appointmentModels != null) {
+            mAppointmentModels = new ArrayList<>();
+            notifyDataSetChanged();
+        }
+        mAppointmentModels = appointmentModels;
         notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
-        return appointmentModels.size();
+        return mAppointmentModels.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return appointmentModels.get(position);
+        return mAppointmentModels.get(position);
     }
 
     @Override

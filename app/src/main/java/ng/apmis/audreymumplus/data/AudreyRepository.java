@@ -11,6 +11,7 @@ import ng.apmis.audreymumplus.data.database.DailyJournal;
 import ng.apmis.audreymumplus.data.database.JournalDao;
 import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.data.network.MumplusNetworkDataSource;
+import ng.apmis.audreymumplus.ui.Appointments.Appointment;
 import ng.apmis.audreymumplus.ui.Journal.JournalModel;
 
 /**
@@ -67,6 +68,14 @@ public class AudreyRepository {
 
     public LiveData<Person> getPerson () {
         return mJournalDao.getPerson();
+    }
+
+    public void saveAppointment (Appointment appointment) {
+        mJournalDao.insertAppointment(appointment);
+    }
+
+    public LiveData<List<Appointment>> getAllAppointments () {
+        return mJournalDao.getSavedAppointments();
     }
 
 /*
