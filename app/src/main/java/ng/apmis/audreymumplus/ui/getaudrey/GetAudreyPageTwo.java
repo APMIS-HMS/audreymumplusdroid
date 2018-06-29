@@ -67,7 +67,7 @@ public class GetAudreyPageTwo extends Fragment {
     }
 
     boolean checkFields () {
-        if (spouseFullname.getText().toString().equals("")) {
+       /* if (spouseFullname.getText().toString().equals("")) {
             spouseFullname.setError("Please fill spouse name");
             return false;
         }
@@ -103,7 +103,8 @@ public class GetAudreyPageTwo extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
+*/
+       //TODO uncomment above code for production
         return true;
     }
 

@@ -125,6 +125,7 @@ public class GetAudreyActivity extends AppCompatActivity implements GetAudreyPag
             @Override
             public void run() {
                 progressDialog.dismiss();
+                finish();
             }
         }, 2000);
 //TODO remove above handler and uncomment bottom for production
