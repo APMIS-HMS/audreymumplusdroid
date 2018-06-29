@@ -36,8 +36,6 @@ public class GetAudreyPageOne extends Fragment {
     TextInputEditText surname;
     @BindView(R.id.firstname_et)
     TextInputEditText firstname;
-    @BindView(R.id.lastname_et)
-    TextInputEditText lastName;
     @BindView(R.id.other_name_et)
     TextInputEditText otherName;
     @BindView(R.id.state_origin_spinner)
@@ -74,6 +72,7 @@ public class GetAudreyPageOne extends Fragment {
             if (checkFields()) {
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .addToBackStack(null)
                         .add(R.id.get_audrey_container, new GetAudreyPageTwo())
                         .commit();
             }

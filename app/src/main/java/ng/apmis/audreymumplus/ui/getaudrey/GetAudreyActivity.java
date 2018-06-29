@@ -3,6 +3,7 @@ package ng.apmis.audreymumplus.ui.getaudrey;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -49,7 +50,6 @@ public class GetAudreyActivity extends AppCompatActivity implements GetAudreyPag
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.get_audrey_container, new GetAudreyPageOne())
-                .addToBackStack(null)
                 .commit();
     }
 
@@ -121,7 +121,14 @@ public class GetAudreyActivity extends AppCompatActivity implements GetAudreyPag
         progressDialog.setMessage("Please wait...");
         progressDialog.show();
 
-        JsonObjectRequest strRequest = new JsonObjectRequest(Request.Method.POST, BASE_URL + "save-person", uniquePerson, response -> {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                progressDialog.dismiss();
+            }
+        }, 2000);
+//TODO remove above handler and uncomment bottom for production
+        /*JsonObjectRequest strRequest = new JsonObjectRequest(Request.Method.POST, BASE_URL + "save-person", uniquePerson, response -> {
             progressDialog.dismiss();
             Log.v("Sign up response", String.valueOf(response));
             finish();
@@ -130,12 +137,22 @@ public class GetAudreyActivity extends AppCompatActivity implements GetAudreyPag
             Log.v("Sign up error", String.valueOf(error.getMessage()));
             Toast.makeText(this, "There was an error try again", Toast.LENGTH_SHORT).show();
         });
-        queue.add(strRequest);
+        queue.add(strRequest);*/
     }
 
 
     @Override
     public void clickSignup(View view) {
         getAudrey(registrationData);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        queue.cancelAll(new RequestQueue.RequestFilter() {
+            public boolean apply(Request<?> request) {
+                return true;
+            }
+        });
     }
 }
