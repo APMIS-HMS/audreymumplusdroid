@@ -38,6 +38,8 @@
         </intent-filter>
         </activity>
         <activity android:name=".ui.onboarding.OnboardingActivity"/>
+        <activity android:name=".ui.getaudrey.GetAudreyActivity" />
+
         <provider
             android:name=".utils.GenericFileProvider"
             android:authorities="${applicationId}.my.package.name.provider"

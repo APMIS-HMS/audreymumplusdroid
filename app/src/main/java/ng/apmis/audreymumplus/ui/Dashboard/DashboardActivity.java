@@ -27,7 +27,6 @@ import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
@@ -41,6 +40,7 @@ import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.ui.Appointments.AppointmentFragment;
 import ng.apmis.audreymumplus.ui.Chat.ChatFragment;
 import ng.apmis.audreymumplus.ui.Faq.FaqFragment;
+import ng.apmis.audreymumplus.ui.getaudrey.GetAudreyActivity;
 import ng.apmis.audreymumplus.ui.Home.HomeFragment;
 import ng.apmis.audreymumplus.ui.Journal.MyJournalFragment;
 import ng.apmis.audreymumplus.ui.PregnancyDetails.PregnancyFragment;
@@ -48,7 +48,6 @@ import ng.apmis.audreymumplus.ui.profile.ProfileFragment;
 import ng.apmis.audreymumplus.utils.BottomNavigationViewHelper;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
-import ng.apmis.audreymumplus.utils.Utils;
 
 public class DashboardActivity extends AppCompatActivity implements HomeFragment.OnfragmentInteractionListener {
     @BindView(R.id.bottom_navigation)
@@ -69,6 +68,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
     private Socket mSocket;
     private Emitter.Listener onMessage;
     public MutableLiveData<Person> person = new MutableLiveData<>();
+    String whereFrom;
 
     {
         try {
@@ -200,13 +200,24 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                 Toast.makeText(DashboardActivity.this, "Help selected", Toast.LENGTH_SHORT).show();
                 drawerLayout.closeDrawers();
                 return true;
+            case R.id.get_audrey:
+                startActivity(new Intent(this, GetAudreyActivity.class));
+                drawerLayout.closeDrawers();
+                return true;
             case R.id.settings:
                 prefFrag(new SettingFragment());
-                Toast.makeText(DashboardActivity.this, "Settings selected", Toast.LENGTH_SHORT).show();
                 drawerLayout.closeDrawers();
                 return true;
         }
         return false;
+    }
+
+    public String getWhereFrom () {
+        return whereFrom;
+    }
+
+    public void setWhereFrom (String whereFrom) {
+        this.whereFrom = whereFrom;
     }
 
 
@@ -232,27 +243,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         }
         bottomNavigationView.setVisibility(View.GONE);
     }
-    //TODO add edit profile to edit to createoptionsmenu on profile before showing save button
 
-
-    /*
-    public void setToolBarTitle (String title) {
-        title_toolbar.setText(title);
-     */
-/*   if (welcomeScreen) {
-            backButton.setVisibility(View.GONE);
-        } else {
-            backButton.setVisibility(View.VISIBLE);
-        }
-   *//*
- }
-*/
-/*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        new MenuInflater(this).inflate(R.menu.nav_items, menu);
-        return true;
-    }*/
 
     private void selectFragment(MenuItem item) {
 
@@ -293,13 +284,17 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
             fm.beginTransaction()
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .replace(R.id.fragment_container, fragment)
-                    .addToBackStack("current")
+                    .addToBackStack("top-current")
                     .commit();
         }
     }
 
     private void prefFrag(PreferenceFragment fragment) {
-        getFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).addToBackStack("current").commit();
+        getFragmentManager().popBackStack("current", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        getFragmentManager().beginTransaction()
+                .setTransition(android.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .add(R.id.fragment_container, fragment)
+                .addToBackStack(null).commit();
     }
 
 

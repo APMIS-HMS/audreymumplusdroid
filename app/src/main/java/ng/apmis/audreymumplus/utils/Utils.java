@@ -14,7 +14,7 @@ public class Utils {
     public String loadJSONFromAsset(Context context) {
         String json = null;
         try {
-            InputStream is = context.getAssets().open("weekly_progress.json");
+            InputStream is = context.getAssets().open("week.json");
 
             int size = is.available();
 

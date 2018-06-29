@@ -66,9 +66,9 @@ public class PregnancyWeeklyProgressFragment extends Fragment{
                 //Check for current week we are in
                 //TODO check what week we are in
                 JSONObject singleWeek = new JSONObject(weeksArray.get(week).toString());
-                Log.v("Single week", singleWeek.toString());
                 if (singleWeek.getString("week").equals(currentWeek)) {
                     JSONArray thisWeek = singleWeek.getJSONArray("data");
+                    Log.v("week obj array lenght", String.valueOf(thisWeek.length()));
                     for (int day = 0; day < thisWeek.length(); day++) {
                         PregnancyWeeklyProgressModel oneItem = new Gson().fromJson(thisWeek.get(day).toString(), PregnancyWeeklyProgressModel.class);
                         Log.v("oneItem", oneItem.toString());

@@ -18,6 +18,10 @@
             android:icon="@drawable/help_icon"
             android:title="@string/help" />
         <item
+            android:id="@+id/get_audrey"
+            android:icon="@drawable/setting_icon"
+            android:title="@string/get_audrey" />
+        <item
             android:id="@+id/settings"
             android:icon="@drawable/setting_icon"
             android:title="@string/settings" />
