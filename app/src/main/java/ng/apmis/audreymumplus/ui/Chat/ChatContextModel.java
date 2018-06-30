@@ -1,11 +1,13 @@
 package ng.apmis.audreymumplus.ui.Chat;
 
-public class ChatModel {
+public class ChatContextModel {
+    String userId;
     private String username;
     private int imageUri;
     private String content;
 
-    public ChatModel(int image, String name, String text){
+    public ChatContextModel(String id, int image, String name, String text){
+        userId = id;
         imageUri = image;
         username = name;
         content = text;
@@ -21,5 +23,9 @@ public class ChatModel {
 
     public String getContent() {
         return content;
+    }
+
+    public String getUserId () {
+        return userId;
     }
 }

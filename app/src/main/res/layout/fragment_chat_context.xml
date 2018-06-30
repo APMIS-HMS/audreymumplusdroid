@@ -9,43 +9,11 @@
     android:clickable="true"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/chat_group"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="8dp">
-
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:scaleType="fitEnd"
-            app:srcCompat="@drawable/ic_a_icon"
-            android:layout_marginLeft="40dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="4dp" />
-
-        <Spinner
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:spinnerMode="dropdown"
-            android:entries="@array/chat_groups"
-            />
-
-    </LinearLayout>
-
-   <!-- <android.support.v7.widget.RecyclerView
-        android:id="@+id/chat_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>-->
-
-    <ListView
-        android:id="@+id/chat_listn"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/chat_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="8dp"
-        android:layout_below="@+id/chat_group"
         android:layout_above="@+id/message_layout"
         />
 
@@ -70,7 +38,7 @@
             android:layout_width="0dp"
             android:gravity="center_vertical"
             android:layout_weight="2"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:paddingLeft="12dp"
             android:paddingStart="12dp"
             android:hint="@string/contribute_message"/>

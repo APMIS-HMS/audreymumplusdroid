@@ -67,6 +67,8 @@
     <string name="state">state</string>
     <string name="loading">Loading</string>
     <string name="lga">lga</string>
+    <string name="forum_member_counter">%s Members</string>
+    <string name="user_image">user image</string>
 
     <string-array name="select">
         <item>@string/title</item>

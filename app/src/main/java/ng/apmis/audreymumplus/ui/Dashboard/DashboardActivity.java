@@ -38,7 +38,7 @@ import ng.apmis.audreymumplus.LoginActivity;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.ui.Appointments.AppointmentFragment;
-import ng.apmis.audreymumplus.ui.Chat.ChatFragment;
+import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumFragment;
 import ng.apmis.audreymumplus.ui.Faq.FaqFragment;
 import ng.apmis.audreymumplus.ui.getaudrey.GetAudreyActivity;
 import ng.apmis.audreymumplus.ui.Home.HomeFragment;
@@ -255,7 +255,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                 placeFragment(new MyJournalFragment(), true, mFragmentManager);
                 break;
             case R.id.chat_menu:
-                placeFragment(new ChatFragment(), true, mFragmentManager);
+                placeFragment(new ChatForumFragment(), true, mFragmentManager);
                 break;
             case R.id.pill_reminder:
                 placeFragment(new AppointmentFragment(), true, mFragmentManager);
@@ -308,7 +308,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                 placeFragment(new AppointmentFragment(), true, mFragmentManager);
                 break;
             case "Chatrooms":
-                placeFragment(new ChatFragment(), true, mFragmentManager);
+                placeFragment(new ChatForumFragment(), true, mFragmentManager);
                 break;
             case "FAQs":
                 placeFragment(new FaqFragment(), true, mFragmentManager);
