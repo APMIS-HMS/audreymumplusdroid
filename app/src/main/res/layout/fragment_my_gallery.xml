@@ -9,9 +9,11 @@
         android:id="@+id/gallerytext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="12dp"
+        android:layout_marginLeft="12dp"
         android:textSize="16sp"
-        android:text="SORT UPLOADS"/>
+        android:text="Uploaded Pictures"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="12dp"/>
 
     <Spinner
         android:id="@+id/gallery_option_spinner"
@@ -23,16 +25,23 @@
         android:spinnerMode="dropdown"
         android:entries="@array/gallery_options"
         android:layout_marginRight="12dp"
-        android:background="@drawable/edittext_background"
-        />
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="12dp" />
 
+    <View
+        android:id="@+id/view_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="12dp"
+        android:background="@android:color/darker_gray"
+        android:layout_below="@+id/gallery_option_spinner"/>
 
     <GridView
-        android:layout_below="@id/gallerytext"
+        android:layout_below="@id/view_divider"
         android:id="@+id/list_gallery"
         android:layout_width="match_parent"
         android:drawSelectorOnTop="true"
-        android:layout_marginBottom="8dp"
+        android:layout_margin="12dp"
         android:layout_height="wrap_content"
         android:stretchMode="columnWidth"
         android:numColumns="2"/>

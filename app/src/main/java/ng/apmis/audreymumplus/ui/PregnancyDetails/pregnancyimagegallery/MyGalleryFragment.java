@@ -3,6 +3,7 @@ package ng.apmis.audreymumplus.ui.PregnancyDetails.pregnancyimagegallery;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +38,8 @@ public class MyGalleryFragment extends android.support.v4.app.Fragment {
 
         ButterKnife.bind(this, rootView);
         galleryList = new ArrayList<>();
-        pregnancyBelly = babyScan = new ArrayList<>();
+        pregnancyBelly = new ArrayList<>();
+        babyScan = new ArrayList<>();
 
         GridView gridView = rootView.findViewById(R.id.list_gallery);
 
@@ -61,6 +63,8 @@ public class MyGalleryFragment extends android.support.v4.app.Fragment {
                 }
             }
                 galleryAdapter.setGalleryModels(galleryList == null ? new ArrayList<>() : galleryList);
+                Log.v("pregList", String.valueOf(pregnancyBelly.size()));
+                Log.v("babyscan", String.valueOf(babyScan.size()));
 
             }
         });
@@ -69,7 +73,7 @@ public class MyGalleryFragment extends android.support.v4.app.Fragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 switch (((String)adapterView.getItemAtPosition(i))) {
-                    case  "ALL":
+                    case  "All":
                         galleryAdapter.setGalleryModels(galleryList);
                         break;
                     case "Baby Scan":
