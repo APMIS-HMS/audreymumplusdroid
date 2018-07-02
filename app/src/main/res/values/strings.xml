@@ -43,7 +43,7 @@
     <string name="week_title">(Week %s)</string>
     <string name="todays_progress">%s %s</string>
     <string name="todays_day_placeholder">(Day %s)</string>
-    <string name="set_journal_list_title"><b>Week %s Day %s</b>\n\t%s</string>
+    <string name="journal_day"><b>Day %s</b></string>
     <string name="All">All</string>
     <string name="BabyScan">Baby Scan</string>
     <string name="day_indicator">DAY %s</string>
@@ -69,6 +69,7 @@
     <string name="lga">lga</string>
     <string name="forum_member_counter">%s Members</string>
     <string name="user_image">user image</string>
+    <string name="mood">Mood: %s</string>
 
     <string-array name="select">
         <item>@string/title</item>
@@ -106,6 +107,51 @@
     <string-array name="chat_groups">
         <item>General</item>
         <item>Pregnant Mums</item>
+    </string-array>
+
+    <string-array name="week_history">
+        <item>Week 1</item>
+        <item>Week 2</item>
+        <item>Week 3</item>
+        <item>Week 4</item>
+        <item>Week 5</item>
+        <item>Week 6</item>
+        <item>Week 7</item>
+        <item>Week 8</item>
+        <item>Week 9</item>
+        <item>Week 10</item>
+        <item>Week 11</item>
+        <item>Week 12</item>
+        <item>Week 13</item>
+        <item>Week 14</item>
+        <item>Week 15</item>
+        <item>Week 16</item>
+        <item>Week 17</item>
+        <item>Week 18</item>
+        <item>Week 19</item>
+        <item>Week 20</item>
+        <item>Week 21</item>
+        <item>Week 22</item>
+        <item>Week 23</item>
+        <item>Week 24</item>
+        <item>Week 25</item>
+        <item>Week 26</item>
+        <item>Week 27</item>
+        <item>Week 28</item>
+        <item>Week 29</item>
+        <item>Week 30</item>
+        <item>Week 31</item>
+        <item>Week 32</item>
+        <item>Week 33</item>
+        <item>Week 34</item>
+        <item>Week 35</item>
+        <item>Week 36</item>
+        <item>Week 37</item>
+        <item>Week 38</item>
+        <item>Week 39</item>
+        <item>Week 40</item>
+        <item>Week 41</item>
+        <item>Week 42</item>
     </string-array>
 
 

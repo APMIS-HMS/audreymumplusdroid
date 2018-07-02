@@ -37,13 +37,10 @@ public class MyGalleryFragment extends android.support.v4.app.Fragment {
         View rootView = inflater.inflate(R.layout.fragment_my_gallery, container, false);
 
         ButterKnife.bind(this, rootView);
-        galleryList = new ArrayList<>();
-        pregnancyBelly = new ArrayList<>();
-        babyScan = new ArrayList<>();
 
         GridView gridView = rootView.findViewById(R.id.list_gallery);
 
-        GalleryAdapter galleryAdapter = new GalleryAdapter(getActivity(), new ArrayList<>());
+        GalleryAdapter galleryAdapter = new GalleryAdapter(getActivity());
 
         gridView.setAdapter(galleryAdapter);
 
@@ -51,6 +48,11 @@ public class MyGalleryFragment extends android.support.v4.app.Fragment {
         journalViewModel = ViewModelProviders.of(getActivity(), journalFactory).get(JournalViewModel.class);
 
         journalViewModel.getmJournalEntry().observe(getActivity(), journalModels -> {
+
+            galleryList = new ArrayList<>();
+            pregnancyBelly = new ArrayList<>();
+            babyScan = new ArrayList<>();
+
             if (journalModels != null) {
             for (JournalModel x : journalModels) {
                 if (!TextUtils.isEmpty(x.getPregnancyBellyUri())) {
@@ -63,11 +65,11 @@ public class MyGalleryFragment extends android.support.v4.app.Fragment {
                 }
             }
                 galleryAdapter.setGalleryModels(galleryList == null ? new ArrayList<>() : galleryList);
-                Log.v("pregList", String.valueOf(pregnancyBelly.size()));
-                Log.v("babyscan", String.valueOf(babyScan.size()));
 
             }
         });
+
+        gridView.setEmptyView(rootView.findViewById(R.id.empty_view));
 
         galleryOptionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

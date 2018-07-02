@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ng.apmis.audreymumplus.R;
@@ -23,12 +24,15 @@ public class GalleryAdapter extends BaseAdapter {
     List<GalleryModel> galleryModels;
     Context gContext;
 
-    public GalleryAdapter(Context context, List<GalleryModel>mgal){
+    public GalleryAdapter(Context context){
         gContext = context;
-        galleryModels = mgal;
+        galleryModels = new ArrayList<>();
     }
 
     void setGalleryModels (List<GalleryModel> images) {
+        if (galleryModels != null) {
+            galleryModels = new ArrayList<>();
+        }
         galleryModels = images;
         notifyDataSetChanged();
     }
@@ -56,7 +60,6 @@ public class GalleryAdapter extends BaseAdapter {
         }
         // get current item to be displayed
         GalleryModel currentItem = (GalleryModel) getItem(position);
-        Log.v("Image uri", currentItem.getImageUrl());
 
         // get the TextView for item name and item description
         ImageView galleryImage = convertView.findViewById(R.id.gallery_image);
@@ -66,7 +69,9 @@ public class GalleryAdapter extends BaseAdapter {
                     .load(Uri.parse(currentItem.getImageUrl())).into(new SimpleTarget<Drawable>() {
                 @Override
                 public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
-                    galleryImage.setImageDrawable(resource);
+                    if (resource != null) {
+                        galleryImage.setImageDrawable(resource);
+                    }
                 }
             });
         }

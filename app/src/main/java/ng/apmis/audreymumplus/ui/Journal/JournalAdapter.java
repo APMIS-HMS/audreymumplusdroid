@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ng.apmis.audreymumplus.R;
@@ -14,13 +15,17 @@ import ng.apmis.audreymumplus.R;
 public class JournalAdapter extends BaseAdapter {
     List<JournalModel> modelList;
     Context mCon;
-    public JournalAdapter(Context context, List<JournalModel>list){
+    public JournalAdapter(Context context){
         mCon = context;
-        modelList = list;
+        modelList = new ArrayList<>();
     }
 
     public void setJournals (List<JournalModel> journalModels) {
+        if (modelList != null) {
+            modelList = new ArrayList<>();
+        }
         modelList = journalModels;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -52,8 +57,12 @@ public class JournalAdapter extends BaseAdapter {
         // get the TextView for item name and item description
         TextView textViewItemDescription = convertView.findViewById(R.id.week_day_cravings);
 
+        TextView moodTextView = convertView.findViewById(R.id.mood);
+
         //sets the text for item name and item description from the current item object
-        textViewItemDescription.setText(mCon.getString(R.string.set_journal_list_title, "34", "2", journalModel.getMood()));
+        textViewItemDescription.setText(mCon.getString(R.string.journal_day, "2"));
+
+        moodTextView.setText(mCon.getString(R.string.mood, journalModel.getMood()));
 
         // returns the view for the current row
         return convertView;

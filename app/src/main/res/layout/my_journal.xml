@@ -24,7 +24,15 @@
                     android:maxWidth="250dp"
                     android:maxHeight="100dp"
                     android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:text="My week 3 Journal" />
+
+                <TextView
+                    android:id="@+id/mood"
+                    android:layout_below="@id/week_day_cravings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Mood"/>
 
                 <RelativeLayout
                     android:layout_width="wrap_content"

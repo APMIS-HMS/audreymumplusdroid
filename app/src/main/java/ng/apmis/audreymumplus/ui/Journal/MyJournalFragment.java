@@ -33,7 +33,7 @@ public class MyJournalFragment extends Fragment {
 
         ListView listView = rootView.findViewById(R.id.journal);
 
-        JournalAdapter journalAdapter = new JournalAdapter(getActivity(), new ArrayList<>());
+        JournalAdapter journalAdapter = new JournalAdapter(getActivity());
         listView.setAdapter(journalAdapter);
 
         JournalFactory journalFactory = InjectorUtils.provideJournalFactory(getActivity());
@@ -52,6 +52,8 @@ public class MyJournalFragment extends Fragment {
             JournalModel clicked = (JournalModel) parent.getItemAtPosition(position);
             Toast.makeText(getActivity(), clicked.getMood() , Toast.LENGTH_SHORT).show();
         });
+
+        listView.setEmptyView(rootView.findViewById(R.id.empty_view));
 
         fab.setOnClickListener((view) -> {
             getActivity().getSupportFragmentManager().beginTransaction()

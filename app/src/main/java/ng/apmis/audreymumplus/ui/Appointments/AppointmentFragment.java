@@ -83,6 +83,8 @@ public class AppointmentFragment extends android.support.v4.app.Fragment {
             getActivity().startActivity(intent);
         });
 
+        listView.setEmptyView(rootView.findViewById(R.id.empty_view));
+
         fab2.setOnClickListener((view) -> getActivity().getSupportFragmentManager().beginTransaction()
                 .add(R.id.fragment_container, new AddAppointmentFragment())
                 .addToBackStack("ADD_NEW")
