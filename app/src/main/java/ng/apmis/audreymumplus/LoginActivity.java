@@ -144,6 +144,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             InjectorUtils.provideRepository(this).getPerson().observe(this, person -> {
 
                                 AudreyMumplus.getInstance().diskIO().execute(() -> {
+                                    //TODO consider deleting all user data locally and sync from remote
                                     InjectorUtils.provideRepository(this).deletePerson();
                                     InjectorUtils.provideRepository(this).savePerson(user);});
 
