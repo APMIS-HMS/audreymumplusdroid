@@ -140,8 +140,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     String token = response.getString("accessToken");
                     Person user = new Gson().fromJson(response.getJSONObject("user").toString(), Person.class);
 
-                    AudreyMumplus.getInstance().diskIO().execute(() ->
-                            InjectorUtils.provideRepository(this).savePerson(user));
+                    AudreyMumplus.getInstance().diskIO().execute(() -> {
+                            InjectorUtils.provideRepository(this).getPerson().observe(this, person -> {
+
+                                AudreyMumplus.getInstance().diskIO().execute(() -> {
+                                    InjectorUtils.provideRepository(this).deletePerson();
+                                    InjectorUtils.provideRepository(this).savePerson(user);});
+
+                                });
+
+                            });
+
 
                     sharedPreferencesManager.storeUserToken(token);
 

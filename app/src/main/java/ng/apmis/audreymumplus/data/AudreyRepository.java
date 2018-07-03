@@ -66,6 +66,10 @@ public class AudreyRepository {
         mJournalDao.insertPerson(person);
     }
 
+    public void deletePerson () {
+        mJournalDao.deletePerson();
+    }
+
     public LiveData<Person> getPerson () {
         return mJournalDao.getPerson();
     }
