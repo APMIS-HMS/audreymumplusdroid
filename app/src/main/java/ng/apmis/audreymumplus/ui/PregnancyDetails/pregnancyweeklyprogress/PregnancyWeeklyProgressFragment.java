@@ -1,5 +1,6 @@
 package ng.apmis.audreymumplus.ui.PregnancyDetails.pregnancyweeklyprogress;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -28,6 +30,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
+import ng.apmis.audreymumplus.ui.getaudrey.GetAudreyActivity;
 import ng.apmis.audreymumplus.utils.Utils;
 
 public class PregnancyWeeklyProgressFragment extends Fragment{
@@ -51,6 +54,14 @@ public class PregnancyWeeklyProgressFragment extends Fragment{
     String currentDay = "1";
 
     RequestQueue queue;
+
+    @BindView(R.id.content_view)
+    View contentView;
+    @BindView(R.id.empty_view)
+    View emptyView;
+
+    @BindView(R.id.get_audrey_btn)
+    Button getAudreyButton;
 
     @Nullable
     @Override
@@ -91,7 +102,16 @@ public class PregnancyWeeklyProgressFragment extends Fragment{
                                 //TODO set some empty state data
                             }
 
-                            weeklyProgressAdapter.addPregnancyProgress(weeklyProgressModelArrayList);
+                            //weeklyProgressAdapter.addPregnancyProgress(weeklyProgressModelArrayList);
+
+                            if (weeklyProgressAdapter.weeklyProgressModels.isEmpty()) {
+                                contentView.setVisibility(View.GONE);
+                                emptyView.setVisibility(View.VISIBLE);
+                            } else {
+                                contentView.setVisibility(View.VISIBLE);
+                                emptyView.setVisibility(View.GONE);
+                            }
+
                             todaysProgressCard.setOnClickListener(view -> {
                                 Bundle detailBundle = new Bundle();
                                 detailBundle.putParcelable("today", todaysModelItem);
@@ -110,12 +130,12 @@ public class PregnancyWeeklyProgressFragment extends Fragment{
                 });
         queue.add(jsonObjectRequest);
 
+        getAudreyButton.setOnClickListener(view -> {
+            getActivity().startActivity(new Intent(getActivity(), GetAudreyActivity.class));
+        });
+
 
         return rootView;
-    }
-
-    void sortWeeklyProgressUpToCurrentWeek (String week) {
-
     }
 
 }

@@ -70,6 +70,7 @@
     <string name="forum_member_counter">%s Members</string>
     <string name="user_image">user image</string>
     <string name="mood">Mood: %s</string>
+    <string name="empty_state_preg_text">To get started on your\npregnancy journey</string>
 
     <string-array name="select">
         <item>@string/title</item>
