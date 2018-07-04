@@ -102,7 +102,7 @@ public class PregnancyWeeklyProgressFragment extends Fragment{
                                 //TODO set some empty state data
                             }
 
-                            //weeklyProgressAdapter.addPregnancyProgress(weeklyProgressModelArrayList);
+                            weeklyProgressAdapter.addPregnancyProgress(weeklyProgressModelArrayList);
 
                             if (weeklyProgressAdapter.weeklyProgressModels.isEmpty()) {
                                 contentView.setVisibility(View.GONE);
