@@ -13,6 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -46,61 +50,66 @@ public class PregnancyWeeklyProgressFragment extends Fragment{
     String currentWeek = "2";
     String currentDay = "1";
 
+    RequestQueue queue;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.mypregnancy_list,container,false);
         ButterKnife.bind(this, rootView);
         weeklyProgressModelArrayList = new ArrayList<>();
+        queue = Volley.newRequestQueue(getActivity());
 
         weeklyProgressRecycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL,false));
         weeklyProgressAdapter = new PregnancyWeeklyProgressAdapter(getActivity(), getChildFragmentManager());
         weeklyProgressRecycler.setAdapter(weeklyProgressAdapter);
 
-        try {
-            JSONObject job = new JSONObject(new Utils().loadJSONFromAsset(getActivity()));
-            JSONArray weeksArray = job.getJSONArray("weeks");
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, "https://audrey-mum.herokuapp.com/weekly-progres", new JSONObject(),
+                response -> {
+                    try {
+                        JSONArray remoteWeeksArray = response.getJSONArray("data");
+                        Log.v("remoteweekarray", remoteWeeksArray.toString());
 
-            //Iterate through all weeks
-            for (int week = 0; week < weeksArray.length(); week++) {
-                //Check for current week we are in
-                //TODO check what week we are in
-                JSONObject singleWeek = new JSONObject(weeksArray.get(week).toString());
-                if (singleWeek.getString("week").equals(currentWeek)) {
-                    JSONArray thisWeek = singleWeek.getJSONArray("data");
-                    Log.v("week obj array lenght", String.valueOf(thisWeek.length()));
-                    for (int day = 0; day < thisWeek.length(); day++) {
-                        PregnancyWeeklyProgressModel oneItem = new Gson().fromJson(thisWeek.get(day).toString(), PregnancyWeeklyProgressModel.class);
-                        Log.v("oneItem", oneItem.toString());
-                        if (oneItem.getDay().equals(currentDay)) {
-                            todaysModelItem = oneItem;
-                            //TODO check if day doesn't exist
-                        } else {
-                            weeklyProgressModelArrayList.add(oneItem);
+                        JSONObject weekOne = new JSONObject(remoteWeeksArray.get(0).toString());
+                        JSONArray remoteWeekDaysArray = weekOne.getJSONArray("data");
+
+                        for (int day = 0; day < remoteWeekDaysArray.length(); day++) {
+                            PregnancyWeeklyProgressModel oneItem = new Gson().fromJson(remoteWeekDaysArray.get(day).toString(), PregnancyWeeklyProgressModel.class);
+                            Log.v("oneItem", oneItem.toString());
+                            if (oneItem.getDay().equals(currentDay)) {
+                                todaysModelItem = oneItem;
+                                //TODO check if day doesn't exist
+                            } else {
+                                weeklyProgressModelArrayList.add(oneItem);
+                            }
+
+                            if (todaysModelItem != null) {
+                                todaysDay.setText(getString(R.string.todays_day_placeholder,todaysModelItem.getDay()));
+                                todaysProgressTitle.setText(Html.fromHtml(getString(R.string.todays_progress, todaysModelItem.getTitle(), todaysModelItem.getIntro())));
+                                currentWeekTv.setText(Html.fromHtml(getString(R.string.week_title, currentWeek)));
+                            } else {
+                                //TODO set some empty state data
+                            }
+
+                            weeklyProgressAdapter.addPregnancyProgress(weeklyProgressModelArrayList);
+                            todaysProgressCard.setOnClickListener(view -> {
+                                Bundle detailBundle = new Bundle();
+                                detailBundle.putParcelable("today", todaysModelItem);
+                                PregnancyWeeklyProgressDetail pregWeekDetail = new PregnancyWeeklyProgressDetail();
+                                pregWeekDetail.setArguments(detailBundle);
+                                pregWeekDetail.show(getChildFragmentManager(), "Day Details");
+                            });
                         }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
-        if (todaysModelItem != null) {
-            todaysDay.setText(getString(R.string.todays_day_placeholder,todaysModelItem.getDay()));
-            todaysProgressTitle.setText(Html.fromHtml(getString(R.string.todays_progress, todaysModelItem.getTitle(), todaysModelItem.getIntro())));
-            currentWeekTv.setText(Html.fromHtml(getString(R.string.week_title, currentWeek)));
-        } else {
-            //TODO set some empty state data
-        }
+                },
+                error -> {
+                    Log.v("weekly error", String.valueOf(error));
+                });
+        queue.add(jsonObjectRequest);
 
-        weeklyProgressAdapter.addPregnancyProgress(weeklyProgressModelArrayList);
-        todaysProgressCard.setOnClickListener(view -> {
-            Bundle detailBundle = new Bundle();
-            detailBundle.putParcelable("today", todaysModelItem);
-            PregnancyWeeklyProgressDetail pregWeekDetail = new PregnancyWeeklyProgressDetail();
-            pregWeekDetail.setArguments(detailBundle);
-            pregWeekDetail.show(getChildFragmentManager(), "Day Details");
-        });
 
         return rootView;
     }
