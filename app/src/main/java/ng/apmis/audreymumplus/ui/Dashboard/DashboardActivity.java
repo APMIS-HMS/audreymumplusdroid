@@ -40,10 +40,10 @@ import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.ui.Appointments.AppointmentFragment;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumFragment;
 import ng.apmis.audreymumplus.ui.Faq.FaqFragment;
+import ng.apmis.audreymumplus.ui.PregnancyDetails.PregnancyFragment;
 import ng.apmis.audreymumplus.ui.getaudrey.GetAudreyActivity;
 import ng.apmis.audreymumplus.ui.Home.HomeFragment;
 import ng.apmis.audreymumplus.ui.Journal.MyJournalFragment;
-import ng.apmis.audreymumplus.ui.PregnancyDetails.PregnancyFragment;
 import ng.apmis.audreymumplus.ui.profile.ProfileFragment;
 import ng.apmis.audreymumplus.utils.BottomNavigationViewHelper;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
@@ -302,6 +302,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
     public void onGridItemClick(String selectedText) {
         switch (selectedText) {
             case "My Pregnancy":
+                //startActivity(new Intent(this, PregnancyActivity.class));
                 placeFragment(new PregnancyFragment(), true, mFragmentManager);
                 break;
             case "My Appointments":
