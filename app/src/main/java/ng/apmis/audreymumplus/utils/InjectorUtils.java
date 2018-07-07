@@ -28,4 +28,8 @@ public class InjectorUtils {
         return new JournalFactory(audreyRepository);
     }
 
+    public static MumplusNetworkDataSource provideJournalNetworkDataSource (Context context) {
+        return MumplusNetworkDataSource.getInstance(context.getApplicationContext(), AudreyMumplus.getInstance());
+    }
+
 }

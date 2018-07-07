@@ -4,12 +4,28 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.data.database.DailyJournal;
+import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.ui.Journal.JournalModel;
+import ng.apmis.audreymumplus.utils.InjectorUtils;
 
 /**
  * Created by Thadeus-APMIS on 5/15/2018.
@@ -26,11 +42,13 @@ public class MumplusNetworkDataSource {
     private final AudreyMumplus mExecutors;
 
     private final MutableLiveData<List<JournalModel>> mDownloadedDailyJournal;
+    RequestQueue queue;
 
     MumplusNetworkDataSource(Context context, AudreyMumplus executors) {
         mContext = context;
         mExecutors = executors;
         mDownloadedDailyJournal = new MutableLiveData<>();
+        queue = Volley.newRequestQueue(context);
     }
 
     public LiveData<List<JournalModel>> getCurrentDailyJournal() {
@@ -112,13 +130,50 @@ public class MumplusNetworkDataSource {
     /**
      * Gets the newest weather
      */
-    void fetchWeather() {
+    public void fetchSinglePeople (String accessToken, String personId) {
         Log.d(LOG_TAG, "Fetch weather started");
         mExecutors.networkIO().execute(() -> {
 
-            //mDownloadedDailyJournal.postValue(response.getWeatherForecast());
+            //String uri = String.format("http://localhost/demoapp/fetch.php?pid=%1$s", personId);
+            String url = String.format("https://audrey-mum.herokuapp.com/people?personId=%1$s", personId);
 
+            JsonObjectRequest peopleJob = new JsonObjectRequest(Request.Method.GET, url, null, response -> {
+
+                JSONObject dataObject = new JSONObject();
+
+                try {
+                    JSONArray jsonArray = response.getJSONArray("data");
+                    dataObject = (JSONObject) jsonArray.get(0);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                Person personFromPeople = new Gson().fromJson(dataObject.toString(), Person.class);
+
+                AudreyMumplus.getInstance().diskIO().execute(() -> {
+                    //deleting all user data locally
+                    InjectorUtils.provideRepository(mContext).deletePerson();
+                    //insert new gotten user
+                    InjectorUtils.provideRepository(mContext).savePerson(personFromPeople);});
+
+            }, error -> {
+
+                Toast.makeText(mContext, "There was a problem", Toast.LENGTH_SHORT).show();
+
+            }){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("Content-Type", "application/json; charset=UTF-8");
+                    params.put("Authorization", "Bearer " + accessToken);
+                    return params;
+                }
+
+            };
+
+            queue.add(peopleJob);
         });
+
     }
 
 }

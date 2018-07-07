@@ -134,24 +134,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 e.printStackTrace();
             }
             JsonObjectRequest loginRequest = new JsonObjectRequest(Request.Method.POST, BASE_URL + "authentication", job, response -> {
-                Log.v("Login response", String.valueOf(response));
 
                 try {
                     String token = response.getString("accessToken");
                     Person user = new Gson().fromJson(response.getJSONObject("user").toString(), Person.class);
 
-                    AudreyMumplus.getInstance().diskIO().execute(() -> {
-                            InjectorUtils.provideRepository(this).getPerson().observe(this, person -> {
-
-                                AudreyMumplus.getInstance().diskIO().execute(() -> {
-                                    //TODO consider deleting all user data locally and sync from remote
-                                    InjectorUtils.provideRepository(this).deletePerson();
-                                    InjectorUtils.provideRepository(this).savePerson(user);});
-
-                                });
-
-                            });
-
+                    AudreyMumplus.getInstance().networkIO().execute(() -> {
+                        InjectorUtils.provideJournalNetworkDataSource(this).fetchSinglePeople(token, user.getPersonId());
+                    });
 
                     sharedPreferencesManager.storeUserToken(token);
 
@@ -213,4 +203,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 sharedPreferencesManager.storeUserPassword("");
             }
     }
+
+
 }
