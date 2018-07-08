@@ -73,6 +73,7 @@
     <string name="empty_state_preg_text">To get started on your\npregnancy journey</string>
     <string name="get_audrey_text">Please fill the form below to get AudreyPack.</string>
     <string name="user_lastname">%s</string>
+    <string name="user_phone">%s</string>
 
     <string-array name="select">
         <item>@string/title</item>

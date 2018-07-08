@@ -36,7 +36,7 @@ import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
  * Created by Thadeus on 6/15/2018.
  */
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
+public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String BASE_URL = "https://audrey-mum.herokuapp.com/";
     RequestQueue queue;
@@ -87,7 +87,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         });
 
-        signupTv.setOnClickListener( (view) -> startActivity (new Intent(this, SignupActivity.class)) );
+        signupTv.setOnClickListener((view) -> startActivity(new Intent(this, SignupActivity.class)));
 
         passwordEditText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -100,11 +100,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             return false;
         });
 
-        forgotPassword.setOnClickListener((view -> startActivity(new Intent(this, ForgotPasswordActivity.class)) ));
+        forgotPassword.setOnClickListener((view -> startActivity(new Intent(this, ForgotPasswordActivity.class))));
 
     }
 
-    void isRememberChecked () {
+    void isRememberChecked() {
         if (rememberMe.isChecked()) {
             sharedPreferencesManager.storeUserPassword(passwordEditText.getText().toString());
         } else {
@@ -139,11 +139,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     String token = response.getString("accessToken");
                     Person user = new Gson().fromJson(response.getJSONObject("user").toString(), Person.class);
 
-                    AudreyMumplus.getInstance().networkIO().execute(() -> {
-                        InjectorUtils.provideJournalNetworkDataSource(this).fetchSinglePeople(token, user.getPersonId());
-                    });
-
                     sharedPreferencesManager.storeUserToken(token);
+
+                    InjectorUtils.provideJournalNetworkDataSource(this).fetchSinglePeople(user.getPersonId());
+
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -171,11 +170,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
-    private boolean checkEmail (String email) {
-            return Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    private boolean checkEmail(String email) {
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
-    private boolean checkPassword (String password) {
+    private boolean checkPassword(String password) {
         return !TextUtils.isEmpty(password);
     }
 
@@ -197,11 +196,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View view) {
-            if (((CheckBox) view).isChecked()) {
-                sharedPreferencesManager.storeUserPassword(passwordEditText.getText().toString());
-            } else {
-                sharedPreferencesManager.storeUserPassword("");
-            }
+        if (((CheckBox) view).isChecked()) {
+            sharedPreferencesManager.storeUserPassword(passwordEditText.getText().toString());
+        } else {
+            sharedPreferencesManager.storeUserPassword("");
+        }
     }
 
 

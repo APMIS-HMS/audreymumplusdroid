@@ -1,5 +1,6 @@
 package ng.apmis.audreymumplus.data.network;
 
+import android.app.ProgressDialog;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
@@ -9,7 +10,9 @@ import android.widget.Toast;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
@@ -17,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +30,7 @@ import ng.apmis.audreymumplus.data.database.DailyJournal;
 import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.ui.Journal.JournalModel;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
+import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
 
 /**
  * Created by Thadeus-APMIS on 5/15/2018.
@@ -42,13 +47,17 @@ public class MumplusNetworkDataSource {
     private final AudreyMumplus mExecutors;
 
     private final MutableLiveData<List<JournalModel>> mDownloadedDailyJournal;
+    SharedPreferencesManager sharedPreferencesManager;
     RequestQueue queue;
+    private static final String BASE_URL = "https://audrey-mum.herokuapp.com/";
+
 
     MumplusNetworkDataSource(Context context, AudreyMumplus executors) {
         mContext = context;
         mExecutors = executors;
         mDownloadedDailyJournal = new MutableLiveData<>();
         queue = Volley.newRequestQueue(context);
+        sharedPreferencesManager = new SharedPreferencesManager(context);
     }
 
     public LiveData<List<JournalModel>> getCurrentDailyJournal() {
@@ -130,12 +139,12 @@ public class MumplusNetworkDataSource {
     /**
      * Gets the newest weather
      */
-    public void fetchSinglePeople (String accessToken, String personId) {
+    public void fetchSinglePeople(String personId) {
         Log.d(LOG_TAG, "Fetch weather started");
         mExecutors.networkIO().execute(() -> {
 
             //String uri = String.format("http://localhost/demoapp/fetch.php?pid=%1$s", personId);
-            String url = String.format("https://audrey-mum.herokuapp.com/people?personId=%1$s", personId);
+            String url = String.format(BASE_URL + "people?personId=%1$s", personId);
 
             JsonObjectRequest peopleJob = new JsonObjectRequest(Request.Method.GET, url, null, response -> {
 
@@ -154,18 +163,19 @@ public class MumplusNetworkDataSource {
                     //deleting all user data locally
                     InjectorUtils.provideRepository(mContext).deletePerson();
                     //insert new gotten user
-                    InjectorUtils.provideRepository(mContext).savePerson(personFromPeople);});
+                    InjectorUtils.provideRepository(mContext).savePerson(personFromPeople);
+                });
 
             }, error -> {
 
                 Toast.makeText(mContext, "There was a problem", Toast.LENGTH_SHORT).show();
 
-            }){
+            }) {
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> params = new HashMap<>();
                     params.put("Content-Type", "application/json; charset=UTF-8");
-                    params.put("Authorization", "Bearer " + accessToken);
+                    params.put("Authorization", "Bearer " + sharedPreferencesManager.getUserToken());
                     return params;
                 }
 
@@ -174,6 +184,61 @@ public class MumplusNetworkDataSource {
             queue.add(peopleJob);
         });
 
+    }
+
+    public void updateProfile(String currentPersonId, JSONObject changeFields, Context context) {
+        ProgressDialog pd = new ProgressDialog(context);
+        pd.setTitle("Updating Profile");
+        pd.setMessage("Please wait...");
+        pd.setCancelable(false);
+        pd.setIndeterminate(true);
+        pd.show();
+        mExecutors.networkIO().execute(() -> {
+
+            String url = String.format(BASE_URL + "people?personId=%1$s", currentPersonId);
+
+            StringRequest updateProfileRequest = new StringRequest(Request.Method.PATCH, url,
+                    response -> {
+                        Log.v("update profile result", response);
+                        JSONObject job = new JSONObject();
+                        try {
+                            JSONArray jsonArray = new JSONArray(response);
+                            job = jsonArray.getJSONObject(0);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        Person updatedPerson = new Gson().fromJson(job.toString(), Person.class);
+                    AudreyMumplus.getInstance().diskIO().execute(() -> {
+                        InjectorUtils.provideRepository(mContext).deletePerson();
+                        InjectorUtils.provideRepository(mContext).savePerson(updatedPerson);
+                    });
+                        pd.dismiss();
+                    },
+                    error -> {
+                        Log.v("profile update err", error.toString());
+                        Toast.makeText(mContext, "There was an error updating profile", Toast.LENGTH_SHORT).show();
+                        pd.dismiss();
+                    }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("Content-Type", "application/json; charset=UTF-8");
+                    params.put("Authorization", "Bearer " + sharedPreferencesManager.getUserToken());
+                    return params;
+                }
+
+                @Override
+                public String getBodyContentType() {
+                    return "application/json; charset=utf-8";
+                }
+
+                @Override
+                public byte[] getBody() throws AuthFailureError {
+                    return changeFields == null ? null : changeFields.toString().getBytes();
+                }
+            };
+            queue.add(updateProfileRequest);
+        });
     }
 
 }

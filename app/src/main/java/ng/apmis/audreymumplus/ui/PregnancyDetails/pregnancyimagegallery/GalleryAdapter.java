@@ -39,7 +39,7 @@ public class GalleryAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return galleryModels.size() > 0 ? galleryModels.size(): 0;
+        return !galleryModels.isEmpty() ? galleryModels.size(): 0;
     }
     @Override
     public Object getItem(int position) {
@@ -65,7 +65,8 @@ public class GalleryAdapter extends BaseAdapter {
         ImageView galleryImage = convertView.findViewById(R.id.gallery_image);
 
         if (!TextUtils.isEmpty(currentItem.getImageUrl())) {
-            Glide.with(gContext)
+            Glide.with(gContext).load(Uri.parse(currentItem.getImageUrl())).into(galleryImage);
+           /* Glide.with(gContext)
                     .load(Uri.parse(currentItem.getImageUrl())).into(new SimpleTarget<Drawable>() {
                 @Override
                 public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
@@ -73,7 +74,7 @@ public class GalleryAdapter extends BaseAdapter {
                         galleryImage.setImageDrawable(resource);
                     }
                 }
-            });
+            });*/
         }
 
         return convertView;

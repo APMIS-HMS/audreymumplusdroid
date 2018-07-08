@@ -54,16 +54,32 @@
                 android:layout_marginTop="16dp">
 
                 <android.support.design.widget.TextInputEditText
-                    android:id="@+id/user_full_name"
+                    android:id="@+id/firstname_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Name"
-                    android:text="Omoike Sarah"
+                    android:hint="First Name"
                     android:enabled="false"/>
 
             </android.support.design.widget.TextInputLayout>
 
-         <!--   <android.support.design.widget.TextInputLayout
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="24dp"
+                android:layout_marginRight="24dp"
+                android:layout_marginTop="16dp">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/lastname_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Last Name"
+                    android:text="Omoike"
+                    android:enabled="false"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -71,16 +87,16 @@
                 android:layout_marginRight="24dp">
 
                 <android.support.design.widget.TextInputEditText
+                    android:id="@+id/phone_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="User ID"
-                    android:text="HN-75643"
-                    android:focusable="false"
+                    android:inputType="number"
+                    android:hint="Phone"
+                    android:text="0802xxxxxxx"
                     android:enabled="false"
-                    android:textColor="@android:color/black"
                     />
 
-            </android.support.design.widget.TextInputLayout>-->
+            </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
