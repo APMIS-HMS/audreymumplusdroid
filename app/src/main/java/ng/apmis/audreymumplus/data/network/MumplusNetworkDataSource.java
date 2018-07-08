@@ -186,7 +186,7 @@ public class MumplusNetworkDataSource {
 
     }
 
-    public void updateProfile(String currentPersonId, JSONObject changeFields, Context context) {
+    public void updateProfileGetAudrey (String currentPersonId, JSONObject changeFields, Context context, boolean getAudrey) {
         ProgressDialog pd = new ProgressDialog(context);
         pd.setTitle("Updating Profile");
         pd.setMessage("Please wait...");
@@ -209,8 +209,10 @@ public class MumplusNetworkDataSource {
                         }
                         Person updatedPerson = new Gson().fromJson(job.toString(), Person.class);
                     AudreyMumplus.getInstance().diskIO().execute(() -> {
-                        InjectorUtils.provideRepository(mContext).deletePerson();
-                        InjectorUtils.provideRepository(mContext).savePerson(updatedPerson);
+                        if (!getAudrey) {
+                            InjectorUtils.provideRepository(mContext).deletePerson();
+                            InjectorUtils.provideRepository(mContext).savePerson(updatedPerson);
+                        }
                     });
                         pd.dismiss();
                     },

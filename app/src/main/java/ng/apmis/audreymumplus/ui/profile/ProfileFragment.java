@@ -20,6 +20,7 @@ import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.utils.CameraUtils;
@@ -68,15 +69,16 @@ public class ProfileFragment extends Fragment {
         ButterKnife.bind(this, rootView);
         cameraUtils = new CameraUtils(this);
 
-        ((DashboardActivity) getActivity()).person.observe(getActivity(), userDetails -> {
-            firstNameEdittext.setText(getContext().getString(R.string.user_firstname, userDetails.getFirstName()));
-            lastNameEdittext.setText(getContext().getString(R.string.user_lastname, userDetails.getLastName()));
-            userEmail.setText(getContext().getString(R.string.user_email, userDetails.getEmail()));
-            phoneEdittext.setText(getContext().getString(R.string.user_phone, userDetails.getPrimaryContactPhoneNo()));
-            currentPersonId = userDetails.getPersonId();
-            //TODO Check user image in ${userDetails}
+        AudreyMumplus.getInstance().diskIO().execute(() -> {
+            ((DashboardActivity) getActivity()).getPersonLive().observe(getActivity(), userDetails -> {
+                firstNameEdittext.setText(getContext().getString(R.string.user_firstname, userDetails.getFirstName()));
+                lastNameEdittext.setText(getContext().getString(R.string.user_lastname, userDetails.getLastName()));
+                userEmail.setText(getContext().getString(R.string.user_email, userDetails.getEmail()));
+                phoneEdittext.setText(getContext().getString(R.string.user_phone, userDetails.getPrimaryContactPhoneNo()));
+                currentPersonId = userDetails.getPersonId();
+                //TODO Check user image in ${userDetails}
+            });
         });
-
         addImage.setOnClickListener((view) -> {
             cameraUtils.selectImageOption();
         });
@@ -96,7 +98,7 @@ public class ProfileFragment extends Fragment {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                InjectorUtils.provideJournalNetworkDataSource(getActivity()).updateProfile(currentPersonId, changeFields, getActivity());
+                InjectorUtils.provideJournalNetworkDataSource(getActivity()).updateProfileGetAudrey(currentPersonId, changeFields, getActivity(), false);
                 setFocusableEditable(false);
             }
         });

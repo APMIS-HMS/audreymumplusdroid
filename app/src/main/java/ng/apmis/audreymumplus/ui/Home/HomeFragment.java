@@ -41,7 +41,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
 
         ButterKnife.bind(this, rootView);
 
-        ((DashboardActivity)getActivity()).person.observe(getActivity(), person -> {
+        ((DashboardActivity)getActivity()).getPersonLive().observe(getActivity(), person -> {
             hiMessage.setText(getContext().getString(R.string.hi_message, person.getFirstName()));
         });
 

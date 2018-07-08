@@ -30,8 +30,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
-import ng.apmis.audreymumplus.ui.getaudrey.GetAudreyActivity;
-import ng.apmis.audreymumplus.utils.Utils;
+import ng.apmis.audreymumplus.ui.getaudrey.GetAudreyFragment;
 
 public class PregnancyWeeklyProgressFragment extends Fragment{
 
@@ -131,7 +130,10 @@ public class PregnancyWeeklyProgressFragment extends Fragment{
         queue.add(jsonObjectRequest);
 
         getAudreyButton.setOnClickListener(view -> {
-            getActivity().startActivity(new Intent(getActivity(), GetAudreyActivity.class));
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .add(R.id.fragment_container, new GetAudreyFragment())
+                    .addToBackStack(null)
+                    .commit();
         });
 
 

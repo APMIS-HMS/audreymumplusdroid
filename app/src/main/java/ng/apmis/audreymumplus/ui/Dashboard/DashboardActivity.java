@@ -1,5 +1,6 @@
 package ng.apmis.audreymumplus.ui.Dashboard;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,15 +22,23 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,7 +50,7 @@ import ng.apmis.audreymumplus.ui.Appointments.AppointmentFragment;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumFragment;
 import ng.apmis.audreymumplus.ui.Faq.FaqFragment;
 import ng.apmis.audreymumplus.ui.PregnancyDetails.PregnancyFragment;
-import ng.apmis.audreymumplus.ui.getaudrey.GetAudreyActivity;
+import ng.apmis.audreymumplus.ui.getaudrey.GetAudreyFragment;
 import ng.apmis.audreymumplus.ui.Home.HomeFragment;
 import ng.apmis.audreymumplus.ui.Journal.MyJournalFragment;
 import ng.apmis.audreymumplus.ui.profile.ProfileFragment;
@@ -69,6 +78,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
     private Emitter.Listener onMessage;
     public MutableLiveData<Person> person = new MutableLiveData<>();
     String whereFrom;
+    RequestQueue queue;
 
     {
         try {
@@ -86,6 +96,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         sharedPreferencesManager = new SharedPreferencesManager(getApplicationContext());
 
         setActionBarButton(false, getString(R.string.app_name));
+        queue = Volley.newRequestQueue(this);
 
         mSocket.connect();
         mSocket.emit("connection", "Hello world");
@@ -94,19 +105,26 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
             public void call(Object... args) {
                 JSONObject jsonObject = (JSONObject) args[0];
                 Log.v("JsonObject", String.valueOf(jsonObject));
-                mSocket.emit("feedback", ("Lizzy is stubborn"));
+                mSocket.emit("feedback", ("Lizzy is somewhat nice"));
             }
         });
+        mSocket.on("created", (args) -> {
+            JSONObject jsonObject = (JSONObject) args[0];
+            Log.v("JsonObject", String.valueOf(jsonObject));
+            mSocket.emit("feedback", ("Lizzy this is working"));
+        });
+
+
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         View headerLayout = navigationView.getHeaderView(0);
         TextView userName = headerLayout.findViewById(R.id.user_name);
         //new GetVersionCode().execute();
 
-        AudreyMumplus.getInstance().diskIO().execute(() -> InjectorUtils.provideRepository(this).getPerson().observe(this, person -> this.person.postValue(person == null ? new Person("", "", "") : person))
+        AudreyMumplus.getInstance().diskIO().execute(() -> InjectorUtils.provideRepository(this).getPerson().observe(this, person -> this.person.postValue(person == null ? new Person("", "", "", "", "", "", "", "") : person))
         );
 
-        person.observe(this, theUser -> userName.setText(theUser.getFirstName() + " " + theUser.getLastName()));
+        getPersonLive().observe(this, theUser -> userName.setText(theUser.getFirstName() + " " + theUser.getLastName()));
 
         navigationView.setNavigationItemSelectedListener(this::selectNavigationItem);
 
@@ -120,6 +138,8 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
             finish();
             startActivity(new Intent(this, LoginActivity.class));
         });
+
+        response();
 
        /* try {
             JSONObject job = new JSONObject(new Utils().loadJSONFromAsset(this));
@@ -150,12 +170,35 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
     }
 
-    private Emitter.Listener callback() {
-        return args -> runOnUiThread(() -> {
-            //   JSONObject data = (JSONObject) args[0];
-            Log.v("something happened", String.valueOf(args));
+    public LiveData<Person> getPersonLive () {
+        return person;
+    }
 
-        });
+
+    public void response () {
+        JSONObject  praa = new JSONObject();
+        try {
+            praa =  new JSONObject().put("text", "Hello Lizz");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, "https://audrey-mum.herokuapp.com/chat", praa, (response) -> {
+            Toast.makeText(this, response.toString(), Toast.LENGTH_SHORT).show();
+        }, error -> {
+            Toast.makeText(this, "Error things", Toast.LENGTH_SHORT).show();
+
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                SharedPreferencesManager accessToken = new SharedPreferencesManager(DashboardActivity.this);
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Authorization", "Bearer " + accessToken.getUserToken());
+                return params;
+            }
+        };
+
+        queue.add(jsonObjectRequest);
     }
 
     public void setActionBarButton(boolean shouldShowBackButton, String title) {
@@ -201,7 +244,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                 drawerLayout.closeDrawers();
                 return true;
             case R.id.get_audrey:
-                startActivity(new Intent(this, GetAudreyActivity.class));
+                placeFragment(new GetAudreyFragment(), false, mFragmentManager);
                 drawerLayout.closeDrawers();
                 return true;
             case R.id.settings:
@@ -210,14 +253,6 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                 return true;
         }
         return false;
-    }
-
-    public String getWhereFrom () {
-        return whereFrom;
-    }
-
-    public void setWhereFrom (String whereFrom) {
-        this.whereFrom = whereFrom;
     }
 
 
@@ -302,7 +337,6 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
     public void onGridItemClick(String selectedText) {
         switch (selectedText) {
             case "My Pregnancy":
-                //startActivity(new Intent(this, PregnancyActivity.class));
                 placeFragment(new PregnancyFragment(), true, mFragmentManager);
                 break;
             case "My Appointments":
