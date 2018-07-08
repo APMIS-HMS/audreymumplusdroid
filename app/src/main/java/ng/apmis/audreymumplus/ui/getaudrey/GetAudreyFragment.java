@@ -34,6 +34,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.R;
+import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 
 /**
@@ -88,6 +89,7 @@ public class GetAudreyFragment extends Fragment{
                 AudreyMumplus.getInstance().diskIO().execute(() -> {
                     InjectorUtils.provideRepository(getActivity()).getPerson().observe(this, person -> {
                         InjectorUtils.provideJournalNetworkDataSource(getActivity()).updateProfileGetAudrey(person.getPersonId(), registrationData, getActivity(), true);
+                        getActivity().getSupportFragmentManager().popBackStack();
                     });
                 });
             }
@@ -231,4 +233,19 @@ public class GetAudreyFragment extends Fragment{
             }
         });
     }*/
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((DashboardActivity) getActivity()).setActionBarButton(true, "Get Audrey");
+        ((DashboardActivity) getActivity()).bottomNavVisibility(false);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        ((DashboardActivity) getActivity()).setActionBarButton(false, getString(R.string.app_name));
+        ((DashboardActivity) getActivity()).bottomNavVisibility(true);
+    }
+
 }
