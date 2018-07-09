@@ -70,13 +70,15 @@ public class ProfileFragment extends Fragment {
         cameraUtils = new CameraUtils(this);
 
         AudreyMumplus.getInstance().diskIO().execute(() -> {
-            ((DashboardActivity) getActivity()).getPersonLive().observe(getActivity(), userDetails -> {
-                firstNameEdittext.setText(getContext().getString(R.string.user_firstname, userDetails.getFirstName()));
-                lastNameEdittext.setText(getContext().getString(R.string.user_lastname, userDetails.getLastName()));
-                userEmail.setText(getContext().getString(R.string.user_email, userDetails.getEmail()));
-                phoneEdittext.setText(getContext().getString(R.string.user_phone, userDetails.getPrimaryContactPhoneNo()));
-                currentPersonId = userDetails.getPersonId();
-                //TODO Check user image in ${userDetails}
+            InjectorUtils.provideRepository(getContext()).getPerson().observe(getActivity(), userDetails -> {
+                AudreyMumplus.getInstance().mainThread().execute(() -> {
+                    firstNameEdittext.setText(getContext().getString(R.string.user_firstname, userDetails.getFirstName()));
+                    lastNameEdittext.setText(getContext().getString(R.string.user_lastname, userDetails.getLastName()));
+                    userEmail.setText(getContext().getString(R.string.user_email, userDetails.getEmail()));
+                    phoneEdittext.setText(getContext().getString(R.string.user_phone, userDetails.getPrimaryContactPhoneNo()));
+                    currentPersonId = userDetails.getPersonId();
+                    //TODO Check user image in ${userDetails}
+                });
             });
         });
         addImage.setOnClickListener((view) -> {

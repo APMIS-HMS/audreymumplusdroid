@@ -139,7 +139,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
             startActivity(new Intent(this, LoginActivity.class));
         });
 
-        response();
+       // response();
 
        /* try {
             JSONObject job = new JSONObject(new Utils().loadJSONFromAsset(this));

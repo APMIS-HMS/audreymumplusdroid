@@ -97,19 +97,9 @@ public class PregnancyWeeklyProgressFragment extends Fragment{
                                 todaysDay.setText(getString(R.string.todays_day_placeholder,todaysModelItem.getDay()));
                                 todaysProgressTitle.setText(Html.fromHtml(getString(R.string.todays_progress, todaysModelItem.getTitle(), todaysModelItem.getIntro())));
                                 currentWeekTv.setText(Html.fromHtml(getString(R.string.week_title, currentWeek)));
-                            } else {
-                                //TODO set some empty state data
                             }
 
                             weeklyProgressAdapter.addPregnancyProgress(weeklyProgressModelArrayList);
-
-                            if (weeklyProgressAdapter.weeklyProgressModels.isEmpty()) {
-                                contentView.setVisibility(View.GONE);
-                                emptyView.setVisibility(View.VISIBLE);
-                            } else {
-                                contentView.setVisibility(View.VISIBLE);
-                                emptyView.setVisibility(View.GONE);
-                            }
 
                             todaysProgressCard.setOnClickListener(view -> {
                                 Bundle detailBundle = new Bundle();
@@ -121,6 +111,16 @@ public class PregnancyWeeklyProgressFragment extends Fragment{
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
+                    }
+
+                    //TODO consider get audrey or check internet when empty state
+
+                    if (weeklyProgressAdapter.getItemCount() < 1) {
+                        contentView.setVisibility(View.GONE);
+                        emptyView.setVisibility(View.VISIBLE);
+                    } else {
+                        contentView.setVisibility(View.VISIBLE);
+                        emptyView.setVisibility(View.GONE);
                     }
 
                 },
