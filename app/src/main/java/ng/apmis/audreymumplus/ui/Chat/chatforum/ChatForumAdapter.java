@@ -60,8 +60,10 @@ public class ChatForumAdapter extends BaseAdapter {
         TextView forumMemberCount = convertView.findViewById(R.id.forum_member_count);
         TextView forumNewMessageCounter = convertView.findViewById(R.id.forum_new_message_counter);
 
-        Glide.with(mContext).load(currentItem.getForumIcon()).into(forumImage);
-        forumName.setText(currentItem.getForumName());
+        if (currentItem.getForumIcon() == 0) {
+            Glide.with(mContext).load(currentItem.getForumIcon()).into(forumImage);
+        }
+        forumName.setText(currentItem.getName());
         forumNewMessageCounter.setText(currentItem.getForumNewChatsCount());
         forumMemberCount.setText(mContext.getString(R.string.forum_member_counter,currentItem.getForumMemberCount()));
 

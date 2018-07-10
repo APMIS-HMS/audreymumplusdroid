@@ -1,8 +1,11 @@
 package ng.apmis.audreymumplus.ui.Chat;
 
+import android.app.Fragment;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +15,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import ng.apmis.audreymumplus.R;
+import ng.apmis.audreymumplus.data.network.MumplusNetworkDataSource;
+import ng.apmis.audreymumplus.utils.InjectorUtils;
 
 /**
  * Created by Thadeus-APMIS on 6/7/2018.
@@ -19,11 +24,15 @@ import ng.apmis.audreymumplus.R;
 
 public class ChatContextAdapter extends RecyclerView.Adapter<ChatContextAdapter.ChatContextViewHolder> {
 
-    ArrayList<ChatContextModel> allChats = new ArrayList<>();
-    Context mContext;
+    private ArrayList<ChatContextModel> allChats = new ArrayList<>();
+    private Context mContext;
+    private String mEmail;
+    private FragmentActivity owner;
 
-    ChatContextAdapter(Context context) {
+    ChatContextAdapter(Context context, String email, FragmentActivity frag) {
         mContext = context;
+        mEmail = email;
+        owner = frag;
     }
 
     public void setAllChats (ArrayList<ChatContextModel> allChats) {
@@ -55,7 +64,7 @@ public class ChatContextAdapter extends RecyclerView.Adapter<ChatContextAdapter.
 
     @Override
     public int getItemViewType(int position) {
-        if (allChats.get(position).getUsername().equals("me")) {
+        if (allChats.get(position).getEmail().equals(mEmail)) {
             return 0;
         } else {
             return 1;
@@ -66,9 +75,13 @@ public class ChatContextAdapter extends RecyclerView.Adapter<ChatContextAdapter.
     public void onBindViewHolder(@NonNull ChatContextViewHolder holder, int position) {
         ChatContextModel currentChat = allChats.get(position);
         if (currentChat != null) {
-            holder.chatText.setText(currentChat.getContent());
-            holder.userImage.setImageResource(currentChat.getImageUri());
-            holder.userName.setText(currentChat.getUsername().toUpperCase());
+            holder.chatText.setText(currentChat.getMessage());
+            MumplusNetworkDataSource dataSource = InjectorUtils.provideJournalNetworkDataSource(mContext);
+            dataSource.fetchUserName(currentChat.getEmail());
+            dataSource.getPersonEmail().observe(owner, person -> {
+                holder.userName.setText(person.getFirstName());
+                //holder.userImage.setImageResource(person.getImageUri());
+            });
         }
     }
 

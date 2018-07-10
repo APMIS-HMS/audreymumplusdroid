@@ -78,14 +78,15 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
     private Emitter.Listener onMessage;
     public MutableLiveData<Person> person = new MutableLiveData<>();
     String whereFrom;
-    RequestQueue queue;
+    public RequestQueue queue;
 
-    {
+   /* {
         try {
             mSocket = IO.socket("https://audrey-mum.herokuapp.com/");
         } catch (URISyntaxException e) {
         }
     }
+*/
 
 
     @Override
@@ -97,10 +98,10 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
         setActionBarButton(false, getString(R.string.app_name));
         queue = Volley.newRequestQueue(this);
+/*
+        mSocket.connect();*/
 
-        mSocket.connect();
-        mSocket.emit("connection", "Hello world");
-        mSocket.on("news", new Emitter.Listener() {
+       /* mSocket.on("forums", new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 JSONObject jsonObject = (JSONObject) args[0];
@@ -112,9 +113,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
             JSONObject jsonObject = (JSONObject) args[0];
             Log.v("JsonObject", String.valueOf(jsonObject));
             mSocket.emit("feedback", ("Lizzy this is working"));
-        });
-
-
+        });*/
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         View headerLayout = navigationView.getHeaderView(0);
@@ -139,14 +138,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
             startActivity(new Intent(this, LoginActivity.class));
         });
 
-       // response();
-
-       /* try {
-            JSONObject job = new JSONObject(new Utils().loadJSONFromAsset(this));
-            Log.v("Job weekly", job.toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }*/
+        //response();
 
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             selectFragment(item);
@@ -184,6 +176,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         }
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, "https://audrey-mum.herokuapp.com/chat", praa, (response) -> {
             Toast.makeText(this, response.toString(), Toast.LENGTH_SHORT).show();
+
         }, error -> {
             Toast.makeText(this, "Error things", Toast.LENGTH_SHORT).show();
 

@@ -6,12 +6,12 @@ package ng.apmis.audreymumplus.ui.Chat.chatforum;
 
 public class ChatForumModel {
 
-    private String forumName, forumMemberCount, forumNewChatsCount;
+    private String name, forumMemberCount, forumNewChatsCount;
     private int forumIcon;
 
-    public ChatForumModel(int forumIcon, String forumName, String forumMemberCount, String forumNewChatsCount) {
+    public ChatForumModel(int forumIcon, String name, String forumMemberCount, String forumNewChatsCount) {
         this.forumIcon = forumIcon;
-        this.forumName = forumName;
+        this.name = name;
         this.forumMemberCount = forumMemberCount;
         this.forumNewChatsCount = forumNewChatsCount;
     }
@@ -24,12 +24,12 @@ public class ChatForumModel {
         this.forumIcon = forumIcon;
     }
 
-    public String getForumName() {
-        return forumName;
+    public String getName() {
+        return name;
     }
 
-    public void setForumName(String forumName) {
-        this.forumName = forumName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getForumMemberCount() {
@@ -46,5 +46,15 @@ public class ChatForumModel {
 
     public void setForumNewChatsCount(String forumNewChatsCount) {
         this.forumNewChatsCount = forumNewChatsCount;
+    }
+
+    @Override
+    public String toString() {
+        return "ChatForumModel{" +
+                "name='" + name + '\'' +
+                ", forumMemberCount='" + forumMemberCount + '\'' +
+                ", forumNewChatsCount='" + forumNewChatsCount + '\'' +
+                ", forumIcon=" + forumIcon +
+                '}';
     }
 }

@@ -1,31 +1,38 @@
 package ng.apmis.audreymumplus.ui.Chat;
 
+import org.json.JSONObject;
+
 public class ChatContextModel {
-    String userId;
-    private String username;
-    private int imageUri;
-    private String content;
 
-    public ChatContextModel(String id, int image, String name, String text){
-        userId = id;
-        imageUri = image;
-        username = name;
-        content = text;
+
+    private String forumName;
+    private String message;
+    private String email;
+
+    public ChatContextModel(String forumName, String message, String email) {
+        this.forumName = forumName;
+        this.message = message;
+        this.email = email;
     }
 
-    public int getImageUri() {
-        return imageUri;
+    public String getForumName() {
+        return forumName;
     }
 
-    public String getUsername() {
-        return username;
+    public String getMessage() {
+        return message;
     }
 
-    public String getContent() {
-        return content;
+    public String getEmail() {
+        return email;
     }
 
-    public String getUserId () {
-        return userId;
+    @Override
+    public String toString() {
+        return "ChatContextModel{" +
+                "forumName='" + forumName + '\'' +
+                ", message='" + message + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

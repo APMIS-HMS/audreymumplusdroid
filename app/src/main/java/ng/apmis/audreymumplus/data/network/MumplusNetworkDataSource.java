@@ -47,6 +47,7 @@ public class MumplusNetworkDataSource {
     private final AudreyMumplus mExecutors;
 
     private final MutableLiveData<List<JournalModel>> mDownloadedDailyJournal;
+    private final MutableLiveData<Person> personName;
     SharedPreferencesManager sharedPreferencesManager;
     RequestQueue queue;
     private static final String BASE_URL = "https://audrey-mum.herokuapp.com/";
@@ -58,6 +59,7 @@ public class MumplusNetworkDataSource {
         mDownloadedDailyJournal = new MutableLiveData<>();
         queue = Volley.newRequestQueue(context);
         sharedPreferencesManager = new SharedPreferencesManager(context);
+        personName = new MutableLiveData<>();
     }
 
     public LiveData<List<JournalModel>> getCurrentDailyJournal() {
@@ -136,14 +138,10 @@ public class MumplusNetworkDataSource {
         Log.d(LOG_TAG, "Job scheduled");
     }*/
 
-    /**
-     * Gets the newest weather
-     */
     public void fetchSinglePeople(String personId) {
         Log.d(LOG_TAG, "Fetch weather started");
         mExecutors.networkIO().execute(() -> {
 
-            //String uri = String.format("http://localhost/demoapp/fetch.php?pid=%1$s", personId);
             String url = String.format(BASE_URL + "people?personId=%1$s", personId);
 
             JsonObjectRequest peopleJob = new JsonObjectRequest(Request.Method.GET, url, null, response -> {
@@ -165,6 +163,50 @@ public class MumplusNetworkDataSource {
                     //insert new gotten user
                     InjectorUtils.provideRepository(mContext).savePerson(personFromPeople);
                 });
+
+            }, error -> {
+
+                Toast.makeText(mContext, "There was a problem", Toast.LENGTH_SHORT).show();
+
+            }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("Content-Type", "application/json; charset=UTF-8");
+                    params.put("Authorization", "Bearer " + sharedPreferencesManager.getUserToken());
+                    return params;
+                }
+
+            };
+
+            queue.add(peopleJob);
+        });
+
+    }
+
+    public LiveData<Person> getPersonEmail () {
+        return personName;
+    }
+
+    public void fetchUserName (String email) {
+        Log.d(LOG_TAG, "Fetch weather started");
+        mExecutors.networkIO().execute(() -> {
+
+            String url = String.format(BASE_URL + "people?email=%1$s", email);
+
+            JsonObjectRequest peopleJob = new JsonObjectRequest(Request.Method.GET, url, null, response -> {
+
+                JSONObject dataObject = new JSONObject();
+
+                try {
+                    JSONArray jsonArray = response.getJSONArray("data");
+                    dataObject = (JSONObject) jsonArray.get(0);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                Person personFromPeople = new Gson().fromJson(dataObject.toString(), Person.class);
+                personName.postValue(personFromPeople);
 
             }, error -> {
 
