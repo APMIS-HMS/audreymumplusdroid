@@ -1,5 +1,6 @@
 package ng.apmis.audreymumplus.ui.profile;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -8,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,6 +62,8 @@ public class ProfileFragment extends Fragment {
 
     CameraUtils cameraUtils;
 
+    AppCompatActivity activity;
+
 
     @Nullable
     @Override
@@ -70,15 +74,15 @@ public class ProfileFragment extends Fragment {
         cameraUtils = new CameraUtils(this);
 
         AudreyMumplus.getInstance().diskIO().execute(() -> {
-            InjectorUtils.provideRepository(getContext()).getPerson().observe(getActivity(), userDetails -> {
-                AudreyMumplus.getInstance().mainThread().execute(() -> {
+
+            ((DashboardActivity)getActivity()).getPersonLive().observe( this, userDetails -> {
                     firstNameEdittext.setText(getContext().getString(R.string.user_firstname, userDetails.getFirstName()));
                     lastNameEdittext.setText(getContext().getString(R.string.user_lastname, userDetails.getLastName()));
                     userEmail.setText(getContext().getString(R.string.user_email, userDetails.getEmail()));
                     phoneEdittext.setText(getContext().getString(R.string.user_phone, userDetails.getPrimaryContactPhoneNo()));
                     currentPersonId = userDetails.getPersonId();
                     //TODO Check user image in ${userDetails}
-                });
+
             });
         });
         addImage.setOnClickListener((view) -> {
@@ -100,13 +104,19 @@ public class ProfileFragment extends Fragment {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                InjectorUtils.provideJournalNetworkDataSource(getActivity()).updateProfileGetAudrey(currentPersonId, changeFields, getActivity(), false);
+                InjectorUtils.provideJournalNetworkDataSource(activity).updateProfileGetAudrey(currentPersonId, changeFields, activity, false);
                 setFocusableEditable(false);
             }
         });
 
 
         return rootView;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        activity = (AppCompatActivity)context;
     }
 
     void setFocusableEditable(boolean b) {
@@ -160,6 +170,10 @@ public class ProfileFragment extends Fragment {
             }
         }
 
+    }
+
+    public void uploadImage (Uri imageUri) {
+        userImage.setImageURI(imageUri);
     }
 
 }
