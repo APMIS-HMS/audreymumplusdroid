@@ -1,8 +1,11 @@
 package ng.apmis.audreymumplus.ui.Chat.chatforum;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +42,7 @@ public class ChatForumFragment extends Fragment {
     ArrayList<ChatForumModel> allForums;
     Socket mSocket;
     ChatForumAdapter chatForumAdapter;
+    AppCompatActivity activity;
 
     {
         try {
@@ -74,7 +78,7 @@ public class ChatForumFragment extends Fragment {
                     allForums.add(eachChat);
                 }
 
-                getActivity().runOnUiThread(() -> {
+                activity.runOnUiThread(() -> {
                     chatForumAdapter.setForums(allForums);
                 });
 
@@ -97,7 +101,7 @@ public class ChatForumFragment extends Fragment {
             myObj.setArguments(bundle);
 
             Toast.makeText(getActivity(), clicked.getName(), Toast.LENGTH_SHORT).show();
-            getActivity().getSupportFragmentManager().beginTransaction()
+            activity.getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, myObj)
                     .addToBackStack(null)
                     .commit();
@@ -106,6 +110,13 @@ public class ChatForumFragment extends Fragment {
 
         return rootView;
     }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        activity = (AppCompatActivity) context;
+    }
+
 
     Emitter.Listener getForums() {
 

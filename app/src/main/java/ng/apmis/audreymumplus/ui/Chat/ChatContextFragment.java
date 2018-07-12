@@ -1,7 +1,9 @@
 package ng.apmis.audreymumplus.ui.Chat;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -56,6 +58,7 @@ public class ChatContextFragment extends Fragment {
     RecyclerView chatRecycler;
     String email;
     String forumName;
+    AppCompatActivity activity;
 
     {
         try {
@@ -107,7 +110,7 @@ public class ChatContextFragment extends Fragment {
                     chats.add(eachChat);
                 }
 
-                getActivity().runOnUiThread(() -> {
+                activity.runOnUiThread(() -> {
                     chatContextAdapter.setAllChats(chats);
                     chatRecycler.smoothScrollToPosition(chatContextAdapter.getItemCount());
                 });
@@ -123,7 +126,7 @@ public class ChatContextFragment extends Fragment {
             try {
                 ChatContextModel oneChat = new Gson().fromJson(jsonObject.getJSONObject("message").toString(), ChatContextModel.class);
                 if (!oneChat.getEmail().equals(email)) {
-                    getActivity().runOnUiThread(() -> {
+                    activity.runOnUiThread(() -> {
                         ArrayList<ChatContextModel> chats = new ArrayList<>();
                         chats.add(oneChat);
                         chatContextAdapter.addChats(chats);
@@ -152,6 +155,12 @@ public class ChatContextFragment extends Fragment {
 
 
         return rootView;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        activity = (AppCompatActivity) context;
     }
 
     @Override
