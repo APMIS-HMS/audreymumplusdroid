@@ -27,7 +27,6 @@
                     android:layout_height="160dp"
                     android:layout_centerInParent="true"
                     android:layout_marginTop="16dp"
-                    android:src="@drawable/face_of_audrey"
                     app:civ_shadow="true"
                     app:civ_shadow_color="#8BC34A"
                     app:civ_shadow_radius="2" />

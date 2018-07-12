@@ -74,6 +74,9 @@
     <string name="get_audrey_text">Please fill the form below to get AudreyPack.</string>
     <string name="user_lastname">%s</string>
     <string name="user_phone">%s</string>
+    <string name="contact_us">Contact Us</string>
+    <string name="file_report">file a report</string>
+    <string name="help_message">Experiencing an issue on the app ? Let us\\nknow how we can help.</string>
 
     <string-array name="select">
         <item>@string/title</item>

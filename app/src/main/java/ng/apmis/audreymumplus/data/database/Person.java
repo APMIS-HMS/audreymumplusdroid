@@ -4,6 +4,8 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
+import java.util.Arrays;
+
 /**
  * Created by Thadeus on 6/21/2018.
  */
@@ -21,16 +23,10 @@ public class Person {
     private String motherMaidenName;
     private String primaryContactPhoneNo;
     private String expectedDateOfDelivery;
-
-  /*  @Ignore
-    public Person(String firstName, String lastName, String email){
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-    }*/
+    private byte [] profileImage;
 
     @Ignore
-    public Person(String firstName, String lastName, String email, String personId, String dateOfBirth, String motherMaidenName, String primaryContactPhoneNo, String expectedDateOfDelivery) {
+    public Person(String firstName, String lastName, String email, String personId, String dateOfBirth, String motherMaidenName, String primaryContactPhoneNo, String expectedDateOfDelivery, byte [] profileImage) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -39,16 +35,10 @@ public class Person {
         this.motherMaidenName = motherMaidenName;
         this.primaryContactPhoneNo = primaryContactPhoneNo;
         this.expectedDateOfDelivery = expectedDateOfDelivery;
+        this.profileImage = profileImage;
     }
 
-   /* public Person(int id, String firstName, String lastName, String email){
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-    }*/
-
-    public Person(int id, String firstName, String lastName, String email, String personId, String dateOfBirth, String motherMaidenName, String primaryContactPhoneNo, String expectedDateOfDelivery) {
+    public Person(int id, String firstName, String lastName, String email, String personId, String dateOfBirth, String motherMaidenName, String primaryContactPhoneNo, String expectedDateOfDelivery, byte [] profileImage) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -58,6 +48,7 @@ public class Person {
         this.motherMaidenName = motherMaidenName;
         this.primaryContactPhoneNo = primaryContactPhoneNo;
         this.expectedDateOfDelivery = expectedDateOfDelivery;
+        this.profileImage = profileImage;
     }
 
     public int getId() {
@@ -96,6 +87,10 @@ public class Person {
         return expectedDateOfDelivery;
     }
 
+    public byte [] getProfileImage () {
+        return profileImage;
+    }
+
     @Override
     public String toString() {
         return "Person{" +
@@ -108,6 +103,7 @@ public class Person {
                 ", motherMaidenName='" + motherMaidenName + '\'' +
                 ", primaryContactPhoneNo='" + primaryContactPhoneNo + '\'' +
                 ", expectedDateOfDelivery='" + expectedDateOfDelivery + '\'' +
+                ", profileImage=" + Arrays.toString(profileImage) +
                 '}';
     }
 }

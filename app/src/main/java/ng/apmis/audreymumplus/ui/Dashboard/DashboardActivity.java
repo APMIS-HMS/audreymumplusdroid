@@ -74,19 +74,8 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
     boolean goBackOrShowNavigationView = false;
 
     SharedPreferencesManager sharedPreferencesManager;
-    private Socket mSocket;
-    private Emitter.Listener onMessage;
     public MutableLiveData<Person> person = new MutableLiveData<>();
-    String whereFrom;
     public RequestQueue queue;
-
-   /* {
-        try {
-            mSocket = IO.socket("https://audrey-mum.herokuapp.com/");
-        } catch (URISyntaxException e) {
-        }
-    }
-*/
 
 
     @Override
@@ -98,29 +87,13 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
         setActionBarButton(false, getString(R.string.app_name));
         queue = Volley.newRequestQueue(this);
-/*
-        mSocket.connect();*/
-
-       /* mSocket.on("forums", new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                JSONObject jsonObject = (JSONObject) args[0];
-                Log.v("JsonObject", String.valueOf(jsonObject));
-                mSocket.emit("feedback", ("Lizzy is somewhat nice"));
-            }
-        });
-        mSocket.on("created", (args) -> {
-            JSONObject jsonObject = (JSONObject) args[0];
-            Log.v("JsonObject", String.valueOf(jsonObject));
-            mSocket.emit("feedback", ("Lizzy this is working"));
-        });*/
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         View headerLayout = navigationView.getHeaderView(0);
         TextView userName = headerLayout.findViewById(R.id.user_name);
         //new GetVersionCode().execute();
 
-        AudreyMumplus.getInstance().diskIO().execute(() -> InjectorUtils.provideRepository(this).getPerson().observe(this, person -> this.person.postValue(person == null ? new Person("", "", "", "", "", "", "", "") : person))
+        AudreyMumplus.getInstance().diskIO().execute(() -> InjectorUtils.provideRepository(this).getPerson().observe(this, person -> this.person.postValue(person == null ? new Person("", "", "", "", "", "", "", "", new byte[0]) : person))
         );
 
         getPersonLive().observe(this, theUser -> userName.setText(theUser.getFirstName() + " " + theUser.getLastName()));
@@ -138,8 +111,6 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
             startActivity(new Intent(this, LoginActivity.class));
         });
 
-        //response();
-
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             selectFragment(item);
             return true;
@@ -151,13 +122,14 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
         // placeFragment(new HomeFragment(), true, mFragmentManager);
 
-        mFragmentManager.beginTransaction()
+
+                mFragmentManager.beginTransaction()
                 .add(R.id.fragment_container, new HomeFragment())
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .commit();
 
         Glide.with(DashboardActivity.this)
-                .load(R.drawable.face_of_audrey)
+                .load(R.drawable.ic_profile_place_holder)
                 .into(profileCircularImageView);
 
     }
@@ -166,33 +138,6 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         return person;
     }
 
-
-    public void response () {
-        JSONObject  praa = new JSONObject();
-        try {
-            praa =  new JSONObject().put("text", "Hello Lizz");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, "https://audrey-mum.herokuapp.com/chat", praa, (response) -> {
-            Toast.makeText(this, response.toString(), Toast.LENGTH_SHORT).show();
-
-        }, error -> {
-            Toast.makeText(this, "Error things", Toast.LENGTH_SHORT).show();
-
-        }){
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                SharedPreferencesManager accessToken = new SharedPreferencesManager(DashboardActivity.this);
-                Map<String, String> params = new HashMap<>();
-                params.put("Content-Type", "application/json; charset=UTF-8");
-                params.put("Authorization", "Bearer " + accessToken.getUserToken());
-                return params;
-            }
-        };
-
-        queue.add(jsonObjectRequest);
-    }
 
     public void setActionBarButton(boolean shouldShowBackButton, String title) {
         setSupportActionBar(globalToolbar);
@@ -293,6 +238,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
     }
 
     private void placeFragment(Fragment fragment, boolean popBackStack, FragmentManager fm) {
+
         if (fragment instanceof HomeFragment) {
             fm.popBackStack("current", FragmentManager.POP_BACK_STACK_INCLUSIVE);
             fm.beginTransaction()

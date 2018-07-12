@@ -8,8 +8,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
@@ -137,7 +139,6 @@ public class MumplusNetworkDataSource {
         dispatcher.schedule(syncSunshineJob);
         Log.d(LOG_TAG, "Job scheduled");
     }*/
-
     public void fetchSinglePeople(String personId) {
         Log.d(LOG_TAG, "Fetch weather started");
         mExecutors.networkIO().execute(() -> {
@@ -184,11 +185,11 @@ public class MumplusNetworkDataSource {
 
     }
 
-    public LiveData<Person> getPersonEmail () {
+    public LiveData<Person> getPersonEmail() {
         return personName;
     }
 
-    public void fetchUserName (String email) {
+    public void fetchUserName(String email) {
         Log.d(LOG_TAG, "Fetch weather started");
         mExecutors.networkIO().execute(() -> {
 
@@ -228,7 +229,7 @@ public class MumplusNetworkDataSource {
 
     }
 
-    public void updateProfileGetAudrey (String currentPersonId, JSONObject changeFields, Context context, boolean getAudrey) {
+    public void updateProfileGetAudrey(String currentPersonId, JSONObject changeFields, Context context, boolean getAudrey) {
         ProgressDialog pd = new ProgressDialog(context);
         pd.setTitle("Updating Profile");
         pd.setMessage("Please wait...");
@@ -250,13 +251,14 @@ public class MumplusNetworkDataSource {
                             e.printStackTrace();
                         }
                         Person updatedPerson = new Gson().fromJson(job.toString(), Person.class);
-                    AudreyMumplus.getInstance().diskIO().execute(() -> {
-                        if (!getAudrey) {
-                            InjectorUtils.provideRepository(mContext).deletePerson();
-                            InjectorUtils.provideRepository(mContext).savePerson(updatedPerson);
-                        }
-                    });
+                        AudreyMumplus.getInstance().diskIO().execute(() -> {
+                            if (!getAudrey) {
+                                InjectorUtils.provideRepository(mContext).deletePerson();
+                                InjectorUtils.provideRepository(mContext).savePerson(updatedPerson);
+                            }
+                        });
                         pd.dismiss();
+                        Toast.makeText(mContext, "Update update successful", Toast.LENGTH_SHORT).show();
                     },
                     error -> {
                         Log.v("profile update err", error.toString());
@@ -284,5 +286,54 @@ public class MumplusNetworkDataSource {
             queue.add(updateProfileRequest);
         });
     }
+
+
+    public void updateProfileImage(JSONObject changeFields, Context context) {
+        ProgressDialog pd = new ProgressDialog(context);
+        pd.setTitle("Updating Profile Image");
+        pd.setMessage("Please wait...");
+        pd.setCancelable(false);
+        pd.setIndeterminate(true);
+        pd.show();
+        mExecutors.networkIO().execute(() -> {
+
+            JsonObjectRequest updateProfileImageRequest = new JsonObjectRequest(Request.Method.POST, BASE_URL + "profile-pix", changeFields,
+                    response -> {
+                        Log.v("update profile result", response.toString());
+                        /*JSONObject job = new JSONObject();
+                        try {
+                            JSONArray jsonArray = new JSONArray(response);
+                            job = jsonArray.getJSONObject(0);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        Person updatedPerson = new Gson().fromJson(job.toString(), Person.class);
+                        AudreyMumplus.getInstance().diskIO().execute(() -> {
+                                InjectorUtils.provideRepository(mContext).deletePerson();
+                                InjectorUtils.provideRepository(mContext).savePerson(updatedPerson);
+                        });*/
+                        pd.dismiss();
+                        Toast.makeText(mContext, "Update update successful", Toast.LENGTH_SHORT).show();
+                    },
+                    error -> {
+                        Log.v("profile update err", error.toString());
+                        Toast.makeText(mContext, "There was an error updating profile", Toast.LENGTH_SHORT).show();
+                        pd.dismiss();
+                    }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("Content-Type", "application/json; charset=UTF-8");
+                    params.put("Authorization", "Bearer " + sharedPreferencesManager.getUserToken());
+                    return params;
+                }
+            };
+
+            updateProfileImageRequest.setRetryPolicy(new DefaultRetryPolicy(30000, 1, 1));
+
+            queue.add(updateProfileImageRequest);
+        });
+    }
+
 
 }
