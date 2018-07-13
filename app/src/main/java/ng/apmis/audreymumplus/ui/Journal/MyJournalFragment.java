@@ -1,9 +1,11 @@
 package ng.apmis.audreymumplus.ui.Journal;
 
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +19,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
+import ng.apmis.audreymumplus.ui.JournalDetailFragment;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 
 public class MyJournalFragment extends Fragment {
@@ -24,6 +27,7 @@ public class MyJournalFragment extends Fragment {
     JournalViewModel journalViewModel;
     @BindView(R.id.fab)
     FloatingActionButton fab;
+    AppCompatActivity activity;
 
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container,
@@ -49,14 +53,25 @@ public class MyJournalFragment extends Fragment {
 
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
-            JournalModel clicked = (JournalModel) parent.getItemAtPosition(position);
-            Toast.makeText(getActivity(), clicked.getMood() , Toast.LENGTH_SHORT).show();
+            JournalModel clickedJournal = (JournalModel) parent.getItemAtPosition(position);
+            Toast.makeText(getActivity(), clickedJournal.getMood() , Toast.LENGTH_SHORT).show();
+
+            Bundle bundleToDetails = new Bundle();
+            bundleToDetails.putParcelable("journal", clickedJournal);
+
+            Fragment journalFragment = new JournalDetailFragment();
+            journalFragment.setArguments(bundleToDetails);
+
+            activity.getSupportFragmentManager().beginTransaction()
+                    .add(R.id.fragment_container, journalFragment)
+                    .addToBackStack(null)
+                    .commit();
         });
 
         listView.setEmptyView(rootView.findViewById(R.id.empty_view));
 
         fab.setOnClickListener((view) -> {
-            getActivity().getSupportFragmentManager().beginTransaction()
+            activity.getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, new AddJournalFragment())
                     .addToBackStack("ADD_NEW")
                     .commit();
@@ -66,5 +81,9 @@ public class MyJournalFragment extends Fragment {
         return rootView;
     }
 
-
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        activity = (AppCompatActivity)context;
+    }
 }

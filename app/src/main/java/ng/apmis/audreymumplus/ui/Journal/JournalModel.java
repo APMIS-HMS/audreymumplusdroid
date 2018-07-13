@@ -4,9 +4,11 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 @Entity(tableName = "journal")
-public class JournalModel {
+public class JournalModel implements Parcelable{
 
     @PrimaryKey(autoGenerate = true)
     private int id;
@@ -46,6 +48,31 @@ public class JournalModel {
         this.day = day;
     }
 
+
+    protected JournalModel(Parcel in) {
+        id = in.readInt();
+        mood = in.readString();
+        cravings = in.readString();
+        weight = in.readString();
+        symptoms = in.readString();
+        babyScanUri = in.readString();
+        pregnancyBellyUri = in.readString();
+        babyMovement = in.readString();
+        date = in.readLong();
+        day = in.readString();
+    }
+
+    public static final Creator<JournalModel> CREATOR = new Creator<JournalModel>() {
+        @Override
+        public JournalModel createFromParcel(Parcel in) {
+            return new JournalModel(in);
+        }
+
+        @Override
+        public JournalModel[] newArray(int size) {
+            return new JournalModel[size];
+        }
+    };
 
     public int getId() {
         return id;
@@ -99,5 +126,24 @@ public class JournalModel {
                 ", date=" + date + '\'' +
                 ", day=" + day +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id);
+        parcel.writeString(mood);
+        parcel.writeString(cravings);
+        parcel.writeString(weight);
+        parcel.writeString(symptoms);
+        parcel.writeString(babyScanUri);
+        parcel.writeString(pregnancyBellyUri);
+        parcel.writeString(babyMovement);
+        parcel.writeLong(date);
+        parcel.writeString(day);
     }
 }

@@ -84,6 +84,13 @@
     <string name="registered_mum_txt">20,000\nRegistered Mums.</string>
     <string name="partner_text">4\nPartners.</string>
     <string name="distributed_text">1,000,000\nDistributed Packs.</string>
+    <string name="journal_date">My journal on %s</string>
+    <string name="cravings_title">Cravings</string>
+    <string name="symptoms_title">Symptoms</string>
+    <string name="weight_title">Weight</string>
+    <string name="baby_scan_title">My Baby Scan</string>
+    <string name="pregnancy_belly_title">Pregnancy Belly/Photo</string>
+    <string name="personal_note_text">My Personal Note</string>
 
     <string-array name="select">
         <item>@string/title</item>

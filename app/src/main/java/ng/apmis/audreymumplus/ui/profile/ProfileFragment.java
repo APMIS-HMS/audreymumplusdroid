@@ -157,7 +157,6 @@ public class ProfileFragment extends Fragment {
         lastNameEdittext.setEnabled(b);
         userEmail.setEnabled(b);
         phoneEdittext.setEnabled(b);
-        addImage.setVisibility(b ? View.VISIBLE : View.GONE);
 
         editSaveButton.setText(b ? "SAVE" : "EDIT");
     }

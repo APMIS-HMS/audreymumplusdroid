@@ -15,30 +15,16 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
-import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.socketio.client.IO;
-import com.github.nkzawa.socketio.client.Socket;
 import com.mikhaellopez.circularimageview.CircularImageView;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,9 +32,11 @@ import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.LoginActivity;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.data.database.Person;
+import ng.apmis.audreymumplus.ui.AboutFragment;
 import ng.apmis.audreymumplus.ui.Appointments.AppointmentFragment;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumFragment;
 import ng.apmis.audreymumplus.ui.Faq.FaqFragment;
+import ng.apmis.audreymumplus.ui.HelpFragment;
 import ng.apmis.audreymumplus.ui.PregnancyDetails.PregnancyFragment;
 import ng.apmis.audreymumplus.ui.getaudrey.GetAudreyFragment;
 import ng.apmis.audreymumplus.ui.Home.HomeFragment;
@@ -66,6 +54,9 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
     @BindView(R.id.global_toolbar)
     Toolbar globalToolbar;
+
+    @BindView(R.id.toolbar_title)
+    TextView globalToolbarTitle;
 
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
@@ -141,15 +132,16 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
     public void setActionBarButton(boolean shouldShowBackButton, String title) {
         setSupportActionBar(globalToolbar);
+        getSupportActionBar().setTitle("");
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         if (shouldShowBackButton) {
             actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_black_24dp);
-            actionBar.setTitle(title);
+            globalToolbarTitle.setText(title);
             goBackOrShowNavigationView = shouldShowBackButton;
         } else {
             actionBar.setHomeAsUpIndicator(R.drawable.ic_hamburger);
-            actionBar.setTitle(title);
+            globalToolbarTitle.setText(title);
             goBackOrShowNavigationView = shouldShowBackButton;
         }
     }
@@ -174,11 +166,11 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                 drawerLayout.closeDrawers();
                 return true;
             case R.id.about_us:
-                Toast.makeText(DashboardActivity.this, "About-us selected", Toast.LENGTH_SHORT).show();
+                placeFragment(new AboutFragment(), true, mFragmentManager);
                 drawerLayout.closeDrawers();
                 return true;
             case R.id.help:
-                Toast.makeText(DashboardActivity.this, "Help selected", Toast.LENGTH_SHORT).show();
+                placeFragment(new HelpFragment(), true, mFragmentManager);
                 drawerLayout.closeDrawers();
                 return true;
             case R.id.get_audrey:
