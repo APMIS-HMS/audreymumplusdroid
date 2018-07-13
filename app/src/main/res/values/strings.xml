@@ -76,7 +76,14 @@
     <string name="user_phone">%s</string>
     <string name="contact_us">Contact Us</string>
     <string name="file_report">file a report</string>
-    <string name="help_message">Experiencing an issue on the app ? Let us\\nknow how we can help.</string>
+    <string name="help_message">Experiencing an issue on the app ? Let us know how we can help.</string>
+    <string name="message_us">Message Us</string>
+    <string name="message_us_msg">You can tweet at us on @Audreypack or you can send us an email: help@audreypack.com</string>
+    <string name="our_mission">Our Mission</string>
+    <string name="mission_text"><![CDATA[Our main focus at  The Audrey Pack is the reduction of maternal and child mortality rate. For us, achieving the Millennium development Goals (MDG) 4 & 5, set by the United Nations is our driving force. At the same time helping brands build a strong product brand equity by using the Audrey Pack Platform. We distribute free packs to pregnant and new mums, giving mothers the opportunity to try before they buy the best of baby care and household products]]></string>
+    <string name="registered_mum_txt">20,000\nRegistered Mums.</string>
+    <string name="partner_text">4\nPartners.</string>
+    <string name="distributed_text">1,000,000\nDistributed Packs.</string>
 
     <string-array name="select">
         <item>@string/title</item>

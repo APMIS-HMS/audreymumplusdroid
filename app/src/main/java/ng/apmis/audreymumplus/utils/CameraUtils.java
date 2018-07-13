@@ -1,5 +1,8 @@
 package ng.apmis.audreymumplus.utils;
 
+import android.annotation.SuppressLint;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -31,20 +34,20 @@ import static android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
 
 public class CameraUtils {
 
-    public static final int GALLERY_REQUEST_CODE = 2;
-    public static final int CAMERA_REQUEST_CODE = 1;
-    public static final int CROP_REQUEST_CODE = 3;
-    Fragment mContext;
+    private static final int GALLERY_REQUEST_CODE = 2;
+    private static final int CAMERA_REQUEST_CODE = 1;
+    private static final int CROP_REQUEST_CODE = 3;
+    private Fragment mContext;
 
 
     private String mCurrentPhotoPath;
-    Uri uri;
+    private MutableLiveData<Uri> uri = new MutableLiveData<>();
 
     public CameraUtils(Fragment context) {
         mContext = context;
     }
 
-    public void GetImageFromGallery() {
+    private void GetImageFromGallery() {
 
         Intent GalIntent = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -53,7 +56,7 @@ public class CameraUtils {
 
     }
 
-    public void ClickImageFromCamera() {
+    private void ClickImageFromCamera() {
 
         File file;
 
@@ -64,20 +67,20 @@ public class CameraUtils {
             file = new File(Environment.getExternalStorageDirectory(),
                     "file" + String.valueOf(System.currentTimeMillis()) + ".jpg");
 
-            uri = Uri.fromFile(file);
+            uri.postValue(Uri.fromFile(file));
 
         } else {
 
             try {
                 file = createImageFile();
                 if (file != null) {
-                    uri = FileProvider.getUriForFile(mContext.getActivity(),
+                    uri.postValue(FileProvider.getUriForFile(mContext.getActivity(),
                             mContext.getActivity().getApplicationContext().getPackageName() + ".fileprovider",
-                            file);
+                            file));
                     galleryAddPic(mContext.getActivity());
 
                     mContext.getActivity().getApplicationContext().grantUriPermission("com.android.camera",
-                            uri,
+                            uri.getValue(),
                             Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
                     camIntent.setFlags(FLAG_GRANT_WRITE_URI_PERMISSION);
@@ -90,7 +93,7 @@ public class CameraUtils {
 
         }
 
-        camIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        camIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri.getValue());
 
         camIntent.putExtra("return-data", true);
 
@@ -113,6 +116,7 @@ public class CameraUtils {
 
     private File createImageFile() throws IOException {
         // Create an image file name
+        @SuppressLint("SimpleDateFormat")
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
@@ -135,7 +139,7 @@ public class CameraUtils {
             CropIntent.setFlags(FLAG_GRANT_WRITE_URI_PERMISSION);
             CropIntent.setFlags(FLAG_GRANT_READ_URI_PERMISSION);
 
-            CropIntent.setDataAndType(uri == null ? this.uri : uri, "image/*");
+            CropIntent.setDataAndType(uri == null ? this.uri.getValue() : uri, "image/*");
 
             CropIntent.putExtra("crop", "true");
             CropIntent.putExtra("outputX", 440);
@@ -188,6 +192,10 @@ public class CameraUtils {
             }
         });
         builder.show();
+    }
+
+    public LiveData<Uri> getImageUri () {
+        return uri;
     }
 
 
