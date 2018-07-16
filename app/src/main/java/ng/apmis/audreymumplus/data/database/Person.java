@@ -23,10 +23,10 @@ public class Person {
     private String motherMaidenName;
     private String primaryContactPhoneNo;
     private String expectedDateOfDelivery;
-    private byte [] profileImage;
+    private String profileImage;
 
     @Ignore
-    public Person(String firstName, String lastName, String email, String personId, String dateOfBirth, String motherMaidenName, String primaryContactPhoneNo, String expectedDateOfDelivery, byte [] profileImage) {
+    public Person(String firstName, String lastName, String email, String personId, String dateOfBirth, String motherMaidenName, String primaryContactPhoneNo, String expectedDateOfDelivery, String profileImage) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -38,7 +38,7 @@ public class Person {
         this.profileImage = profileImage;
     }
 
-    public Person(int id, String firstName, String lastName, String email, String personId, String dateOfBirth, String motherMaidenName, String primaryContactPhoneNo, String expectedDateOfDelivery, byte [] profileImage) {
+    public Person(int id, String firstName, String lastName, String email, String personId, String dateOfBirth, String motherMaidenName, String primaryContactPhoneNo, String expectedDateOfDelivery, String profileImage) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -87,7 +87,7 @@ public class Person {
         return expectedDateOfDelivery;
     }
 
-    public byte [] getProfileImage () {
+    public String getProfileImage () {
         return profileImage;
     }
 
@@ -103,7 +103,7 @@ public class Person {
                 ", motherMaidenName='" + motherMaidenName + '\'' +
                 ", primaryContactPhoneNo='" + primaryContactPhoneNo + '\'' +
                 ", expectedDateOfDelivery='" + expectedDateOfDelivery + '\'' +
-                ", profileImage=" + Arrays.toString(profileImage) +
+                ", profileImage=" + profileImage +
                 '}';
     }
 }
