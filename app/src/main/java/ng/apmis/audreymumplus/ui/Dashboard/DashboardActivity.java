@@ -68,6 +68,8 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
     public MutableLiveData<Person> person = new MutableLiveData<>();
     public RequestQueue queue;
 
+    CircularImageView profileCircularImageView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,16 +84,21 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         NavigationView navigationView = findViewById(R.id.nav_view);
         View headerLayout = navigationView.getHeaderView(0);
         TextView userName = headerLayout.findViewById(R.id.user_name);
+        profileCircularImageView = headerLayout.findViewById(R.id.user_image);
         //new GetVersionCode().execute();
 
-        AudreyMumplus.getInstance().diskIO().execute(() -> InjectorUtils.provideRepository(this).getPerson().observe(this, person -> this.person.postValue(person == null ? new Person("", "", "", "", "", "", "", "", "") : person))
+        AudreyMumplus.getInstance().diskIO().execute(() -> InjectorUtils.provideRepository(this).getPerson().observe(this, person -> this.person.postValue(person == null ? new Person("", "", "", "", "", "", "", "", "", "") : person))
         );
 
-        getPersonLive().observe(this, theUser -> userName.setText(theUser.getFirstName() + " " + theUser.getLastName()));
+        getPersonLive().observe(this, theUser -> {
+            userName.setText(theUser.getFirstName() + " " + theUser.getLastName());
+            Glide.with(DashboardActivity.this)
+                    .load(theUser.getProfileImage() != null ? theUser.getProfileImage() : R.drawable.ic_profile_place_holder)
+                    .into(profileCircularImageView);
+        });
 
         navigationView.setNavigationItemSelectedListener(this::selectNavigationItem);
 
-        CircularImageView profileCircularImageView = headerLayout.findViewById(R.id.user_image);
 
         Button logoutView = navigationView.findViewById(R.id.logout);
 
@@ -119,9 +126,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .commit();
 
-        Glide.with(DashboardActivity.this)
-                .load(R.drawable.ic_profile_place_holder)
-                .into(profileCircularImageView);
+
 
     }
 

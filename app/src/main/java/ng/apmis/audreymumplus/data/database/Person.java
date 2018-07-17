@@ -14,6 +14,7 @@ import java.util.Arrays;
 public class Person {
     @PrimaryKey(autoGenerate = true)
     private int id;
+    private String _id;
     private String firstName;
     private String lastName;
     private String email;
@@ -26,7 +27,8 @@ public class Person {
     private String profileImage;
 
     @Ignore
-    public Person(String firstName, String lastName, String email, String personId, String dateOfBirth, String motherMaidenName, String primaryContactPhoneNo, String expectedDateOfDelivery, String profileImage) {
+    public Person(String _id, String firstName, String lastName, String email, String personId, String dateOfBirth, String motherMaidenName, String primaryContactPhoneNo, String expectedDateOfDelivery, String profileImage) {
+        this._id = _id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -38,8 +40,9 @@ public class Person {
         this.profileImage = profileImage;
     }
 
-    public Person(int id, String firstName, String lastName, String email, String personId, String dateOfBirth, String motherMaidenName, String primaryContactPhoneNo, String expectedDateOfDelivery, String profileImage) {
+    public Person(int id, String _id, String firstName, String lastName, String email, String personId, String dateOfBirth, String motherMaidenName, String primaryContactPhoneNo, String expectedDateOfDelivery, String profileImage) {
         this.id = id;
+        this._id = _id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -53,6 +56,10 @@ public class Person {
 
     public int getId() {
         return id;
+    }
+
+    public String get_id () {
+        return _id;
     }
 
     public String getEmail() {
@@ -95,6 +102,7 @@ public class Person {
     public String toString() {
         return "Person{" +
                 "id=" + id +
+                ", _id='" + _id + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +

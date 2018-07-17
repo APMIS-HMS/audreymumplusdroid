@@ -2,14 +2,11 @@ package ng.apmis.audreymumplus.ui.profile;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,22 +23,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.bumptech.glide.Glide;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -75,7 +63,8 @@ public class ProfileFragment extends Fragment {
     CircularImageView userImage;
     @BindView(R.id.edit_save_btn)
     Button editSaveButton;
-    private String currentPersonId;
+    private String updateBiodataPersonId;
+    private String updateProfileDbId;
 
     Uri uri;
     String mCurrentPhotoPath;
@@ -106,7 +95,8 @@ public class ProfileFragment extends Fragment {
                 lastNameEdittext.setText(getContext().getString(R.string.user_lastname, userDetails.getLastName()));
                 userEmail.setText(getContext().getString(R.string.user_email, userDetails.getEmail()));
                 phoneEdittext.setText(getContext().getString(R.string.user_phone, userDetails.getPrimaryContactPhoneNo()));
-                currentPersonId = userDetails.getPersonId();
+                updateBiodataPersonId = userDetails.getPersonId();
+                updateProfileDbId = userDetails.get_id();
 
                     Glide.with(getContext())
                             .load(userDetails.getProfileImage() != null ? userDetails.getProfileImage() : R.drawable.ic_profile_place_holder)
@@ -137,7 +127,7 @@ public class ProfileFragment extends Fragment {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                InjectorUtils.provideJournalNetworkDataSource(activity).updateProfileGetAudrey(currentPersonId, changeFields, activity, false);
+                InjectorUtils.provideJournalNetworkDataSource(activity).updateProfileGetAudrey(updateBiodataPersonId, changeFields, activity, false);
                 setFocusableEditable(false);
             }
         });
@@ -220,11 +210,12 @@ public class ProfileFragment extends Fragment {
 
     @SuppressLint("StaticFieldLeak")
     public void uploadImage(String image) {
+        Log.v("currentperson", updateProfileDbId);
         JSONObject changeFields = new JSONObject();
         try {
-            changeFields.put("uri", image);
+            changeFields.put("uri", "data:image/jpeg;base64," + image);
             changeFields.put("email", userEmail.getText().toString());
-            changeFields.put("peopleId", currentPersonId);
+            changeFields.put("peopleId", updateProfileDbId);
             changeFields.put("size", size);
         } catch (JSONException e) {
             e.printStackTrace();

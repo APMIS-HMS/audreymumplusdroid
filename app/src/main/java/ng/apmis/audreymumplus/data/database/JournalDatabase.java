@@ -15,7 +15,7 @@ import ng.apmis.audreymumplus.ui.Journal.JournalModel;
  * Created by Thadeus-APMIS on 5/15/2018.
  */
 @TypeConverters({JournalConverters.class})
-@Database(entities = {JournalModel.class, Person.class, Appointment.class}, version = 2, exportSchema = false)
+@Database(entities = {JournalModel.class, Person.class, Appointment.class}, version = 3, exportSchema = false)
 public abstract class JournalDatabase extends RoomDatabase {
     public abstract JournalDao dailyJournalDao();
 
@@ -31,7 +31,7 @@ public abstract class JournalDatabase extends RoomDatabase {
                 if (sInstance == null) {
                     sInstance = Room.databaseBuilder(context.getApplicationContext(),
                             JournalDatabase.class, JournalDatabase.DATABASE_NAME)
-                            .addMigrations(MIGRATION_1_2)
+                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                             .build();
                 }
             }
@@ -49,16 +49,14 @@ public abstract class JournalDatabase extends RoomDatabase {
         }
     };*/
 
-   //DATA migration for adding or dropping column sample
-    static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+   /* static final Migration MIGRATION_2_3 = new Migration(2, 3) {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
             database.execSQL("ALTER TABLE Book "
                     + " ADD COLUMN pub_year INTEGER");
         }
-    };
+    };*/
 
-    //DATA migration code for changing column fields
     static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
@@ -72,6 +70,37 @@ public abstract class JournalDatabase extends RoomDatabase {
             database.execSQL("DROP TABLE person");
 // Change the table name to the correct one
             database.execSQL("ALTER TABLE new_person RENAME TO person");
+        }
+    };
+
+    //DATA migration code for changing column fields
+    static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            // Create the new table
+            database.execSQL(
+                    "CREATE TABLE black_person ('id' INTEGER PRIMARY KEY NOT NULL, _id TEXT, firstName TEXT, lastName TEXT, email TEXT, personId TEXT, dateOfBirth TEXT, motherMaidenName TEXT, primaryContactPhoneNo TEXT, expectedDateOfDelivery TEXT, profileImage TEXT)");
+// Copy the data
+            database.execSQL(
+                    "INSERT INTO black_person (id, firstName, lastName, email, personId, dateOfBirth, motherMaidenName, primaryContactPhoneNo, expectedDateOfDelivery, profileImage) SELECT id, firstName, lastName, email, personId, dateOfBirth, motherMaidenName, primaryContactPhoneNo, expectedDateOfDelivery, profileImage FROM person");
+
+// Remove the old table
+            database.execSQL("DROP TABLE person");
+// Change the table name to the correct one
+            database.execSQL("ALTER TABLE black_person RENAME TO person");
+
+            // Create the new table
+            database.execSQL(
+                    "CREATE TABLE new_journal ('id' INTEGER PRIMARY KEY NOT NULL, mood TEXT, cravings TEXT, weight TEXT, symptoms TEXT, babyScanUri TEXT, pregnancyBellyUri TEXT, babyMovement TEXT, date INTEGER NOT NULL, day TEXT, week TEXT)");
+// Copy the data
+            database.execSQL(
+                    "INSERT INTO new_journal (id, mood, cravings, weight, symptoms, babyScanUri, pregnancyBellyUri, babyMovement, date, day) SELECT id, mood, cravings, weight, symptoms, babyScanUri, pregnancyBellyUri, babyMovement, date, day FROM journal");
+
+
+// Remove the old table
+            database.execSQL("DROP TABLE journal");
+// Change the table name to the correct one
+            database.execSQL("ALTER TABLE new_journal RENAME TO journal");
         }
     };
 

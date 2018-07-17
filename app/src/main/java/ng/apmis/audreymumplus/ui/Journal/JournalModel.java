@@ -21,9 +21,10 @@ public class JournalModel implements Parcelable{
     private String babyMovement;
     private long date;
     private String day;
+    private String week;
 
     @Ignore
-    public JournalModel(String mood, String cravings, String weight, String symptoms, String babyScanUri, String pregnancyBellyUri, String babyMovement, long date, String day) {
+    public JournalModel(String mood, String cravings, String weight, String symptoms, String babyScanUri, String pregnancyBellyUri, String babyMovement, long date, String day, String week) {
         this.mood = mood;
         this.cravings = cravings;
         this.weight = weight;
@@ -33,9 +34,10 @@ public class JournalModel implements Parcelable{
         this.babyMovement = babyMovement;
         this.date = date;
         this.day = day;
+        this.week = week;
     }
 
-    public JournalModel(int id, String mood, String cravings, String weight, String symptoms, String babyScanUri, String pregnancyBellyUri, String babyMovement, long date, String day) {
+    public JournalModel(int id, String mood, String cravings, String weight, String symptoms, String babyScanUri, String pregnancyBellyUri, String babyMovement, long date, String day, String week) {
         this.id = id;
         this.mood = mood;
         this.cravings = cravings;
@@ -46,6 +48,7 @@ public class JournalModel implements Parcelable{
         this.babyMovement = babyMovement;
         this.date = date;
         this.day = day;
+        this.week = week;
     }
 
 
@@ -60,6 +63,7 @@ public class JournalModel implements Parcelable{
         babyMovement = in.readString();
         date = in.readLong();
         day = in.readString();
+        week = in.readString();
     }
 
     public static final Creator<JournalModel> CREATOR = new Creator<JournalModel>() {
@@ -112,6 +116,10 @@ public class JournalModel implements Parcelable{
 
     public String getDay () {return day; }
 
+    public String getWeek () {
+        return week;
+    }
+
     @Override
     public String toString() {
         return "JournalModel{" +
@@ -124,7 +132,8 @@ public class JournalModel implements Parcelable{
                 ", pregnancyBellyUri='" + pregnancyBellyUri + '\'' +
                 ", babyMovement='" + babyMovement + '\'' +
                 ", date=" + date + '\'' +
-                ", day=" + day +
+                ", day=" + day + '\'' +
+                ", week=" + week +
                 '}';
     }
 
@@ -145,5 +154,6 @@ public class JournalModel implements Parcelable{
         parcel.writeString(babyMovement);
         parcel.writeLong(date);
         parcel.writeString(day);
+        parcel.writeString(week);
     }
 }

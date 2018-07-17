@@ -22,6 +22,9 @@ public interface JournalDao {
 
     @Query("SELECT * FROM journal")
     LiveData<List<JournalModel>> getAllJournalEntries();
+
+    @Query("SELECT * FROM journal WHERE week = :week")
+    LiveData<List<JournalModel>> getJournalByWeek(String week);
 /*
 
     @Query("SELECT COUNT(id) FROM journal WHERE date <= :date")

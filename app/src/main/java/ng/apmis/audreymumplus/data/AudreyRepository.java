@@ -58,6 +58,10 @@ public class AudreyRepository {
         return mJournalDao.getAllJournalEntries();
     }
 
+    public LiveData<List<JournalModel>> getJournalByWeek (String week) {
+        return mJournalDao.getJournalByWeek(week);
+    }
+
     public void saveJournal (JournalModel journalModel) {
         mJournalDao.insertJournal(journalModel);
     }

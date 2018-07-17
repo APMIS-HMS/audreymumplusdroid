@@ -5,6 +5,8 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -287,6 +289,22 @@ public class MumplusNetworkDataSource {
         });
     }
 
+    public void getStates (Spinner spinner) {
+        JsonObjectRequest stateRequest = new JsonObjectRequest(Request.Method.GET, "https://apmisapitest.azurewebsites.net/countries", new JSONObject(), response -> {
+            Log.v("states result", response.toString());
+
+        }, error -> {
+            Log.v("states error", error.toString());
+        });
+        queue.add(stateRequest);
+    }
+
+    private void setupSpinnerAdapters(String[] dataList, Spinner spinner, Context cont) {
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(cont, android.R.layout.simple_spinner_dropdown_item, dataList);
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
+        spinner.setAdapter(spinnerAdapter);
+    }
+
 
     public void updateProfileImage(JSONObject changeFields, Context context) {
         ProgressDialog pd = new ProgressDialog(context);
@@ -300,10 +318,9 @@ public class MumplusNetworkDataSource {
             JsonObjectRequest updateProfileImageRequest = new JsonObjectRequest(Request.Method.POST, BASE_URL + "profile-pix", changeFields,
                     response -> {
                         Log.v("update profile result", response.toString());
-                        /*JSONObject job = new JSONObject();
+                        JSONObject job = new JSONObject();
                         try {
-                            JSONArray jsonArray = new JSONArray(response);
-                            job = jsonArray.getJSONObject(0);
+                            job = response.getJSONObject("data");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -311,7 +328,7 @@ public class MumplusNetworkDataSource {
                         AudreyMumplus.getInstance().diskIO().execute(() -> {
                                 InjectorUtils.provideRepository(mContext).deletePerson();
                                 InjectorUtils.provideRepository(mContext).savePerson(updatedPerson);
-                        });*/
+                        });
                         pd.dismiss();
                         Toast.makeText(mContext, "Update update successful", Toast.LENGTH_SHORT).show();
                     },
