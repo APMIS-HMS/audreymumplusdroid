@@ -1,5 +1,9 @@
 package ng.apmis.audreymumplus.ui.getaudrey;
 
+import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,11 +15,13 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -29,11 +35,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.R;
+import ng.apmis.audreymumplus.SignupFragmentA;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 
@@ -46,7 +54,6 @@ public class GetAudreyFragment extends Fragment{
     JSONObject registrationData;
 
     public String selectedState;
-    public String selectedLga;
     RequestQueue queue;
 
     @BindView(R.id.submit_btn)
@@ -62,7 +69,9 @@ public class GetAudreyFragment extends Fragment{
     @BindView(R.id.expected_date_of_delivery_et)
     TextInputEditText expectedDateDelivery;
     @BindView(R.id.previous_children)
-    TextInputEditText previousChildren ;
+    TextInputEditText previousChildren;
+    @BindView(R.id.lga_edittext)
+    TextInputEditText lgaEdittext;
 
     @BindView(R.id.address_et)
     TextInputEditText address;
@@ -70,12 +79,12 @@ public class GetAudreyFragment extends Fragment{
     TextInputEditText occupation;
     @BindView(R.id.state_origin_spinner)
     Spinner stateOrigin;
-    @BindView(R.id.lga_spinner)
-    Spinner lga;
+    DialogFragment dialogfragment;
 
 
     static final String BASE_URL = "https://apmisapitest.azurewebsites.net/";
 
+    @SuppressLint("ClickableViewAccessibility")
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -83,6 +92,30 @@ public class GetAudreyFragment extends Fragment{
         ButterKnife.bind(this, rootView);
         registrationData = new JSONObject();
         queue = Volley.newRequestQueue(getContext());
+
+        stateOrigin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    String selectedString = adapterView.getItemAtPosition(i).toString();
+                    if (!TextUtils.isEmpty(selectedString) && !selectedString.equals(getString(R.string.loading))) {
+                        selectedState = selectedString;
+                    }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        expectedDateDelivery.setOnTouchListener((view, motionEvent) -> {
+            if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                dialogfragment = new DatePicker();
+                dialogfragment.show(getActivity().getFragmentManager(), "Select Deliver Date");
+                return true;
+            }
+            return false;
+        });
 
         getAudreyButton.setOnClickListener((view -> {
             if (checkFields()) {
@@ -99,12 +132,13 @@ public class GetAudreyFragment extends Fragment{
     }
 
     boolean checkFields () {
-        if (selectedState.equals("") || selectedLga.equals(getString(R.string.loading))) {
+        if (selectedState.equals("")) {
             Toast.makeText(getActivity(), "Please select State", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (selectedLga.equals("") || selectedLga.equals(getString(R.string.loading))) {
-            Toast.makeText(getActivity(), "Please select Lga", Toast.LENGTH_SHORT).show();
+
+        if (lgaEdittext.getText().toString().equals("")) {
+            lgaEdittext.setError("Local Government field cannot be empty");
             return false;
         }
 
@@ -144,7 +178,7 @@ public class GetAudreyFragment extends Fragment{
 
         try {
             registrationData.put("stateoforigin", selectedState);
-            registrationData.put("lga", selectedLga);
+            registrationData.put("lga", lgaEdittext.getText().toString());
             registrationData.put("address", address.getText().toString());
             registrationData.put("occupation", occupation.getText().toString());
             registrationData.put("spousefullname", spouseFullname.getText().toString());
@@ -162,78 +196,6 @@ public class GetAudreyFragment extends Fragment{
     }
 
 
-    void getStateAndLga (final String urlPath, Spinner spinner) {
-        StringRequest any = new StringRequest(Request.Method.GET, BASE_URL + urlPath, response -> {
-            try {
-                JSONObject responseObj = new JSONObject(response.toString());
-                JSONArray jar = responseObj.getJSONArray("data");
-                if (urlPath.equals(getString(R.string.state))) {
-                    final String[] gendersArray = new String[jar.length()];
-                    for (int i = 0; i < jar.length(); i++) {
-                        gendersArray[i] = jar.getJSONObject(i).getString("name");
-                    }
-                    getActivity().runOnUiThread(() -> setupSpinnerAdapters(gendersArray, spinner));
-                }
-                if (urlPath.equals(getString(R.string.lga))) {
-                    final String[] securityQuestionsArray = new String[jar.length()];
-                    for (int i = 0; i < jar.length(); i++) {
-                        securityQuestionsArray[i] = jar.getJSONObject(i).getString("name");
-                    }
-                    getActivity().runOnUiThread(() -> setupSpinnerAdapters(securityQuestionsArray, spinner));
-                }
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }, error -> {
-            Log.d("Volley Error gender sec", String.valueOf(error));
-            getStateAndLga(urlPath, spinner);
-        });
-
-        queue.add(any);
-    }
-
-    private void setupSpinnerAdapters(String[] dataList, Spinner spinner) {
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_dropdown_item, dataList);
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
-        spinner.setAdapter(spinnerAdapter);
-    }
-
-    void onSpinnerOptionsSelection(Spinner any, final String spinnerType) {
-        any.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                if (spinnerType.equals(getString(R.string.state))) {
-                    String selectedString = adapterView.getItemAtPosition(i).toString();
-                    if (!TextUtils.isEmpty(selectedString) && !selectedString.equals(getString(R.string.loading))) {
-                        selectedState = selectedString;
-                    }
-                } else {
-                    String selectedString = adapterView.getItemAtPosition(i).toString();
-                    if (!TextUtils.isEmpty(selectedString) && !selectedString.equals(getString(R.string.loading))) {
-                        selectedLga = selectedString;
-                    }
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-    }
-
-
-   /* @Override
-    protected void onStop() {
-        super.onStop();
-        queue.cancelAll(new RequestQueue.RequestFilter() {
-            public boolean apply(Request<?> request) {
-                return true;
-            }
-        });
-    }*/
-
     @Override
     public void onResume() {
         super.onResume();
@@ -247,5 +209,25 @@ public class GetAudreyFragment extends Fragment{
         ((DashboardActivity) getActivity()).setActionBarButton(false, getString(R.string.app_name));
         ((DashboardActivity) getActivity()).bottomNavVisibility(true);
     }
+
+    public static class DatePicker extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+            return new DatePickerDialog(getActivity(), R.style.DialogTheme, this, year, month, day);
+        }
+
+        public void onDateSet(android.widget.DatePicker view, int year, int month, int day) {
+            EditText et = (EditText) getActivity().findViewById(R.id.expected_date_of_delivery_et);
+            et.setText(String.format("%d/%d/%d", month + 1, day, year));
+
+        }
+
+    }
+
 
 }

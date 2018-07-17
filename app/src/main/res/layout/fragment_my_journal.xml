@@ -18,7 +18,7 @@
         android:layout_marginTop="12dp"/>
 
     <Spinner
-        android:id="@+id/gallery_option_spinner"
+        android:id="@+id/week_option_spinner"
         android:layout_marginTop="10dp"
         android:layout_alignParentRight="true"
         android:layout_width="wrap_content"
@@ -36,7 +36,7 @@
         android:layout_height="1dp"
         android:layout_margin="12dp"
         android:background="@android:color/darker_gray"
-        android:layout_below="@+id/gallery_option_spinner"/>
+        android:layout_below="@+id/week_option_spinner"/>
 
     <ListView
         android:id="@+id/journal"

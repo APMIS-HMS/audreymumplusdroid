@@ -100,7 +100,6 @@ public class ChatForumFragment extends Fragment {
             ChatContextFragment myObj = new ChatContextFragment();
             myObj.setArguments(bundle);
 
-            Toast.makeText(getActivity(), clicked.getName(), Toast.LENGTH_SHORT).show();
             activity.getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, myObj)
                     .addToBackStack(null)

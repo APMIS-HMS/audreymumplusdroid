@@ -254,10 +254,8 @@ public class MumplusNetworkDataSource {
                         }
                         Person updatedPerson = new Gson().fromJson(job.toString(), Person.class);
                         AudreyMumplus.getInstance().diskIO().execute(() -> {
-                            if (!getAudrey) {
                                 InjectorUtils.provideRepository(mContext).deletePerson();
                                 InjectorUtils.provideRepository(mContext).savePerson(updatedPerson);
-                            }
                         });
                         pd.dismiss();
                         Toast.makeText(mContext, "Update update successful", Toast.LENGTH_SHORT).show();
@@ -288,23 +286,6 @@ public class MumplusNetworkDataSource {
             queue.add(updateProfileRequest);
         });
     }
-
-    public void getStates (Spinner spinner) {
-        JsonObjectRequest stateRequest = new JsonObjectRequest(Request.Method.GET, "https://apmisapitest.azurewebsites.net/countries", new JSONObject(), response -> {
-            Log.v("states result", response.toString());
-
-        }, error -> {
-            Log.v("states error", error.toString());
-        });
-        queue.add(stateRequest);
-    }
-
-    private void setupSpinnerAdapters(String[] dataList, Spinner spinner, Context cont) {
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(cont, android.R.layout.simple_spinner_dropdown_item, dataList);
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
-        spinner.setAdapter(spinnerAdapter);
-    }
-
 
     public void updateProfileImage(JSONObject changeFields, Context context) {
         ProgressDialog pd = new ProgressDialog(context);

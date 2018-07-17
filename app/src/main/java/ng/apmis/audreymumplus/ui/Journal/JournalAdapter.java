@@ -28,6 +28,14 @@ public class JournalAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void setSortedJournals (List<JournalModel> journals) {
+        if (modelList != null) {
+            modelList = new ArrayList<>();
+        }
+        modelList = journals;
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getCount() {
         return modelList.size();

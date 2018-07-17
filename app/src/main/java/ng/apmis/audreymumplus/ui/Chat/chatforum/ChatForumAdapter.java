@@ -19,12 +19,12 @@ public class ChatForumAdapter extends BaseAdapter {
     List<ChatForumModel> chatForums;
     Context mContext;
 
-    public ChatForumAdapter(Context context){
+    public ChatForumAdapter(Context context) {
         mContext = context;
         chatForums = new ArrayList<>();
     }
 
-    public void setForums (List<ChatForumModel> forums) {
+    public void setForums(List<ChatForumModel> forums) {
         chatForums = forums;
         notifyDataSetChanged();
     }
@@ -33,6 +33,7 @@ public class ChatForumAdapter extends BaseAdapter {
     public int getCount() {
         return chatForums.size();
     }
+
     @Override
     public Object getItem(int position) {
         return chatForums.get(position);
@@ -60,12 +61,11 @@ public class ChatForumAdapter extends BaseAdapter {
         TextView forumMemberCount = convertView.findViewById(R.id.forum_member_count);
         TextView forumNewMessageCounter = convertView.findViewById(R.id.forum_new_message_counter);
 
-        if (currentItem.getForumIcon() == 0) {
-            Glide.with(mContext).load(currentItem.getForumIcon()).into(forumImage);
-        }
-        forumName.setText(currentItem.getName());
+        Glide.with(mContext).load(R.drawable.ic_forum_profile).into(forumImage);
+
+        forumName.setText(currentItem.getName().toUpperCase());
         forumNewMessageCounter.setText(currentItem.getForumNewChatsCount());
-        forumMemberCount.setText(mContext.getString(R.string.forum_member_counter,currentItem.getForumMemberCount()));
+        forumMemberCount.setText(mContext.getString(R.string.forum_member_counter, currentItem.getForumMemberCount()));
 
         // returns the view for the current row
         return convertView;

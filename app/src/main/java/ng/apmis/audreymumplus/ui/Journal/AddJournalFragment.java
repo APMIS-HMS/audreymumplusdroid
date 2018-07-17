@@ -34,6 +34,7 @@ import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
+import ng.apmis.audreymumplus.utils.Week;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
@@ -96,7 +97,7 @@ public class AddJournalFragment extends Fragment {
                 String symtom = symtoms.getText().toString();
                 String baby = babyMovement.getText().toString();
 
-                JournalModel newJournal = new JournalModel(mood, crav, heavy, symtom, pregScan, pregBelly, baby, date, "2");
+                JournalModel newJournal = new JournalModel(mood, crav, heavy, symtom, pregScan, pregBelly, baby, date, "1", Week.Week1.getWeek());
 
                 AudreyMumplus.getInstance().diskIO().execute(() ->
                         InjectorUtils.provideRepository(getActivity()).saveJournal(newJournal));
