@@ -40,6 +40,8 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
+import ng.apmis.audreymumplus.data.database.Person;
+import ng.apmis.audreymumplus.data.network.MumplusNetworkDataSource;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumAdapter;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumModel;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
@@ -56,9 +58,11 @@ public class ChatContextFragment extends Fragment {
     Socket mSocket;
     ChatContextAdapter chatContextAdapter;
     RecyclerView chatRecycler;
-    String email;
     String forumName;
     AppCompatActivity activity;
+    Person personal;
+
+    MumplusNetworkDataSource dataSource;
 
     {
         try {
@@ -77,11 +81,13 @@ public class ChatContextFragment extends Fragment {
         chatRecycler = rootView.findViewById(R.id.chat_list);
         chatRecycler.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
+        dataSource = InjectorUtils.provideJournalNetworkDataSource(activity);
+
         InjectorUtils.provideRepository(getContext()).getPerson().observe(this, person -> {
-            email = person.getEmail();
+            personal = person;
 
             getActivity().runOnUiThread(() -> {
-                chatContextAdapter = new ChatContextAdapter(getActivity(), email, getActivity());
+                chatContextAdapter = new ChatContextAdapter(getActivity(), person.getEmail(), getActivity());
                 chatRecycler.setAdapter(chatContextAdapter);
             });
         });
@@ -107,6 +113,10 @@ public class ChatContextFragment extends Fragment {
                 for (int i = 0; i < jar.length(); i++) {
                     JSONObject chatObj = (JSONObject) jar.get(i);
                     ChatContextModel eachChat = new Gson().fromJson(chatObj.toString(), ChatContextModel.class);
+                    dataSource.fetchUserName(eachChat.getEmail());
+                    dataSource.getPersonEmail().observe(activity, person -> {
+                        eachChat.setUserName((person != null ? person.getFirstName() : "") + " " + (person != null ? person.getLastName() : ""));
+                    });
                     chats.add(eachChat);
                 }
 
@@ -125,9 +135,14 @@ public class ChatContextFragment extends Fragment {
             JSONObject jsonObject = (JSONObject) args[0];
             try {
                 ChatContextModel oneChat = new Gson().fromJson(jsonObject.getJSONObject("message").toString(), ChatContextModel.class);
-                if (!oneChat.getEmail().equals(email)) {
+                if (!oneChat.getEmail().equals(personal.getEmail())) {
                     activity.runOnUiThread(() -> {
                         ArrayList<ChatContextModel> chats = new ArrayList<>();
+                        MumplusNetworkDataSource dataSource = InjectorUtils.provideJournalNetworkDataSource(activity);
+                        dataSource.fetchUserName(oneChat.getEmail());
+                        dataSource.getPersonEmail().observe(activity, person -> {
+                            oneChat.setUserName((person != null ? person.getFirstName() : "") + " " + (person != null ? person.getLastName() : ""));
+                        });
                         chats.add(oneChat);
                         chatContextAdapter.addChats(chats);
                         chatRecycler.smoothScrollToPosition(chatContextAdapter.getItemCount());
@@ -139,11 +154,9 @@ public class ChatContextFragment extends Fragment {
         });
 
 
-
-
         sendBtn.setOnClickListener((view) -> {
             if (chatMessageEditText.getText().toString().length() > 0) {
-                ChatContextModel oneChat = new ChatContextModel("sweet-mothers", chatMessageEditText.getText().toString(), email);
+                ChatContextModel oneChat = new ChatContextModel("sweet-mothers", chatMessageEditText.getText().toString(), personal.getEmail(), personal.getFirstName() + " " + personal.getLastName());
                 ArrayList<ChatContextModel> chats = new ArrayList<>();
                 chats.add(oneChat);
                 postChat(oneChat);

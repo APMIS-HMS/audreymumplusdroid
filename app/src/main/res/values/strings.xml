@@ -92,6 +92,7 @@
     <string name="pregnancy_belly_title">Pregnancy Belly/Photo</string>
     <string name="personal_note_text">My Personal Note</string>
     <string name="audrey_signup_guide">Please fill the form below to SignUp for Audrey pack.</string>
+    <string name="expectedDateOfDelivery">Expected Date Of Delivery: %s</string>
 
     <string-array name="select">
         <item>@string/title</item>

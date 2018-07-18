@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Range;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +21,15 @@ import android.widget.Toast;
 
 import com.apmis.audrey.DateCalculator;
 
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -59,7 +67,7 @@ public class MyJournalFragment extends Fragment {
         ListView listView = rootView.findViewById(R.id.journal);
         ((DashboardActivity)getActivity()).getPersonLive().observe(this, person -> {
             edd = person != null ? person.getExpectedDateOfDelivery() : null;
-            getDayWeek();
+            getDayWeek(edd);
         });
 
         journalAdapter = new JournalAdapter(getActivity());
@@ -154,13 +162,34 @@ public class MyJournalFragment extends Fragment {
         });
     }
 
-    public void getDayWeek () {
-        Log.v("edd", edd);
-      /*  Date date = new Date(Long.parseLong(edd));
-        Log.v("mont, day, year", String.valueOf(date.getMonth() + " " + date.getDay() + " " + date.getYear()));
-        DateCalculator dateCalculator = new DateCalculator();
-        long weeks = dateCalculator.noOfWeeksSpentAsExpectantMum(1990, 12, 9);
-        Log.v("Weeks", String.valueOf(weeks));*/
+    public void getDayWeek (String edd) {
+    Log.v("edd string", edd);
+        if (edd != null) {
+
+            //Estimated regular days of pregnancy @40 weeks
+            int totalPregDays = 280;
+
+            //Format edd with Joda datetime
+            DateTime dateTime = DateTime.parse(edd);
+
+            //Convert to regular Date object
+            Date convertDateTime = new Date(dateTime.getMillis());
+
+            //Convert to Joda LocalDate for comparison
+            LocalDate eddDate = LocalDate.fromDateFields(convertDateTime);
+
+            //Difference between today and edd
+            Days howMany = Days.daysBetween(LocalDate.fromDateFields(new Date()), eddDate);
+
+            //Get current week divide totals days spent by 7
+            int getWeek = (totalPregDays - howMany.getDays()) / 7;
+
+            String currentWeekProgress = Week.valueOf("Week" + getWeek).getWeek();
+            Log.v("current week", currentWeekProgress);
+            int currentDayProgress = howMany.getDays();
+
+        }
+
     }
 
 }

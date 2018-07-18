@@ -3,6 +3,10 @@ package ng.apmis.audreymumplus.data;
 import android.arch.lifecycle.LiveData;
 import android.util.Log;
 
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
+
 import java.util.Date;
 import java.util.List;
 
@@ -13,6 +17,8 @@ import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.data.network.MumplusNetworkDataSource;
 import ng.apmis.audreymumplus.ui.Appointments.Appointment;
 import ng.apmis.audreymumplus.ui.Journal.JournalModel;
+import ng.apmis.audreymumplus.utils.InjectorUtils;
+import ng.apmis.audreymumplus.utils.Week;
 
 /**
  * Created by Thadeus-APMIS on 5/15/2018.
@@ -84,6 +90,48 @@ public class AudreyRepository {
 
     public LiveData<List<Appointment>> getAllAppointments () {
         return mJournalDao.getSavedAppointments();
+    }
+
+    public void updatePersonWithPregWeekDay (Person person) {
+        mJournalDao.updatePerson(person);
+    }
+
+    public void getDayWeek (Person person) {
+
+        if (person.getExpectedDateOfDelivery() != null) {
+
+            //Estimated regular days of pregnancy @40 weeks
+            int totalPregDays = 280;
+
+            //Format edd with Joda datetime
+            DateTime dateTime = DateTime.parse(person.getExpectedDateOfDelivery());
+
+            //Convert to regular Date object
+            Date convertDateTime = new Date(dateTime.getMillis());
+
+            //Convert to Joda LocalDate for comparison
+            LocalDate eddDate = LocalDate.fromDateFields(convertDateTime);
+
+            //Difference between today and edd
+            Days howMany = Days.daysBetween(LocalDate.fromDateFields(new Date()), eddDate);
+
+            //Get current week divide totals days spent by 7
+            int getWeek = (totalPregDays - howMany.getDays()) / 7;
+
+            String currentWeekProgress = Week.valueOf("Week" + getWeek).getWeek();
+            Log.v("current week", currentWeekProgress);
+            int currentDayProgress = howMany.getDays();
+
+
+            person.setWeek(currentWeekProgress);
+            person.setDay(currentDayProgress);
+
+            Log.v("person of update", person.toString());
+
+            updatePersonWithPregWeekDay(person);
+
+        }
+
     }
 
 /*

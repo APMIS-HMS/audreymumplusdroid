@@ -1,6 +1,7 @@
 package ng.apmis.audreymumplus.ui.Journal;
 
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -14,6 +15,9 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
+import android.support.v7.app.AppCompatActivity;
+import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +28,7 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -79,12 +84,24 @@ public class AddJournalFragment extends Fragment {
     String uriToSet, pregScan, pregBelly = "";
     String imageFilePath;
 
+    String day;
+    String week;
+
+    AppCompatActivity activity;
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.new_journal, container, false);
         ButterKnife.bind(this, rootView);
+
+        ((DashboardActivity) getActivity()).getPersonLive().observe(activity, person -> {
+            week = String.valueOf(person.getWeek());
+            day = String.valueOf(person.getDay());
+            Log.v("day",String.valueOf(day));
+        });
+
 
 
         saveJournal.setOnClickListener((view) -> {
@@ -97,7 +114,7 @@ public class AddJournalFragment extends Fragment {
                 String symtom = symtoms.getText().toString();
                 String baby = babyMovement.getText().toString();
 
-                JournalModel newJournal = new JournalModel(mood, crav, heavy, symtom, pregScan, pregBelly, baby, date, "1", Week.Week1.getWeek());
+                JournalModel newJournal = new JournalModel(mood, crav, heavy, symtom, pregScan, pregBelly, baby, date, day, Week.valueOf(week.replace(" ","")).getWeek());
 
                 AudreyMumplus.getInstance().diskIO().execute(() ->
                         InjectorUtils.provideRepository(getActivity()).saveJournal(newJournal));
@@ -346,4 +363,9 @@ public class AddJournalFragment extends Fragment {
         return image;
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        activity = (AppCompatActivity) context;
+    }
 }

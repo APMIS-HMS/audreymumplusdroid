@@ -56,8 +56,8 @@ public class PregnancyWeeklyProgressFragment extends Fragment{
     CardView todaysProgressCard;
 
     PregnancyWeeklyProgressModel todaysModelItem;
-    String currentWeek = "2";
-    String currentDay = "1";
+    String currentWeek;
+    String currentDay;
 
     RequestQueue queue;
 
@@ -88,6 +88,8 @@ public class PregnancyWeeklyProgressFragment extends Fragment{
 
         ((DashboardActivity)getActivity()).getPersonLive().observe(this, person -> {
             edd = person != null ? person.getExpectedDateOfDelivery() : null;
+            currentDay = String.valueOf(person.getDay());
+            currentWeek = String.valueOf(person.getWeek()).split(" ")[1];
         });
 
         weeklyProgressRecycler.setLayoutManager(new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL,false));

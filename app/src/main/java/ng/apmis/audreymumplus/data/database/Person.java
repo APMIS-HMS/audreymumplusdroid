@@ -4,8 +4,6 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
-import java.util.Arrays;
-
 /**
  * Created by Thadeus on 6/21/2018.
  */
@@ -23,11 +21,13 @@ public class Person {
     private String dateOfBirth;
     private String motherMaidenName;
     private String primaryContactPhoneNo;
-    private String expectedDateOfDelivery;
+    private String ExpectedDateOfDelivery;
     private String profileImage;
+    private String week;
+    private int day;
 
     @Ignore
-    public Person(String _id, String firstName, String lastName, String email, String personId, String dateOfBirth, String motherMaidenName, String primaryContactPhoneNo, String expectedDateOfDelivery, String profileImage) {
+    public Person(String _id, String firstName, String lastName, String email, String personId, String dateOfBirth, String motherMaidenName, String primaryContactPhoneNo, String ExpectedDateOfDelivery, String profileImage, String week, int day) {
         this._id = _id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -36,11 +36,13 @@ public class Person {
         this.dateOfBirth = dateOfBirth;
         this.motherMaidenName = motherMaidenName;
         this.primaryContactPhoneNo = primaryContactPhoneNo;
-        this.expectedDateOfDelivery = expectedDateOfDelivery;
+        this.ExpectedDateOfDelivery = ExpectedDateOfDelivery;
         this.profileImage = profileImage;
+        this.week = week;
+        this.day = day;
     }
 
-    public Person(int id, String _id, String firstName, String lastName, String email, String personId, String dateOfBirth, String motherMaidenName, String primaryContactPhoneNo, String expectedDateOfDelivery, String profileImage) {
+    public Person(int id, String _id, String firstName, String lastName, String email, String personId, String dateOfBirth, String motherMaidenName, String primaryContactPhoneNo, String ExpectedDateOfDelivery, String profileImage, String week, int day) {
         this.id = id;
         this._id = _id;
         this.firstName = firstName;
@@ -50,8 +52,10 @@ public class Person {
         this.dateOfBirth = dateOfBirth;
         this.motherMaidenName = motherMaidenName;
         this.primaryContactPhoneNo = primaryContactPhoneNo;
-        this.expectedDateOfDelivery = expectedDateOfDelivery;
+        this.ExpectedDateOfDelivery = ExpectedDateOfDelivery;
         this.profileImage = profileImage;
+        this.week = week;
+        this.day = day;
     }
 
     public int getId() {
@@ -91,11 +95,27 @@ public class Person {
     }
 
     public String getExpectedDateOfDelivery() {
-        return expectedDateOfDelivery;
+        return ExpectedDateOfDelivery;
+    }
+
+    public String getWeek () {
+        return week;
+    }
+
+    public int getDay () {
+        return day;
     }
 
     public String getProfileImage () {
         return profileImage;
+    }
+
+    public void setWeek (String week) {
+        this.week = week;
+    }
+
+    public void setDay (int day) {
+        this.day = day;
     }
 
     @Override
@@ -110,8 +130,10 @@ public class Person {
                 ", dateOfBirth='" + dateOfBirth + '\'' +
                 ", motherMaidenName='" + motherMaidenName + '\'' +
                 ", primaryContactPhoneNo='" + primaryContactPhoneNo + '\'' +
-                ", expectedDateOfDelivery='" + expectedDateOfDelivery + '\'' +
-                ", profileImage=" + profileImage +
+                ", ExpectedDateOfDelivery='" + ExpectedDateOfDelivery + '\'' +
+                ", profileImage=" + profileImage + '\'' +
+                ", week='" + week + '\'' +
+                ", day=" + day +
                 '}';
     }
 }

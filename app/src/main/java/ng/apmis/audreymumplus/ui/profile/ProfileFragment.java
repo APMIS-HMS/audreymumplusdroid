@@ -91,6 +91,7 @@ public class ProfileFragment extends Fragment {
         AudreyMumplus.getInstance().diskIO().execute(() -> {
 
             ((DashboardActivity) getActivity()).getPersonLive().observe(this, userDetails -> {
+                Log.v("User Details", userDetails.toString());
                 firstNameEdittext.setText(getContext().getString(R.string.user_firstname, userDetails.getFirstName()));
                 lastNameEdittext.setText(getContext().getString(R.string.user_lastname, userDetails.getLastName()));
                 userEmail.setText(getContext().getString(R.string.user_email, userDetails.getEmail()));

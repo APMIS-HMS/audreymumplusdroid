@@ -1,22 +1,17 @@
 package ng.apmis.audreymumplus.ui.Chat;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import ng.apmis.audreymumplus.R;
-import ng.apmis.audreymumplus.data.network.MumplusNetworkDataSource;
-import ng.apmis.audreymumplus.utils.InjectorUtils;
 
 /**
  * Created by Thadeus-APMIS on 6/7/2018.
@@ -36,7 +31,7 @@ public class ChatContextAdapter extends RecyclerView.Adapter<ChatContextAdapter.
     }
 
     public void setAllChats (ArrayList<ChatContextModel> allChats) {
-        this.allChats = allChats;
+        this.allChats.addAll(allChats);
         notifyDataSetChanged();
     }
 
@@ -76,12 +71,7 @@ public class ChatContextAdapter extends RecyclerView.Adapter<ChatContextAdapter.
         ChatContextModel currentChat = allChats.get(position);
         if (currentChat != null) {
             holder.chatText.setText(currentChat.getMessage());
-            MumplusNetworkDataSource dataSource = InjectorUtils.provideJournalNetworkDataSource(mContext);
-            dataSource.fetchUserName(currentChat.getEmail());
-            dataSource.getPersonEmail().observe(owner, person -> {
-                holder.userName.setText(person.getFirstName());
-                //holder.userImage.setImageResource(person.getImageUri());
-            });
+            holder.userName.setText(currentChat.getEmail());
         }
     }
 
@@ -93,13 +83,11 @@ public class ChatContextAdapter extends RecyclerView.Adapter<ChatContextAdapter.
     class ChatContextViewHolder extends RecyclerView.ViewHolder {
 
         TextView chatText;
-        ImageView userImage;
         TextView userName;
 
         ChatContextViewHolder(View itemView) {
             super(itemView);
             chatText = itemView.findViewById(R.id.chat_message);
-            userImage = itemView.findViewById(R.id.user_image);
             userName = itemView.findViewById(R.id.username);
 
         }
