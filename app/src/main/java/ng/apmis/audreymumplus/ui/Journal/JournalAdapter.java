@@ -68,7 +68,7 @@ public class JournalAdapter extends BaseAdapter {
         TextView moodTextView = convertView.findViewById(R.id.mood);
 
         //sets the text for item name and item description from the current item object
-        textViewItemDescription.setText(mCon.getString(R.string.journal_day, "2"));
+        textViewItemDescription.setText(mCon.getString(R.string.journal_day, journalModel.getDay()));
 
         moodTextView.setText(mCon.getString(R.string.mood, journalModel.getMood()));
 

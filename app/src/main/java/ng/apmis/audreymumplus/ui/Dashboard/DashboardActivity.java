@@ -15,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -87,7 +88,17 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         profileCircularImageView = headerLayout.findViewById(R.id.user_image);
         //new GetVersionCode().execute();
 
-        AudreyMumplus.getInstance().diskIO().execute(() -> InjectorUtils.provideRepository(this).getPerson().observe(this, person -> this.person.postValue(person == null ? new Person("", "", "", "", "", "", "", "", "", "") : person))
+        AudreyMumplus.getInstance().diskIO().execute(() -> InjectorUtils.provideRepository(this)
+                .getPerson().observe(this, person -> {
+                    if (person.getDay() == 0) {
+                        AudreyMumplus.getInstance().diskIO().execute(() -> {
+                            InjectorUtils.provideRepository(this).getDayWeek(person);
+                        });
+                    }
+
+                    this.person.postValue(person == null ? new Person("", "", "", "", "", "", "", "", "", "", "", 0) : person);
+
+                })
         );
 
         getPersonLive().observe(this, theUser -> {
@@ -121,16 +132,15 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         // placeFragment(new HomeFragment(), true, mFragmentManager);
 
 
-                mFragmentManager.beginTransaction()
+        mFragmentManager.beginTransaction()
                 .add(R.id.fragment_container, new HomeFragment())
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .commit();
 
 
-
     }
 
-    public LiveData<Person> getPersonLive () {
+    public LiveData<Person> getPersonLive() {
         return person;
     }
 

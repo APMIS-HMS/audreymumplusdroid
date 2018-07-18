@@ -1,14 +1,22 @@
 package ng.apmis.audreymumplus.ui.PregnancyDetails;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -17,12 +25,13 @@ import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 
 public class PregnancyFragment extends Fragment {
 
-    public String currentDay;
-    public String currentWeek;
     @BindView(R.id.day_indicator)
     TextView dayIndicator;
     @BindView(R.id.week_indicator)
     TextView weekIndicator;
+    @BindView(R.id.datedelivery)
+    TextView deliveryDate;
+    AppCompatActivity activity;
 
 
     @Nullable
@@ -30,15 +39,27 @@ public class PregnancyFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.activity_pregnancy_details, container, false);
         ButterKnife.bind(this, rootView);
-        currentDay = "3";
-        currentWeek = "2";
 
-        dayIndicator.setText(getString(R.string.day_indicator, currentDay));
-        weekIndicator.setText(getString(R.string.week_indicator, currentWeek));
+        ((DashboardActivity) getActivity()).getPersonLive().observe(activity, person -> {
+            String[] week = String.valueOf(person.getWeek()).split(" ");
+            weekIndicator.setText(getString(R.string.week_indicator, week[1]));
+            dayIndicator.setText(getString(R.string.day_indicator, String.valueOf(person.getDay())));
+
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy");
+            Date date = null;
+            try {
+                date = inputFormat.parse(person.getExpectedDateOfDelivery());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            deliveryDate.setText(getString(R.string.expectedDateOfDelivery, DateUtils.getRelativeTimeSpanString(date.getTime())));
+
+        });
 
         ViewPager viewPager = rootView.findViewById(R.id.view_pager);
         CategoryAdapter adapter = new CategoryAdapter(getActivity(), getChildFragmentManager());
-
 
         TabLayout tabLayout = rootView.findViewById(R.id.tabview);
         tabLayout.setupWithViewPager(viewPager);
@@ -50,17 +71,21 @@ public class PregnancyFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((DashboardActivity)getActivity()).setActionBarButton(false, "My Pregnancy");
-        ((DashboardActivity)getActivity()).bottomNavVisibility(false);
+        ((DashboardActivity) getActivity()).setActionBarButton(false, "My Pregnancy");
+        ((DashboardActivity) getActivity()).bottomNavVisibility(false);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        ((DashboardActivity)getActivity()).setActionBarButton(false, getString(R.string.app_name));
-        ((DashboardActivity)getActivity()).bottomNavVisibility(true);
+        ((DashboardActivity) getActivity()).setActionBarButton(false, getString(R.string.app_name));
+        ((DashboardActivity) getActivity()).bottomNavVisibility(true);
     }
 
-
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        activity = (AppCompatActivity) context;
+    }
 }
 

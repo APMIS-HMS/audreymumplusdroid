@@ -42,6 +42,7 @@ import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.SignupFragmentA;
+import ng.apmis.audreymumplus.data.network.MumplusNetworkDataSource;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 
@@ -49,7 +50,7 @@ import ng.apmis.audreymumplus.utils.InjectorUtils;
  * Created by Thadeus-APMIS on 6/29/2018.
  */
 
-public class GetAudreyFragment extends Fragment{
+public class GetAudreyFragment extends Fragment {
 
     JSONObject registrationData;
 
@@ -96,10 +97,10 @@ public class GetAudreyFragment extends Fragment{
         stateOrigin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    String selectedString = adapterView.getItemAtPosition(i).toString();
-                    if (!TextUtils.isEmpty(selectedString) && !selectedString.equals(getString(R.string.loading))) {
-                        selectedState = selectedString;
-                    }
+                String selectedString = adapterView.getItemAtPosition(i).toString();
+                if (!TextUtils.isEmpty(selectedString) && !selectedString.equals(getString(R.string.loading))) {
+                    selectedState = selectedString;
+                }
             }
 
             @Override
@@ -121,7 +122,8 @@ public class GetAudreyFragment extends Fragment{
             if (checkFields()) {
                 AudreyMumplus.getInstance().diskIO().execute(() -> {
                     InjectorUtils.provideRepository(getActivity()).getPerson().observe(this, person -> {
-                        InjectorUtils.provideJournalNetworkDataSource(getActivity()).updateProfileGetAudrey(person.getPersonId(), registrationData, getActivity(), true);
+                        MumplusNetworkDataSource dataSource = InjectorUtils.provideJournalNetworkDataSource(getActivity());
+                        dataSource.updateProfileGetAudrey(person.getPersonId(), registrationData, getActivity(), true);
                         getActivity().getSupportFragmentManager().popBackStack();
                     });
                 });
@@ -131,7 +133,7 @@ public class GetAudreyFragment extends Fragment{
         return rootView;
     }
 
-    boolean checkFields () {
+    boolean checkFields() {
         if (selectedState.equals("")) {
             Toast.makeText(getActivity(), "Please select State", Toast.LENGTH_SHORT).show();
             return false;
@@ -185,7 +187,7 @@ public class GetAudreyFragment extends Fragment{
             registrationData.put("spousephone", spousePhone.getText().toString());
             registrationData.put("hospitalname", hostpitalName.getText().toString());
             registrationData.put("hospitalstate", hospitalState.getText().toString());
-            registrationData.put("edd", expectedDateDelivery.getText().toString());
+            registrationData.put("ExpectedDateOfDelivery", expectedDateDelivery.getText().toString());
             registrationData.put("noOfPreviousChildren", previousChildren.getText().toString());
 
 

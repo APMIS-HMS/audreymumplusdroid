@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -19,6 +20,9 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
@@ -94,6 +98,8 @@ public class SignupActivity extends AppCompatActivity implements SignupFragmentB
 
     void signUp(JSONObject uniquePerson) {
 
+        Log.v("Unique person", String.valueOf(uniquePerson));
+
         JsonObjectRequest strRequest = new JsonObjectRequest(Request.Method.POST, BASE_URL + "save-person", uniquePerson, response -> {
 
             Log.v("Sign up response", String.valueOf(response));
@@ -101,7 +107,7 @@ public class SignupActivity extends AppCompatActivity implements SignupFragmentB
                 JSONObject signUpJob = new JSONObject(response.toString());
                 if (signUpJob.getString("status").equals("error")) {
                     progressDialog.dismiss();
-                    Toast.makeText(SignupActivity.this, "There was an error try again", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignupActivity.this, signUpJob.getString("message"), Toast.LENGTH_SHORT).show();
                 } else {
                     attemptLogin(uniquePerson.getJSONObject("person").getString("email"), uniquePerson.getJSONObject("person").getString("password"));
                 }
@@ -112,7 +118,14 @@ public class SignupActivity extends AppCompatActivity implements SignupFragmentB
             progressDialog.dismiss();
             Log.v("Error", String.valueOf(error));
             Toast.makeText(SignupActivity.this, "There was an error try again", Toast.LENGTH_SHORT).show();
-        });
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String>  headers = new HashMap<>();
+                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+        };
         queue.add(strRequest);
     }
 
