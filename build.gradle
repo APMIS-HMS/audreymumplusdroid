@@ -16,6 +16,9 @@ buildscript {
     }
 }
 
+
+ext.firebase_jobdispatcher_version = "0.8.5"
+
 allprojects {
     repositories {
         google()

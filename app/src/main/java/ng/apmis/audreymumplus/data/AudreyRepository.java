@@ -1,7 +1,17 @@
 package ng.apmis.audreymumplus.data;
 
 import android.arch.lifecycle.LiveData;
+import android.content.Context;
 import android.util.Log;
+
+import com.firebase.jobdispatcher.Constraint;
+import com.firebase.jobdispatcher.Driver;
+import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+import com.firebase.jobdispatcher.GooglePlayDriver;
+import com.firebase.jobdispatcher.Job;
+import com.firebase.jobdispatcher.JobTrigger;
+import com.firebase.jobdispatcher.Lifetime;
+import com.firebase.jobdispatcher.Trigger;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -9,6 +19,7 @@ import org.joda.time.LocalDate;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.data.database.DailyJournal;

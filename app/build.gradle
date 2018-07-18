@@ -72,7 +72,7 @@ dependencies {
     // alternatively - just LiveData
     implementation "android.arch.lifecycle:livedata:$lifecycle_version"
     compile 'joda-time:joda-time:2.10'
-    implementation files('libs/DateCalculator.jar')
+    compile "com.firebase:firebase-jobdispatcher:$firebase_jobdispatcher_version"
 }
 repositories {
     mavenCentral()
