@@ -1,18 +1,22 @@
 package ng.apmis.audreymumplus.ui.Journal;
 
+import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
@@ -78,7 +82,6 @@ public class AddJournalFragment extends Fragment {
 
     Intent camIntent, GalIntent, cropIntent;
     Uri uri;
-    File file;
 
     ImageView imageViewToUpdate;
     String uriToSet, pregScan, pregBelly = "";
@@ -251,11 +254,17 @@ public class AddJournalFragment extends Fragment {
 
         camIntent.putExtra("return-data", true);
 
-        if (camIntent.resolveActivity(getContext().getPackageManager()) != null) {
-            startActivityForResult(camIntent, 0);
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 9000);
         } else {
-            Toast.makeText(getActivity(), "There's a problem with camera", Toast.LENGTH_SHORT).show();
+            if (camIntent.resolveActivity(getContext().getPackageManager()) != null) {
+                startActivityForResult(camIntent, 0);
+            } else {
+                Toast.makeText(getActivity(), "There's a problem with camera", Toast.LENGTH_SHORT).show();
+            }
         }
+
+
 
 
     }
@@ -368,4 +377,15 @@ public class AddJournalFragment extends Fragment {
         super.onAttach(context);
         activity = (AppCompatActivity) context;
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 9000 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(activity, "Click add camera button", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getActivity(), "You need permission to use camera", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }
