@@ -39,6 +39,7 @@ import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumFragment;
 import ng.apmis.audreymumplus.ui.Faq.FaqFragment;
 import ng.apmis.audreymumplus.ui.HelpFragment;
 import ng.apmis.audreymumplus.ui.PregnancyDetails.PregnancyFragment;
+import ng.apmis.audreymumplus.ui.SettingFragment;
 import ng.apmis.audreymumplus.ui.getaudrey.GetAudreyFragment;
 import ng.apmis.audreymumplus.ui.Home.HomeFragment;
 import ng.apmis.audreymumplus.ui.Journal.MyJournalFragment;
@@ -90,19 +91,17 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
         AudreyMumplus.getInstance().diskIO().execute(() -> InjectorUtils.provideRepository(this)
                 .getPerson().observe(this, person -> {
-                    if (person.getDay() == 0) {
-                        AudreyMumplus.getInstance().diskIO().execute(() -> {
-                            InjectorUtils.provideRepository(this).getDayWeek(person);
-                        });
-                    }
-
                     this.person.postValue(person == null ? new Person("", "", "", "", "", "", "", "", "", "", "", 0) : person);
 
                 })
         );
 
         getPersonLive().observe(this, theUser -> {
-            userName.setText(theUser.getFirstName() + " " + theUser.getLastName());
+            userName.setText(getString(R.string.user_name, theUser.getFirstName(), theUser.getLastName()));
+            Log.v("the user", theUser.toString());
+            if (theUser.getDay() == 0) {
+                InjectorUtils.provideRepository(this).getDayWeek(theUser);
+            }
             Glide.with(DashboardActivity.this)
                     .load(theUser.getProfileImage() != null ? theUser.getProfileImage() : R.drawable.ic_profile_place_holder)
                     .into(profileCircularImageView);
@@ -271,11 +270,10 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
     }
 
     private void prefFrag(PreferenceFragment fragment) {
-        getFragmentManager().popBackStack("current", FragmentManager.POP_BACK_STACK_INCLUSIVE);
         getFragmentManager().beginTransaction()
                 .setTransition(android.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .add(R.id.fragment_container, fragment)
-                .addToBackStack(null).commit();
+                .commit();
     }
 
 

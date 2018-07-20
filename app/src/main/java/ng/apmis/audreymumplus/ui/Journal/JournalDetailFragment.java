@@ -1,4 +1,4 @@
-package ng.apmis.audreymumplus.ui;
+package ng.apmis.audreymumplus.ui.Journal;
 
 import android.content.Context;
 import android.os.Bundle;

@@ -1,4 +1,4 @@
-package ng.apmis.audreymumplus.ui.Dashboard;
+package ng.apmis.audreymumplus.ui;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import ng.apmis.audreymumplus.R;
+import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 
 
 public class SettingFragment extends PreferenceFragment {
@@ -38,7 +39,6 @@ public class SettingFragment extends PreferenceFragment {
     @Override
     public void onResume() {
         super.onResume();
-        //((AppCompatActivity)getActivity()).getSupportActionBar().setTitle("Settings");
         ((DashboardActivity)getActivity()).setActionBarButton(true, "Settings");
         ((DashboardActivity)getActivity()).bottomNavVisibility(false);
 
@@ -49,6 +49,7 @@ public class SettingFragment extends PreferenceFragment {
         super.onStop();
         ((DashboardActivity)getActivity()).setActionBarButton(false, getString(R.string.app_name));
         ((DashboardActivity)getActivity()).bottomNavVisibility(true);
-
     }
+
+
 }

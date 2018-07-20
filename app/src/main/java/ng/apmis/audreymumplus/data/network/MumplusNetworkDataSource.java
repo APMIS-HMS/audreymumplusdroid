@@ -44,6 +44,7 @@ import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.ui.Journal.JournalModel;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
+import ng.apmis.audreymumplus.utils.Week;
 
 /**
  * Created by Thadeus-APMIS on 5/15/2018.
@@ -104,7 +105,7 @@ public class MumplusNetworkDataSource {
     /**
      * Schedules a repeating job service which fetches the weather.
      */
-   /* public void scheduleRecurringFetchWeatherSync() {
+   /* public void scheduleDailyDayWeekUpdate() {
         Driver driver = new GooglePlayDriver(mContext);
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(driver);
 
@@ -170,6 +171,8 @@ public class MumplusNetworkDataSource {
                 }
 
                 Person personFromPeople = new Gson().fromJson(dataObject.toString(), Person.class);
+                personFromPeople.setDay(0);
+                personFromPeople.setWeek(Week.Week1.week);
 
                 AudreyMumplus.getInstance().diskIO().execute(() -> {
                     //deleting all user data locally
@@ -348,7 +351,7 @@ public class MumplusNetworkDataSource {
     /**
      * Schedules a repeating job service which fetches the weather.
      */
-    public void scheduleRecurringFetchWeatherSync() {
+    public void scheduleDailyDayWeekUpdate () {
 
         final int periodicity = (int) TimeUnit.HOURS.toSeconds(12); // Every 12 hours periodicity expressed as seconds
         final int toleranceInterval = (int)TimeUnit.HOURS.toSeconds(1); // a small(ish) window of time when triggering is OK
@@ -357,7 +360,7 @@ public class MumplusNetworkDataSource {
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(driver);
 
         // Create the Job to periodically sync Sunshine
-        Job syncSunshineJob = dispatcher.newJobBuilder()
+        Job databaseSyncJob = dispatcher.newJobBuilder()
                 // The Service that will be used to sync Sunshine's data
                 .setService(DatabaseFirebaseJobService.class)
                 //   Set the UNIQUE tag used to identify this Job
@@ -384,7 +387,7 @@ public class MumplusNetworkDataSource {
                 .build();
 
         // Schedule the Job with the dispatcher
-        dispatcher.schedule(syncSunshineJob);
+        dispatcher.schedule(databaseSyncJob);
         Log.d(LOG_TAG, "Job scheduled");
     }
 

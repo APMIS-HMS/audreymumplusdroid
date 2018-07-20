@@ -7,7 +7,7 @@ import com.firebase.jobdispatcher.JobParameters;
 import com.firebase.jobdispatcher.JobService;
 import com.firebase.jobdispatcher.RetryStrategy;
 
-import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
+import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 
 /**
@@ -35,6 +35,10 @@ public class DatabaseFirebaseJobService extends JobService {
             ((DashboardActivity)getApplicationContext()).getPersonLive().observe(getApplicationContext(), person -> {
                 InjectorUtils.provideRepository(getApplicationContext()).getDayWeek(person);
             });*/
+
+            AudreyMumplus.getInstance().diskIO().execute(() -> {
+                InjectorUtils.provideJournalNetworkDataSource(getApplicationContext()).scheduleDailyDayWeekUpdate();
+            });
 
 
             jobFinished(jobParameters, false);

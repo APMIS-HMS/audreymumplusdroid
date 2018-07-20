@@ -90,6 +90,7 @@ public class PregnancyWeeklyProgressFragment extends Fragment{
             edd = person != null ? person.getExpectedDateOfDelivery() : null;
             currentDay = String.valueOf(person.getDay());
             currentWeek = String.valueOf(person.getWeek()).split(" ")[1];
+            Log.v("person week prog", person.toString());
         });
 
         weeklyProgressRecycler.setLayoutManager(new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL,false));
