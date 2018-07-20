@@ -7,6 +7,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -48,13 +49,16 @@ public class PregnancyFragment extends Fragment {
             SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
             SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy");
             Date date = null;
-            try {
-                date = inputFormat.parse(person.getExpectedDateOfDelivery());
-            } catch (ParseException e) {
-                e.printStackTrace();
+            String edd = !TextUtils.isEmpty(person.getExpectedDateOfDelivery()) ?  person.getExpectedDateOfDelivery() : null;
+            if (edd != null) {
+                try {
+                    date = inputFormat.parse(person.getExpectedDateOfDelivery());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
 
-            deliveryDate.setText(getString(R.string.expectedDateOfDelivery, DateUtils.getRelativeTimeSpanString(date.getTime())));
+            deliveryDate.setText(edd != null ? getString(R.string.expectedDateOfDelivery, DateUtils.getRelativeTimeSpanString(date.getTime())) : getString(R.string.expectedDateOfDelivery,"Not set"));
 
         });
 

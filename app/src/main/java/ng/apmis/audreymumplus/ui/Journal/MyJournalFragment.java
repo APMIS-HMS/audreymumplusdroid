@@ -156,8 +156,8 @@ public class MyJournalFragment extends Fragment {
     }
 
     public void getDayWeek (String edd) {
-    Log.v("edd string", edd);
-        if (edd != null) {
+    Log.v("edd string", String.valueOf(edd));
+        if (!TextUtils.isEmpty(edd)) {
 
             //Estimated regular days of pregnancy @40 weeks
             int totalPregDays = 280;
