@@ -2,6 +2,7 @@ package ng.apmis.audreymumplus.data;
 
 import android.arch.lifecycle.LiveData;
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.firebase.jobdispatcher.Constraint;
@@ -109,7 +110,7 @@ public class AudreyRepository {
 
     public void getDayWeek (Person person) {
 
-        if (person.getExpectedDateOfDelivery() != null) {
+        if (!TextUtils.isEmpty(person.getExpectedDateOfDelivery())) {
 
             //Estimated regular days of pregnancy @40 weeks
             int totalPregDays = 280;
@@ -139,7 +140,9 @@ public class AudreyRepository {
 
             Log.v("person of update", person.toString());
 
-            updatePersonWithPregWeekDay(person);
+            AudreyMumplus.getInstance().diskIO().execute(() -> {
+                    updatePersonWithPregWeekDay(person);
+            });
 
         }
 

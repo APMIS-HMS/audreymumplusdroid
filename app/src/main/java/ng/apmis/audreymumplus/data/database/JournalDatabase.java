@@ -15,7 +15,7 @@ import ng.apmis.audreymumplus.ui.Journal.JournalModel;
  * Created by Thadeus-APMIS on 5/15/2018.
  */
 @TypeConverters({JournalConverters.class})
-@Database(entities = {JournalModel.class, Person.class, Appointment.class}, version = 5, exportSchema = false)
+@Database(entities = {JournalModel.class, Person.class, Appointment.class}, version = 1, exportSchema = false)
 public abstract class JournalDatabase extends RoomDatabase {
     public abstract JournalDao dailyJournalDao();
 
@@ -30,8 +30,8 @@ public abstract class JournalDatabase extends RoomDatabase {
             synchronized (LOCK) {
                 if (sInstance == null) {
                     sInstance = Room.databaseBuilder(context.getApplicationContext(),
-                            JournalDatabase.class, JournalDatabase.DATABASE_NAME)
-                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
+                            JournalDatabase.class, JournalDatabase.DATABASE_NAME)/*
+                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)*/
                             .build();
                 }
             }

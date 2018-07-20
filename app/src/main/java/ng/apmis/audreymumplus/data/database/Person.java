@@ -4,6 +4,8 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 
+import ng.apmis.audreymumplus.utils.Week;
+
 /**
  * Created by Thadeus on 6/21/2018.
  */

@@ -37,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="6dp"
-                android:text="Hi Sarah,"
+                android:text="Hi,"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
                 android:textColor="@android:color/white" />
 
