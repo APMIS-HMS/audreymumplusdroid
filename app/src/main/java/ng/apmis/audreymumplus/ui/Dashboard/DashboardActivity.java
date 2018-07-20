@@ -15,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +27,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.mikhaellopez.circularimageview.CircularImageView;
+
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,6 +50,7 @@ import ng.apmis.audreymumplus.ui.profile.ProfileFragment;
 import ng.apmis.audreymumplus.utils.BottomNavigationViewHelper;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
+import ng.apmis.audreymumplus.utils.Week;
 
 public class DashboardActivity extends AppCompatActivity implements HomeFragment.OnfragmentInteractionListener {
     @BindView(R.id.bottom_navigation)
@@ -91,20 +95,22 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
         AudreyMumplus.getInstance().diskIO().execute(() -> InjectorUtils.provideRepository(this)
                 .getPerson().observe(this, person -> {
-                    this.person.postValue(person == null ? new Person("", "", "", "", "", "", "", "", "", "", "", 0) : person);
+                    this.person.postValue(person == null ? new Person("", "", "", "", Week.Week0.week, "", "", "", "", "", "", 0) : person);
 
                 })
         );
 
         getPersonLive().observe(this, theUser -> {
-            userName.setText(getString(R.string.user_name, theUser.getFirstName(), theUser.getLastName()));
-            Log.v("the user", theUser.toString());
-            if (theUser.getDay() == 0) {
-                InjectorUtils.provideRepository(this).getDayWeek(theUser);
+            if (theUser != null) {
+                userName.setText(getString(R.string.user_name, theUser.getFirstName(), theUser.getLastName()));
+
+                if (theUser.getDay() == 0) {
+                    InjectorUtils.provideRepository(this).getDayWeek(theUser);
+                }
+                Glide.with(DashboardActivity.this)
+                        .load(theUser.getProfileImage() != null ? theUser.getProfileImage() : R.drawable.ic_profile_place_holder)
+                        .into(profileCircularImageView);
             }
-            Glide.with(DashboardActivity.this)
-                    .load(theUser.getProfileImage() != null ? theUser.getProfileImage() : R.drawable.ic_profile_place_holder)
-                    .into(profileCircularImageView);
         });
 
         navigationView.setNavigationItemSelectedListener(this::selectNavigationItem);
@@ -162,6 +168,9 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
     @Override
     public void onBackPressed() {
+        if (getFragmentManager().findFragmentByTag("settings") instanceof SettingFragment) {
+            getFragmentManager().popBackStack("settings", android.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawers();
         } else {
@@ -188,7 +197,14 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                 drawerLayout.closeDrawers();
                 return true;
             case R.id.get_audrey:
-                placeFragment(new GetAudreyFragment(), false, mFragmentManager);
+                getPersonLive().observe(this, person -> {
+                    Log.v("perons", String.valueOf(person));
+                    if (person != null && TextUtils.isEmpty(person.getExpectedDateOfDelivery())) {
+                        placeFragment(new GetAudreyFragment(), false, mFragmentManager);
+                    } else {
+                        Toast.makeText(this, "You have a current Audrey session", Toast.LENGTH_SHORT).show();
+                    }
+                });
                 drawerLayout.closeDrawers();
                 return true;
             case R.id.settings:
@@ -273,6 +289,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         getFragmentManager().beginTransaction()
                 .setTransition(android.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .add(R.id.fragment_container, fragment)
+                .addToBackStack("settings")
                 .commit();
     }
 

@@ -1,16 +1,17 @@
 package ng.apmis.audreymumplus.ui.Chat.chatforum;
 
-import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.github.nkzawa.emitter.Emitter;
@@ -27,22 +28,26 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.ui.Chat.ChatContextFragment;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
+import ng.apmis.audreymumplus.utils.InjectorUtils;
 
 /**
  * Created by Thadeus-APMIS on 6/29/2018.
  */
 
-public class ChatForumFragment extends Fragment {
+public class ChatForumFragment extends Fragment implements ForumAdapter.ClickForumListener {
 
     @BindView(R.id.forums_list)
-    ListView chatParentList;
+    RecyclerView forumRecycler;
     ArrayList<ChatForumModel> allForums;
     Socket mSocket;
-    ChatForumAdapter chatForumAdapter;
+    ForumAdapter forumAdapter;
     AppCompatActivity activity;
+    @BindView(R.id.empty_view)
+    View emptyView;
 
     {
         try {
@@ -52,16 +57,30 @@ public class ChatForumFragment extends Fragment {
     }
 
 
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_chat_forums, container, false);
         ButterKnife.bind(this, rootView);
+
         allForums = new ArrayList<>();
         mSocket.connect();
 
-        chatForumAdapter = new ChatForumAdapter(getActivity());
-        chatParentList.setAdapter(chatForumAdapter);
+        forumAdapter = new ForumAdapter(getActivity(), this);
+        forumRecycler.setLayoutManager(new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false));
+        forumRecycler.setAdapter(forumAdapter);
+
+        AudreyMumplus.getInstance().diskIO().execute(() -> {
+            InjectorUtils.provideRepository(activity).getUpdatedForums().observe(this, chatForums -> {
+                Log.v("forum from db", String.valueOf(chatForums));
+                if (chatForums != null) {
+                        forumAdapter.setForums(allForums);
+                } else {
+                    emptyView.setVisibility(View.VISIBLE);
+                }
+            });
+        });
 
         mSocket.emit("getForums", new JSONObject());
 
@@ -74,38 +93,19 @@ public class ChatForumFragment extends Fragment {
 
                 for (int i = 0 ; i < jar.length(); i++) {
                     JSONObject forumObj = (JSONObject)jar.get(i);
-                    ChatForumModel eachChat = new Gson().fromJson(forumObj.toString(), ChatForumModel.class);
-                    allForums.add(eachChat);
+                    ChatForumModel eachForum = new Gson().fromJson(forumObj.toString(), ChatForumModel.class);
+                    Log.v("forums", eachForum.toString());
+                    allForums.add(eachForum);
                 }
-
-                activity.runOnUiThread(() -> {
-                    chatForumAdapter.setForums(allForums);
+                AudreyMumplus.getInstance().diskIO().execute(() -> {
+                    InjectorUtils.provideRepository(activity).insertAllForums(allForums);
                 });
-
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
         });
-
-        chatForumAdapter.setForums(allForums);
-
-        chatParentList.setOnItemClickListener((parent, view, position, id) -> {
-            ChatForumModel clicked = (ChatForumModel) parent.getItemAtPosition(position);
-
-            Bundle bundle = new Bundle();
-            bundle.putString("forumName", clicked.getName());
-
-            ChatContextFragment myObj = new ChatContextFragment();
-            myObj.setArguments(bundle);
-
-            activity.getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, myObj)
-                    .addToBackStack(null)
-                    .commit();
-        });
-
 
         return rootView;
     }
@@ -116,35 +116,6 @@ public class ChatForumFragment extends Fragment {
         activity = (AppCompatActivity) context;
     }
 
-
-    Emitter.Listener getForums() {
-
-        ArrayList<ChatForumModel> allForums = new ArrayList<>();
-
-        return args -> {
-            JSONObject jsonObject = (JSONObject) args[0];
-            Log.v("JsonObject", String.valueOf(jsonObject));
-
-            try {
-                JSONObject job = new JSONObject(jsonObject.toString());
-                JSONArray jar = job.getJSONArray("data");
-
-                for (int i = 0 ; i < jar.length(); i++) {
-                    JSONObject forumObj = (JSONObject)jar.get(i);
-                    ChatForumModel eachChat = new Gson().fromJson(forumObj.toString(), ChatForumModel.class);
-                    allForums.add(eachChat);
-                }
-
-                    chatForumAdapter.setForums(allForums);
-
-
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-        };
-    }
 
     @Override
     public void onResume() {
@@ -158,5 +129,19 @@ public class ChatForumFragment extends Fragment {
         super.onStop();
         ((DashboardActivity)getActivity()).setActionBarButton(false, getString(R.string.app_name));
         ((DashboardActivity)getActivity()).bottomNavVisibility(true);
+    }
+
+    @Override
+    public void onForumClick(ChatForumModel chatForums) {
+        Bundle bundle = new Bundle();
+        bundle.putString("forumName", chatForums.getName());
+
+        ChatContextFragment myObj = new ChatContextFragment();
+        myObj.setArguments(bundle);
+
+        activity.getSupportFragmentManager().beginTransaction()
+                .add(R.id.fragment_container, myObj)
+                .addToBackStack(null)
+                .commit();
     }
 }

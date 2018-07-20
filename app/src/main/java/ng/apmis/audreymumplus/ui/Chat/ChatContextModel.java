@@ -1,20 +1,40 @@
 package ng.apmis.audreymumplus.ui.Chat;
 
-import org.json.JSONObject;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
+
+@Entity(tableName = "chat")
 public class ChatContextModel {
 
-
+    @PrimaryKey()
+    @NonNull
+    private String _id;
     private String forumName;
     private String message;
     private String email;
     private String userName;
 
+    public ChatContextModel(String _id, String forumName, String message, String email, String userName) {
+        this._id = _id;
+        this.forumName = forumName;
+        this.message = message;
+        this.email = email;
+        this.userName = userName;
+    }
+
+    @Ignore()
     public ChatContextModel(String forumName, String message, String email, String userName) {
         this.forumName = forumName;
         this.message = message;
         this.email = email;
         this.userName = userName;
+    }
+
+    public String get_id() {
+        return _id;
     }
 
     public String getForumName() {
@@ -29,7 +49,7 @@ public class ChatContextModel {
         return email;
     }
 
-    public String getUserName () {
+    public String getUserName() {
         return userName;
     }
 
@@ -40,7 +60,8 @@ public class ChatContextModel {
     @Override
     public String toString() {
         return "ChatContextModel{" +
-                "forumName='" + forumName + '\'' +
+                "_id='" + _id + '\'' +
+                ", forumName='" + forumName + '\'' +
                 ", message='" + message + '\'' +
                 ", email='" + email + '\'' +
                 ", userName='" + userName + '\'' +

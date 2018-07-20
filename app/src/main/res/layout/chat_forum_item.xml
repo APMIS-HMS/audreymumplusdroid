@@ -13,7 +13,7 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="50dp"
-        app:srcCompat="@drawable/audrey_icon"/>
+        app:srcCompat="@drawable/ic_forum_profile"/>
 
     <TextView
         android:id="@+id/forum_topic"

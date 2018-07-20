@@ -6,6 +6,7 @@ package ng.apmis.audreymumplus.utils;
 
 public enum Week {
     ALL ("All"),
+    Week0 ("Week 0"),
     Week1 ("Week 1"),
     Week2 ("Week 2"),
     Week3 ("Week 3"),

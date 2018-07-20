@@ -1,5 +1,6 @@
 package ng.apmis.audreymumplus.ui.Chat;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,17 +11,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
@@ -32,21 +25,15 @@ import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.data.network.MumplusNetworkDataSource;
-import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumAdapter;
-import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumModel;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
-import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
 
 public class ChatContextFragment extends Fragment {
 
@@ -77,25 +64,36 @@ public class ChatContextFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_chat_context, container, false);
         ButterKnife.bind(this, rootView);
+        mSocket.connect();
+        dataSource = InjectorUtils.provideJournalNetworkDataSource(activity);
+
         chats = new ArrayList<>();
         chatRecycler = rootView.findViewById(R.id.chat_list);
         chatRecycler.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
-        dataSource = InjectorUtils.provideJournalNetworkDataSource(activity);
-
-        InjectorUtils.provideRepository(getContext()).getPerson().observe(this, person -> {
+        ((DashboardActivity)getActivity()).getPersonLive().observe(activity, person -> {
             personal = person;
-
-            getActivity().runOnUiThread(() -> {
+            activity.runOnUiThread(() -> {
                 chatContextAdapter = new ChatContextAdapter(getActivity(), person.getEmail(), getActivity());
                 chatRecycler.setAdapter(chatContextAdapter);
             });
         });
 
-        mSocket.connect();
 
         if (getArguments() != null) {
             forumName = getArguments().getString("forumName");
+
+            //Get saved chats from database
+            AudreyMumplus.getInstance().diskIO().execute(() -> {
+                InjectorUtils.provideRepository(activity).getUpdatedChats().observe(activity, chats -> {
+                    if (chats != null) {
+                        activity.runOnUiThread(() -> {
+                            Log.v("chats", String.valueOf(chats));
+                            chatContextAdapter.swapChats(chats);
+                        });
+                    }
+                });
+            });
 
             try {
                 JSONObject getChats = new JSONObject().put("forumName", forumName);
@@ -105,6 +103,7 @@ public class ChatContextFragment extends Fragment {
             }
         }
 
+
         mSocket.on("getChats", args -> {
 
             try {
@@ -113,6 +112,7 @@ public class ChatContextFragment extends Fragment {
                 for (int i = 0; i < jar.length(); i++) {
                     JSONObject chatObj = (JSONObject) jar.get(i);
                     ChatContextModel eachChat = new Gson().fromJson(chatObj.toString(), ChatContextModel.class);
+                    Log.v("each chat", String.valueOf(eachChat));
                     dataSource.fetchUserName(eachChat.getEmail());
                     dataSource.getPersonEmail().observe(activity, person -> {
                         eachChat.setUserName((person != null ? person.getFirstName() : "") + " " + (person != null ? person.getLastName() : ""));
@@ -120,21 +120,24 @@ public class ChatContextFragment extends Fragment {
                     chats.add(eachChat);
                 }
 
-                activity.runOnUiThread(() -> {
-                    chatContextAdapter.setAllChats(chats);
-                    chatRecycler.smoothScrollToPosition(chatContextAdapter.getItemCount());
+                AudreyMumplus.getInstance().diskIO().execute(() -> {
+                    InjectorUtils.provideRepository(activity).insertAllChats(chats);
                 });
-
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
         });
+
         mSocket.on("created", args -> {
             JSONObject jsonObject = (JSONObject) args[0];
             try {
                 ChatContextModel oneChat = new Gson().fromJson(jsonObject.getJSONObject("message").toString(), ChatContextModel.class);
+                AudreyMumplus.getInstance().diskIO().execute(() -> {
+                    InjectorUtils.provideRepository(activity).insertChat(oneChat);
+                });
+
                 if (!oneChat.getEmail().equals(personal.getEmail())) {
                     activity.runOnUiThread(() -> {
                         ArrayList<ChatContextModel> chats = new ArrayList<>();
@@ -156,7 +159,7 @@ public class ChatContextFragment extends Fragment {
 
         sendBtn.setOnClickListener((view) -> {
             if (chatMessageEditText.getText().toString().length() > 0) {
-                ChatContextModel oneChat = new ChatContextModel("sweet-mothers", chatMessageEditText.getText().toString(), personal.getEmail(), personal.getFirstName() + " " + personal.getLastName());
+                ChatContextModel oneChat = new ChatContextModel(forumName, chatMessageEditText.getText().toString(), personal.getEmail(), "");
                 ArrayList<ChatContextModel> chats = new ArrayList<>();
                 chats.add(oneChat);
                 postChat(oneChat);
@@ -168,6 +171,24 @@ public class ChatContextFragment extends Fragment {
 
 
         return rootView;
+    }
+
+
+
+
+    public void postChat(ChatContextModel chat) {
+
+        Gson gson = new Gson();
+        String cht = gson.toJson(chat);
+
+        JSONObject boboo;
+        try {
+            boboo = new JSONObject(cht);
+            mSocket.emit("chat", boboo);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -188,53 +209,6 @@ public class ChatContextFragment extends Fragment {
         super.onStop();
         ((DashboardActivity) getActivity()).setActionBarButton(false, getString(R.string.app_name));
         ((DashboardActivity) getActivity()).bottomNavVisibility(true);
-        onDestroy();
-    }
-
-
-    public void postChat(ChatContextModel chat) {
-
-        Gson gson = new Gson();
-        String cht = gson.toJson(chat);
-
-        JSONObject boboo;
-        try {
-            boboo = new JSONObject(cht);
-            mSocket.emit("chat", boboo);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    Emitter.Listener getChats() {
-        return args -> {
-
-            try {
-                JSONArray jar = (JSONArray) args[0];
-
-                for (int i = 0; i < jar.length(); i++) {
-                    JSONObject chatObj = (JSONObject) jar.get(i);
-                    ChatContextModel eachChat = new Gson().fromJson(chatObj.toString(), ChatContextModel.class);
-                    chats.add(eachChat);
-                }
-
-                chatContextAdapter.setAllChats(chats);
-                chatRecycler.smoothScrollToPosition(chatContextAdapter.getItemCount());
-
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-        };
-    }
-
-    Emitter.Listener getChat() {
-        return args -> {
-            JSONObject jsonObject = (JSONObject) args[0];
-            Log.v("JsonObject", String.valueOf(jsonObject));
-        };
     }
 
 }

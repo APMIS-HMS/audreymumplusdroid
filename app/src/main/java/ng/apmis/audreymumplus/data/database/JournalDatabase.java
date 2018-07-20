@@ -9,13 +9,15 @@ import android.arch.persistence.room.migration.Migration;
 import android.content.Context;
 
 import ng.apmis.audreymumplus.ui.Appointments.Appointment;
+import ng.apmis.audreymumplus.ui.Chat.ChatContextModel;
+import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumModel;
 import ng.apmis.audreymumplus.ui.Journal.JournalModel;
 
 /**
  * Created by Thadeus-APMIS on 5/15/2018.
  */
 @TypeConverters({JournalConverters.class})
-@Database(entities = {JournalModel.class, Person.class, Appointment.class}, version = 1, exportSchema = false)
+@Database(entities = {JournalModel.class, Person.class, Appointment.class, ChatForumModel.class, ChatContextModel.class}, version = 1, exportSchema = false)
 public abstract class JournalDatabase extends RoomDatabase {
     public abstract JournalDao dailyJournalDao();
 

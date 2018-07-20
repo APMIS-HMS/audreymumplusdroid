@@ -12,6 +12,8 @@ import java.util.Date;
 import java.util.List;
 
 import ng.apmis.audreymumplus.ui.Appointments.Appointment;
+import ng.apmis.audreymumplus.ui.Chat.ChatContextModel;
+import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumModel;
 import ng.apmis.audreymumplus.ui.Journal.JournalModel;
 
 /**
@@ -42,7 +44,7 @@ public interface JournalDao {
     LiveData<JournalModel> getJournalByDate(Date date);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void bulkInsert(List<JournalModel> allJournals);
+    void bulkInsertJournal (List<JournalModel> allJournals);
 
     @Insert()
     void insertJournal (JournalModel journalModel);
@@ -59,7 +61,23 @@ public interface JournalDao {
     @Query("SELECT * FROM person")
     LiveData<Person> getPerson();
 
-  /*  @Query("DELETE FROM journal WHERE date < :date")
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void bulkInsertForums (List<ChatForumModel> allForums);
+
+    @Query("SELECT * FROM forums")
+    LiveData<List<ChatForumModel>> getChatForums();
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void bulkInsertChats (List<ChatContextModel> allForums);
+
+    @Query("SELECT * FROM forums")
+    LiveData<List<ChatContextModel>> getChats();
+
+    @Insert()
+    void insertChat(ChatContextModel chatContextModel);
+
+
+    /*@Query("DELETE FROM journal WHERE date < :date")
     void deleteOldWeather(String date);*/
 
 }

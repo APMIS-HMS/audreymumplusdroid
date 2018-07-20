@@ -94,6 +94,7 @@
     <string name="audrey_signup_guide">Please fill the form below to SignUp for Audrey pack.</string>
     <string name="expectedDateOfDelivery">Expected Date Of Delivery: %s</string>
     <string name="user_name">%s %s</string>
+    <string name="no_forum_found">No Forum Found</string>
 
     <string-array name="select">
         <item>@string/title</item>

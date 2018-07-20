@@ -87,7 +87,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         });
 
-        signupTv.setOnClickListener((view) -> startActivity(new Intent(this, SignupActivity.class)));
+        signupTv.setOnClickListener((view) ->
+                startActivity(new Intent(this, SignupActivity.class))
+        );
 
         passwordEditText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_DONE) {

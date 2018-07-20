@@ -1,18 +1,8 @@
 package ng.apmis.audreymumplus.data;
 
 import android.arch.lifecycle.LiveData;
-import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
-
-import com.firebase.jobdispatcher.Constraint;
-import com.firebase.jobdispatcher.Driver;
-import com.firebase.jobdispatcher.FirebaseJobDispatcher;
-import com.firebase.jobdispatcher.GooglePlayDriver;
-import com.firebase.jobdispatcher.Job;
-import com.firebase.jobdispatcher.JobTrigger;
-import com.firebase.jobdispatcher.Lifetime;
-import com.firebase.jobdispatcher.Trigger;
 
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -20,16 +10,15 @@ import org.joda.time.LocalDate;
 
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import ng.apmis.audreymumplus.AudreyMumplus;
-import ng.apmis.audreymumplus.data.database.DailyJournal;
 import ng.apmis.audreymumplus.data.database.JournalDao;
 import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.data.network.MumplusNetworkDataSource;
 import ng.apmis.audreymumplus.ui.Appointments.Appointment;
+import ng.apmis.audreymumplus.ui.Chat.ChatContextModel;
+import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumModel;
 import ng.apmis.audreymumplus.ui.Journal.JournalModel;
-import ng.apmis.audreymumplus.utils.InjectorUtils;
 import ng.apmis.audreymumplus.utils.Week;
 
 /**
@@ -61,7 +50,7 @@ public class AudreyRepository {
             //deleteOldData();
             Log.d(LOG_TAG, "Old weather deleted");
             // Insert our new weather data into Sunshine's database
-            mJournalDao.bulkInsert(networkdata);
+            mJournalDao.bulkInsertJournal(networkdata);
             Log.d(LOG_TAG, "New values inserted");
         }));
 
@@ -146,6 +135,26 @@ public class AudreyRepository {
 
         }
 
+    }
+
+    public void insertAllForums (List<ChatForumModel> allForums) {
+        mJournalDao.bulkInsertForums(allForums);
+    }
+
+    public LiveData<List<ChatForumModel>> getUpdatedForums () {
+        return mJournalDao.getChatForums();
+    }
+
+    public void insertAllChats (List<ChatContextModel> allForums) {
+        mJournalDao.bulkInsertChats(allForums);
+    }
+
+    public LiveData<List<ChatContextModel>> getUpdatedChats () {
+        return mJournalDao.getChats();
+    }
+
+    public void insertChat (ChatContextModel chatContextModel) {
+        mJournalDao.insertChat(chatContextModel);
     }
 
 /*

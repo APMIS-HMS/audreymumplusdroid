@@ -13,10 +13,12 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,7 +27,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.ButterKnife;
+import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
+import ng.apmis.audreymumplus.utils.InjectorUtils;
 import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
 
 /**
@@ -126,6 +130,9 @@ public class SignupActivity extends AppCompatActivity implements SignupFragmentB
                 return headers;
             }
         };
+
+        strRequest.setRetryPolicy(new DefaultRetryPolicy(30000, 1, 1));
+
         queue.add(strRequest);
     }
 
@@ -156,8 +163,11 @@ public class SignupActivity extends AppCompatActivity implements SignupFragmentB
                 try {
                     Log.v("accessToken", response.getString("accessToken"));
                     String token = response.getString("accessToken");
+                    Person user = new Gson().fromJson(response.getJSONObject("user").toString(), Person.class);
 
                     sharedPreferencesManager.storeUserToken(token);
+
+                    InjectorUtils.provideJournalNetworkDataSource(this).fetchSinglePeople(user.getPersonId());
 
                     Log.v("sharedPRef", String.valueOf(sharedPreferencesManager.getUserToken()));
                 } catch (JSONException e) {

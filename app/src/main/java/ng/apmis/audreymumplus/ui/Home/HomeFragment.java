@@ -42,7 +42,7 @@ public class HomeFragment extends android.support.v4.app.Fragment {
         ButterKnife.bind(this, rootView);
 
         ((DashboardActivity)getActivity()).getPersonLive().observe(getActivity(), person -> {
-            hiMessage.setText(getContext().getString(R.string.hi_message, person.getFirstName()));
+            hiMessage.setText(getContext().getString(R.string.hi_message, person != null ? person.getFirstName() : null));
         });
 
         gridView = rootView.findViewById(R.id.grid);
