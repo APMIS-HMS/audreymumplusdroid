@@ -1,6 +1,5 @@
 package ng.apmis.audreymumplus.ui.Chat;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -28,7 +27,6 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.data.network.MumplusNetworkDataSource;
@@ -64,36 +62,25 @@ public class ChatContextFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_chat_context, container, false);
         ButterKnife.bind(this, rootView);
-        mSocket.connect();
-        dataSource = InjectorUtils.provideJournalNetworkDataSource(activity);
-
         chats = new ArrayList<>();
         chatRecycler = rootView.findViewById(R.id.chat_list);
         chatRecycler.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
-        ((DashboardActivity)getActivity()).getPersonLive().observe(activity, person -> {
+        dataSource = InjectorUtils.provideJournalNetworkDataSource(activity);
+
+        InjectorUtils.provideRepository(getContext()).getPerson().observe(this, person -> {
             personal = person;
-            activity.runOnUiThread(() -> {
+
+            getActivity().runOnUiThread(() -> {
                 chatContextAdapter = new ChatContextAdapter(getActivity(), person.getEmail(), getActivity());
                 chatRecycler.setAdapter(chatContextAdapter);
             });
         });
 
+        mSocket.connect();
 
         if (getArguments() != null) {
             forumName = getArguments().getString("forumName");
-
-            //Get saved chats from database
-            AudreyMumplus.getInstance().diskIO().execute(() -> {
-                InjectorUtils.provideRepository(activity).getUpdatedChats().observe(activity, chats -> {
-                    if (chats != null) {
-                        activity.runOnUiThread(() -> {
-                            Log.v("chats", String.valueOf(chats));
-                            chatContextAdapter.swapChats(chats);
-                        });
-                    }
-                });
-            });
 
             try {
                 JSONObject getChats = new JSONObject().put("forumName", forumName);
@@ -103,7 +90,6 @@ public class ChatContextFragment extends Fragment {
             }
         }
 
-
         mSocket.on("getChats", args -> {
 
             try {
@@ -112,7 +98,6 @@ public class ChatContextFragment extends Fragment {
                 for (int i = 0; i < jar.length(); i++) {
                     JSONObject chatObj = (JSONObject) jar.get(i);
                     ChatContextModel eachChat = new Gson().fromJson(chatObj.toString(), ChatContextModel.class);
-                    Log.v("each chat", String.valueOf(eachChat));
                     dataSource.fetchUserName(eachChat.getEmail());
                     dataSource.getPersonEmail().observe(activity, person -> {
                         eachChat.setUserName((person != null ? person.getFirstName() : "") + " " + (person != null ? person.getLastName() : ""));
@@ -120,24 +105,21 @@ public class ChatContextFragment extends Fragment {
                     chats.add(eachChat);
                 }
 
-                AudreyMumplus.getInstance().diskIO().execute(() -> {
-                    InjectorUtils.provideRepository(activity).insertAllChats(chats);
+                activity.runOnUiThread(() -> {
+                    chatContextAdapter.setAllChats(chats);
+                    chatRecycler.smoothScrollToPosition(chatContextAdapter.getItemCount());
                 });
+
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
         });
-
         mSocket.on("created", args -> {
             JSONObject jsonObject = (JSONObject) args[0];
             try {
                 ChatContextModel oneChat = new Gson().fromJson(jsonObject.getJSONObject("message").toString(), ChatContextModel.class);
-                AudreyMumplus.getInstance().diskIO().execute(() -> {
-                    InjectorUtils.provideRepository(activity).insertChat(oneChat);
-                });
-
                 if (!oneChat.getEmail().equals(personal.getEmail())) {
                     activity.runOnUiThread(() -> {
                         ArrayList<ChatContextModel> chats = new ArrayList<>();
@@ -147,7 +129,7 @@ public class ChatContextFragment extends Fragment {
                             oneChat.setUserName((person != null ? person.getFirstName() : "") + " " + (person != null ? person.getLastName() : ""));
                         });
                         chats.add(oneChat);
-                        chatContextAdapter.addChats(chats);
+                        chatContextAdapter.addChat(oneChat);
                         chatRecycler.smoothScrollToPosition(chatContextAdapter.getItemCount());
                     });
                 }
@@ -159,11 +141,11 @@ public class ChatContextFragment extends Fragment {
 
         sendBtn.setOnClickListener((view) -> {
             if (chatMessageEditText.getText().toString().length() > 0) {
-                ChatContextModel oneChat = new ChatContextModel(forumName, chatMessageEditText.getText().toString(), personal.getEmail(), "");
+                ChatContextModel oneChat = new ChatContextModel("sweet-mothers", chatMessageEditText.getText().toString(), personal.getEmail(), personal.getFirstName() + " " + personal.getLastName());
                 ArrayList<ChatContextModel> chats = new ArrayList<>();
                 chats.add(oneChat);
                 postChat(oneChat);
-                chatContextAdapter.addChats(chats);
+                chatContextAdapter.addChat(oneChat);
                 chatRecycler.smoothScrollToPosition(chatContextAdapter.getItemCount());
                 chatMessageEditText.setText("");
             }
@@ -171,24 +153,6 @@ public class ChatContextFragment extends Fragment {
 
 
         return rootView;
-    }
-
-
-
-
-    public void postChat(ChatContextModel chat) {
-
-        Gson gson = new Gson();
-        String cht = gson.toJson(chat);
-
-        JSONObject boboo;
-        try {
-            boboo = new JSONObject(cht);
-            mSocket.emit("chat", boboo);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
     }
 
     @Override
@@ -209,6 +173,53 @@ public class ChatContextFragment extends Fragment {
         super.onStop();
         ((DashboardActivity) getActivity()).setActionBarButton(false, getString(R.string.app_name));
         ((DashboardActivity) getActivity()).bottomNavVisibility(true);
+        onDestroy();
+    }
+
+
+    public void postChat(ChatContextModel chat) {
+
+        Gson gson = new Gson();
+        String cht = gson.toJson(chat);
+
+        JSONObject boboo;
+        try {
+            boboo = new JSONObject(cht);
+            mSocket.emit("chat", boboo);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    Emitter.Listener getChats() {
+        return args -> {
+
+            try {
+                JSONArray jar = (JSONArray) args[0];
+
+                for (int i = 0; i < jar.length(); i++) {
+                    JSONObject chatObj = (JSONObject) jar.get(i);
+                    ChatContextModel eachChat = new Gson().fromJson(chatObj.toString(), ChatContextModel.class);
+                    chats.add(eachChat);
+                }
+
+                chatContextAdapter.setAllChats(chats);
+                chatRecycler.smoothScrollToPosition(chatContextAdapter.getItemCount());
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        };
+    }
+
+    Emitter.Listener getChat() {
+        return args -> {
+            JSONObject jsonObject = (JSONObject) args[0];
+            Log.v("JsonObject", String.valueOf(jsonObject));
+        };
     }
 
 }
