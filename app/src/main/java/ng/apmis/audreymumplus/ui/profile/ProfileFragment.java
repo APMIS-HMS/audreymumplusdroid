@@ -103,17 +103,19 @@ public class ProfileFragment extends Fragment {
         AudreyMumplus.getInstance().diskIO().execute(() -> {
 
             ((DashboardActivity) getActivity()).getPersonLive().observe(this, userDetails -> {
-                Log.v("User Details", userDetails.toString());
-                firstNameEdittext.setText(getContext().getString(R.string.user_firstname, userDetails.getFirstName()));
-                lastNameEdittext.setText(getContext().getString(R.string.user_lastname, userDetails.getLastName()));
-                userEmail.setText(getContext().getString(R.string.user_email, userDetails.getEmail()));
-                phoneEdittext.setText(getContext().getString(R.string.user_phone, userDetails.getPrimaryContactPhoneNo()));
-                updateBiodataPersonId = userDetails.getPersonId();
-                updateProfileDbId = userDetails.get_id();
+                if (userDetails != null) {
+                    Log.v("User Details", userDetails.toString());
+                    firstNameEdittext.setText(getContext().getString(R.string.user_firstname, userDetails.getFirstName()));
+                    lastNameEdittext.setText(getContext().getString(R.string.user_lastname, userDetails.getLastName()));
+                    userEmail.setText(getContext().getString(R.string.user_email, userDetails.getEmail()));
+                    phoneEdittext.setText(getContext().getString(R.string.user_phone, userDetails.getPrimaryContactPhoneNo()));
+                    updateBiodataPersonId = userDetails.getPersonId();
+                    updateProfileDbId = userDetails.get_id();
 
                     Glide.with(getContext())
                             .load(userDetails.getProfileImage() != null ? userDetails.getProfileImage() : R.drawable.ic_profile_place_holder)
                             .into(userImage);
+                }
             });
         });
         addImage.setOnClickListener((view) -> {
@@ -216,15 +218,23 @@ public class ProfileFragment extends Fragment {
 
         camIntent.putExtra("return-data", true);
 
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 9000);
-        } else {
-            if (camIntent.resolveActivity(getContext().getPackageManager()) != null) {
+        if (camIntent.resolveActivity(getContext().getPackageManager()) != null) {
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
                 startActivityForResult(camIntent, CAMERA_REQUEST_CODE);
             } else {
-                Toast.makeText(getActivity(), "There's a problem with camera", Toast.LENGTH_SHORT).show();
+                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 9000);
+                } else {
+                    startActivityForResult(camIntent, CAMERA_REQUEST_CODE);
+                }
             }
+
+        } else {
+            Toast.makeText(getActivity(), "There's a problem with camera", Toast.LENGTH_SHORT).show();
         }
+
+
 
 
 
@@ -390,7 +400,7 @@ public class ProfileFragment extends Fragment {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 9000 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(activity, "Click add camera button", Toast.LENGTH_SHORT).show();
+            startActivityForResult(camIntent, CAMERA_REQUEST_CODE);
         } else {
             Toast.makeText(getActivity(), "You need permission to use camera", Toast.LENGTH_SHORT).show();
         }

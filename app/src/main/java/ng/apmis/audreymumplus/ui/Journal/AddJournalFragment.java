@@ -254,18 +254,21 @@ public class AddJournalFragment extends Fragment {
 
         camIntent.putExtra("return-data", true);
 
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 9000);
-        } else {
-            if (camIntent.resolveActivity(getContext().getPackageManager()) != null) {
+        if (camIntent.resolveActivity(getContext().getPackageManager()) != null) {
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
                 startActivityForResult(camIntent, 0);
             } else {
-                Toast.makeText(getActivity(), "There's a problem with camera", Toast.LENGTH_SHORT).show();
+                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 9000);
+                } else {
+                    startActivityForResult(camIntent, 0);
+                }
             }
+
+        } else {
+            Toast.makeText(getActivity(), "There's a problem with camera", Toast.LENGTH_SHORT).show();
         }
-
-
-
 
     }
 

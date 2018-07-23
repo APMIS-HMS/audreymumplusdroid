@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.CalendarContract;
 import android.support.annotation.NonNull;
@@ -90,11 +91,16 @@ public class AppointmentFragment extends android.support.v4.app.Fragment {
                 .addToBackStack("ADD_NEW")
                 .commit());
 
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CALENDAR}, 9000);
-        } else {
-            databaseQuery();
-        }
+
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                databaseQuery();
+            } else {
+                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CALENDAR}, 9000);
+                } else {
+                    databaseQuery();
+                }
+            }
 
 
         return rootView;
