@@ -35,8 +35,6 @@ public class OnboardingFragment2 extends Fragment {
         View root = inflater.inflate(R.layout.onboarding2, container, false);
         ButterKnife.bind(this, root);
 
-        //onboarding.setImageResource(R.drawable.ic_2nd_onboarding);
-
         getStarted.setOnClickListener((view) -> {
             startActivity(new Intent(getActivity(), LoginActivity.class));
             getActivity().finish();

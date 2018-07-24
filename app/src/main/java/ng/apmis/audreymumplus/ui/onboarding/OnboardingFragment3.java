@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,6 +23,9 @@ public class OnboardingFragment3 extends Fragment {
 
     @BindView(R.id.get_started)
     Button getStarted;
+
+    @BindView(R.id.onboarding)
+    ImageView onboarding;
 
     @Nullable
     @Override

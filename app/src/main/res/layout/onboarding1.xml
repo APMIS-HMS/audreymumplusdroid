@@ -1,74 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:background="@color/colorPrimaryDark"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:background="@color/colorPrimaryDark"
+    android:orientation="vertical">
 
 
     <ImageView
         android:id="@+id/onboarding"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@drawable/ic_1st_onboarding"
+        android:layout_height="0dp"
         android:layout_gravity="center"
-        android:layout_marginTop="28dp"
-        />
-
-
-        <TextView
-            android:layout_marginTop="24dp"
-            android:gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Community of Mums."
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
-            />
-    <TextView
-        android:layout_marginTop="12dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Connect, network with other awesome
- Mums in the Community."
-        android:gravity="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:textColor="@android:color/white"/>
-
-
-    <Button
-        android:id="@+id/get_started"
-        android:layout_width="168dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="100dp"
-        android:text="GET STARTED"
-        android:textColor="@color/colorPrimaryDark"
-        android:background="@drawable/onboarding_button"/>
+        android:layout_marginTop="20dp"
+        android:layout_weight="2"
+        android:scaleType="fitCenter"
+        app:srcCompat="@drawable/ic_1st_onboarding" />
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_marginTop="24dp"
+        android:layout_weight="3"
+        android:orientation="vertical"
+        android:paddingTop="30dp"
+        android:paddingBottom="30dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Community of Mums."
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp"
+            android:text="Connect, network with other awesome Mums in the Community."
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/get_started"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/onboarding_button"
+            android:paddingStart="50dp"
+            android:paddingEnd="50dp"
+            android:text="GET STARTED"
+            android:textColor="@color/colorPrimaryDark" />
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
 
         <LinearLayout
-            android:layout_margin="20dp"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="20dp"
+            android:orientation="horizontal">
 
             <ImageButton
                 android:layout_width="32dp"
-                android:layout_height="wrap_content"
-                />
+                android:layout_height="wrap_content" />
 
             <ImageButton
                 android:layout_width="20dp"
                 android:layout_height="wrap_content" />
+
             <ImageButton
                 android:layout_width="20dp"
                 android:layout_height="wrap_content" />
@@ -77,20 +90,17 @@
 
         <TextView
             android:id="@+id/next_tv"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="20dp"
             android:text="Next"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-            android:textColor="@android:color/white"
-            android:layout_margin="20dp"
-            />
+            android:textColor="@android:color/white" />
 
     </RelativeLayout>
-
-
 
 
 </LinearLayout>
