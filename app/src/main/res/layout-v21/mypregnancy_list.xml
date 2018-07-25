@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="12dp"
         android:indeterminate="true"
-        style="@android:style/Widget.ProgressBar.Horizontal"
+        style="@android:style/Widget.Material.ProgressBar.Horizontal"
         android:animationResolution="4000"
         android:indeterminateBehavior="repeat" />
 

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ng.apmis.audreymumplus.R;
 
@@ -20,7 +21,7 @@ import ng.apmis.audreymumplus.R;
 
 public class ChatContextAdapter extends RecyclerView.Adapter<ChatContextAdapter.ChatContextViewHolder> {
 
-    private ArrayList<ChatContextModel> allChats = new ArrayList<>();
+    private List<ChatContextModel> allChats = new ArrayList<>();
     private Context mContext;
     private String mEmail;
     private FragmentActivity owner;
@@ -31,7 +32,7 @@ public class ChatContextAdapter extends RecyclerView.Adapter<ChatContextAdapter.
         owner = frag;
     }
 
-    public void setAllChats(ArrayList<ChatContextModel> allChats) {
+    public void setAllChats(List<ChatContextModel> allChats) {
         this.allChats = allChats;
         notifyDataSetChanged();
     }

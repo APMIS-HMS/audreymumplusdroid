@@ -70,8 +70,8 @@ public interface JournalDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void bulkInsertChats (List<ChatContextModel> allForums);
 
-    @Query("SELECT * FROM forums")
-    LiveData<List<ChatContextModel>> getChats();
+    @Query("SELECT * FROM chat WHERE forumName = :forumName")
+    LiveData<List<ChatContextModel>> getChats(String forumName);
 
     @Insert()
     void insertChat(ChatContextModel chatContextModel);

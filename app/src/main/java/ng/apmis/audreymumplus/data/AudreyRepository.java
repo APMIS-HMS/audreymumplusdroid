@@ -149,8 +149,8 @@ public class AudreyRepository {
         mJournalDao.bulkInsertChats(allForums);
     }
 
-    public LiveData<List<ChatContextModel>> getUpdatedChats () {
-        return mJournalDao.getChats();
+    public LiveData<List<ChatContextModel>> getUpdatedChats (String forumName) {
+        return mJournalDao.getChats(forumName);
     }
 
     public void insertChat (ChatContextModel chatContextModel) {

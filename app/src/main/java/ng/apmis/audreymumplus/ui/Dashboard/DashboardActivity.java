@@ -76,6 +76,8 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
     CircularImageView profileCircularImageView;
 
+    public Person globalPerson;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +105,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
         getPersonLive().observe(this, theUser -> {
             if (theUser != null) {
+                globalPerson = theUser;
                 userName.setText(getString(R.string.user_name, theUser.getFirstName(), theUser.getLastName()));
 
                 if (theUser.getDay() == 0) {

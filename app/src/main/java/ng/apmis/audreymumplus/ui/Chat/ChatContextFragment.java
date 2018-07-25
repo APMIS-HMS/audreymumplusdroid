@@ -1,5 +1,6 @@
 package ng.apmis.audreymumplus.ui.Chat;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,9 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
 
@@ -22,20 +23,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.data.database.Person;
-import ng.apmis.audreymumplus.data.network.MumplusNetworkDataSource;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 
 public class ChatContextFragment extends Fragment {
 
-    ArrayList<ChatContextModel> chats;
     @BindView(R.id.send_chat)
     ImageView sendBtn;
     @BindView(R.id.add_chat)
@@ -45,16 +44,16 @@ public class ChatContextFragment extends Fragment {
     RecyclerView chatRecycler;
     String forumName;
     AppCompatActivity activity;
-    Person personal;
+    Person globalPerson;
 
-    MumplusNetworkDataSource dataSource;
+    ArrayList<ChatContextModel> dbForums;
+    ArrayList<ChatContextModel> allchats;
+    ChatViewModel chatViewModel;
 
-    {
-        try {
-            mSocket = IO.socket("https://audrey-mum.herokuapp.com/");
-        } catch (URISyntaxException e) {
-        }
-    }
+
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
+
 
 
     @Override
@@ -62,22 +61,15 @@ public class ChatContextFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_chat_context, container, false);
         ButterKnife.bind(this, rootView);
-        chats = new ArrayList<>();
-        chatRecycler = rootView.findViewById(R.id.chat_list);
+        mSocket = InjectorUtils.provideSocketInstance();
+        globalPerson = ((DashboardActivity) getActivity()).globalPerson;
+        allchats = new ArrayList<>();
+        chatRecycler = rootView.findViewById(R.id.chat_recycler);
         chatRecycler.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
-        dataSource = InjectorUtils.provideJournalNetworkDataSource(activity);
+        chatContextAdapter = new ChatContextAdapter(getActivity(), globalPerson.getEmail(), getActivity());
+        chatRecycler.setAdapter(chatContextAdapter);
 
-        InjectorUtils.provideRepository(getContext()).getPerson().observe(this, person -> {
-            personal = person;
-
-            getActivity().runOnUiThread(() -> {
-                chatContextAdapter = new ChatContextAdapter(getActivity(), person.getEmail(), getActivity());
-                chatRecycler.setAdapter(chatContextAdapter);
-            });
-        });
-
-        mSocket.connect();
 
         if (getArguments() != null) {
             forumName = getArguments().getString("forumName");
@@ -90,32 +82,24 @@ public class ChatContextFragment extends Fragment {
             }
         }
 
-     /*   mSocket.on("getChats", args -> {
+        mSocket.on("getChats", getChats());
 
-            try {
-                JSONArray jar = (JSONArray) args[0];
+        ChatFactory forumFactory = InjectorUtils.provideChatFactory(getActivity(), forumName);
+        chatViewModel = ViewModelProviders.of(this, forumFactory).get(ChatViewModel.class);
 
-                for (int i = 0; i < jar.length(); i++) {
-                    JSONObject chatObj = (JSONObject) jar.get(i);
-                    ChatContextModel eachChat = new Gson().fromJson(chatObj.toString(), ChatContextModel.class);
-                    dataSource.fetchUserName(eachChat.getEmail());
-                    dataSource.getPersonEmail().observe(activity, person -> {
-                        eachChat.setUserName((person != null ? person.getFirstName() : "") + " " + (person != null ? person.getLastName() : ""));
-                    });
-                    chats.add(eachChat);
-                }
-
-                activity.runOnUiThread(() -> {
-                    chatContextAdapter.setAllChats(chats);
-                    chatRecycler.smoothScrollToPosition(chatContextAdapter.getItemCount());
-                });
-
-
-            } catch (JSONException e) {
-                e.printStackTrace();
+        chatViewModel.getUpdatedChats().observe(this, chatList -> {
+            if (chatList.size() > 0) {
+                dbForums = (ArrayList<ChatContextModel>) chatList;
+                /*progressBar.setVisibility(View.GONE);
+                emptyView.setVisibility(View.GONE);*/
+                chatContextAdapter.setAllChats(chatList);
+            } else {
+                //check internet connectivity if true setLoading and emit  get forums
+               /* progressBar.setVisibility(View.VISIBLE);
+                emptyView.setVisibility(View.VISIBLE);*/
             }
+        });
 
-        });*/
      /*   mSocket.on("created", args -> {
             JSONObject jsonObject = (JSONObject) args[0];
             try {
@@ -141,16 +125,13 @@ public class ChatContextFragment extends Fragment {
 
         sendBtn.setOnClickListener((view) -> {
             if (chatMessageEditText.getText().toString().length() > 0) {
-                ChatContextModel oneChat = new ChatContextModel("sweet-mothers", chatMessageEditText.getText().toString(), personal.getEmail(), personal.getFirstName() + " " + personal.getLastName());
-                ArrayList<ChatContextModel> chats = new ArrayList<>();
-                chats.add(oneChat);
+                ChatContextModel oneChat = new ChatContextModel(forumName, chatMessageEditText.getText().toString(), globalPerson.getEmail(), globalPerson.getFirstName() + " " + globalPerson.getLastName());
                 postChat(oneChat);
                 chatContextAdapter.addChat(oneChat);
                 chatRecycler.smoothScrollToPosition(chatContextAdapter.getItemCount());
                 chatMessageEditText.setText("");
             }
         });
-
 
         return rootView;
     }
@@ -182,10 +163,10 @@ public class ChatContextFragment extends Fragment {
         Gson gson = new Gson();
         String cht = gson.toJson(chat);
 
-        JSONObject boboo;
+        JSONObject newChat;
         try {
-            boboo = new JSONObject(cht);
-            mSocket.emit("chat", boboo);
+            newChat = new JSONObject(cht);
+            mSocket.emit("chat", newChat);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -201,11 +182,14 @@ public class ChatContextFragment extends Fragment {
                 for (int i = 0; i < jar.length(); i++) {
                     JSONObject chatObj = (JSONObject) jar.get(i);
                     ChatContextModel eachChat = new Gson().fromJson(chatObj.toString(), ChatContextModel.class);
-                    chats.add(eachChat);
+                    allchats.add(eachChat);
+
                 }
 
-                chatContextAdapter.setAllChats(chats);
-                chatRecycler.smoothScrollToPosition(chatContextAdapter.getItemCount());
+                Log.v("getChats", String.valueOf(allchats));
+                AudreyMumplus.getInstance().diskIO().execute(() -> {
+                    InjectorUtils.provideRepository(activity).insertAllChats(allchats);
+                });
 
 
             } catch (JSONException e) {
@@ -217,9 +201,9 @@ public class ChatContextFragment extends Fragment {
 
     Emitter.Listener getChat() {
         return args -> {
-            JSONObject jsonObject = (JSONObject) args[0];
-            Log.v("JsonObject", String.valueOf(jsonObject));
+            JSONArray jar = (JSONArray) args[0];
+            Log.v("getChat", String.valueOf(jar));
+
         };
     }
-
 }

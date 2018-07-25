@@ -1,6 +1,7 @@
 package ng.apmis.audreymumplus.utils;
 
 import android.content.Context;
+import android.support.v4.app.FragmentActivity;
 
 import com.github.nkzawa.socketio.client.Socket;
 
@@ -9,6 +10,7 @@ import ng.apmis.audreymumplus.data.AudreyRepository;
 import ng.apmis.audreymumplus.data.database.JournalDatabase;
 import ng.apmis.audreymumplus.data.network.MumplusNetworkDataSource;
 import ng.apmis.audreymumplus.data.network.SocketSingleton;
+import ng.apmis.audreymumplus.ui.Chat.ChatFactory;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ForumFactory;
 import ng.apmis.audreymumplus.ui.Journal.JournalFactory;
 
@@ -44,4 +46,8 @@ public class InjectorUtils {
         return SocketSingleton.getInstance().getSocketInstance();
     }
 
+    public static ChatFactory provideChatFactory(Context context, String forumName) {
+        AudreyRepository audreyRepository = provideRepository(context.getApplicationContext());
+        return new ChatFactory(audreyRepository, forumName);
+    }
 }
