@@ -89,6 +89,7 @@ public class ChatContextFragment extends Fragment {
 
         chatViewModel.getUpdatedChats().observe(this, chatList -> {
             if (chatList.size() > 0) {
+                progressBar.setVisibility(View.GONE);
                 dbForums = (ArrayList<ChatContextModel>) chatList;
                 /*progressBar.setVisibility(View.GONE);
                 emptyView.setVisibility(View.GONE);*/
@@ -97,6 +98,7 @@ public class ChatContextFragment extends Fragment {
                 //check internet connectivity if true setLoading and emit  get forums
                /* progressBar.setVisibility(View.VISIBLE);
                 emptyView.setVisibility(View.VISIBLE);*/
+                progressBar.setVisibility(View.GONE);
             }
         });
 
