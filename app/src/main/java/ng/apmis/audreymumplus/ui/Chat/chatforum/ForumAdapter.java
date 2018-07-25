@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.common.base.CaseFormat;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,7 +87,7 @@ public class ForumAdapter extends RecyclerView.Adapter<ForumAdapter.ForumViewHol
 
         ChatForumModel modelOne = chatForums.get(position);
 
-        holder.forumName.setText(modelOne.getName().toUpperCase());
+        holder.forumName.setText(CaseFormat.UPPER_CAMEL.to(CaseFormat.UPPER_CAMEL, modelOne.getName()));
         holder.forumNewMessageCounter.setText(modelOne.getForumNewChatsCount());
         holder.forumMemberCount.setText(mContext.getString(R.string.forum_member_counter, modelOne.getForumMemberCount()));
 

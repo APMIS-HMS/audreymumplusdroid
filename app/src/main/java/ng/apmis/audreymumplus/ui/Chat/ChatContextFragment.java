@@ -90,7 +90,7 @@ public class ChatContextFragment extends Fragment {
             }
         }
 
-        mSocket.on("getChats", args -> {
+     /*   mSocket.on("getChats", args -> {
 
             try {
                 JSONArray jar = (JSONArray) args[0];
@@ -115,8 +115,8 @@ public class ChatContextFragment extends Fragment {
                 e.printStackTrace();
             }
 
-        });
-        mSocket.on("created", args -> {
+        });*/
+     /*   mSocket.on("created", args -> {
             JSONObject jsonObject = (JSONObject) args[0];
             try {
                 ChatContextModel oneChat = new Gson().fromJson(jsonObject.getJSONObject("message").toString(), ChatContextModel.class);
@@ -137,7 +137,7 @@ public class ChatContextFragment extends Fragment {
                 e.printStackTrace();
             }
         });
-
+*/
 
         sendBtn.setOnClickListener((view) -> {
             if (chatMessageEditText.getText().toString().length() > 0) {

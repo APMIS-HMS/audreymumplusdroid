@@ -33,6 +33,7 @@ public class ChatContextModel {
         this.userName = userName;
     }
 
+    @NonNull
     public String get_id() {
         return _id;
     }

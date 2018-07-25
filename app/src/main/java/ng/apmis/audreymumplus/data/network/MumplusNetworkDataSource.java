@@ -69,7 +69,7 @@ public class MumplusNetworkDataSource {
     private static final String WEEK_DAY_SYNC_TAG = "week-day";
 
 
-    MumplusNetworkDataSource(Context context, AudreyMumplus executors) {
+    private MumplusNetworkDataSource(Context context, AudreyMumplus executors) {
         mContext = context;
         mExecutors = executors;
         mDownloadedDailyJournal = new MutableLiveData<>();
@@ -389,6 +389,12 @@ public class MumplusNetworkDataSource {
         // Schedule the Job with the dispatcher
         dispatcher.schedule(databaseSyncJob);
         Log.d(LOG_TAG, "Job scheduled");
+    }
+
+    /**
+     * All socket calls and responses*/
+    public SocketCalls getSocketCalls () {
+        return new SocketCalls();
     }
 
 

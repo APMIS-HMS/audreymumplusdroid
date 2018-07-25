@@ -12,34 +12,34 @@ import java.net.URISyntaxException;
  * Created by Thadeus-APMIS on 7/9/2018.
  */
 
-public class SocketListener {
+public class SocketSingleton {
 
-    private static SocketListener socketInstance;
+    private static SocketSingleton socketInstance;
     private static final Object LOCK = new Object();
     private static Socket mSocket;
 
-    public SocketListener() {
+    private SocketSingleton() {
         try {
             mSocket = IO.socket("https://audrey-mum.herokuapp.com/");
         } catch (URISyntaxException e) {
+            Log.v("socket error", e.getMessage());
         }
         mSocket.connect();
     }
 
 
-    public static SocketListener getInstance() {
-        Log.d("Socket starts", "Getting the network data source");
+    public static SocketSingleton getInstance() {
+        Log.d("socket Found", "Socket Connecting");
         if (socketInstance == null) {
             synchronized (LOCK) {
-                socketInstance = new SocketListener();
-                Log.d("Socket starts", "Made new network data source");
+                socketInstance = new SocketSingleton();
+                Log.d("socket starts", "Socket Listening");
             }
         }
         return socketInstance;
     }
 
     public Socket getSocketInstance () {
-        mSocket.connect();
         return mSocket;
     }
 

@@ -8,7 +8,8 @@ import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.data.AudreyRepository;
 import ng.apmis.audreymumplus.data.database.JournalDatabase;
 import ng.apmis.audreymumplus.data.network.MumplusNetworkDataSource;
-import ng.apmis.audreymumplus.data.network.SocketListener;
+import ng.apmis.audreymumplus.data.network.SocketSingleton;
+import ng.apmis.audreymumplus.ui.Chat.chatforum.ForumFactory;
 import ng.apmis.audreymumplus.ui.Journal.JournalFactory;
 
 /**
@@ -30,12 +31,17 @@ public class InjectorUtils {
         return new JournalFactory(audreyRepository);
     }
 
+    public static ForumFactory provideForumFactory (Context context) {
+        AudreyRepository audreyRepository = provideRepository(context.getApplicationContext());
+        return new ForumFactory(audreyRepository);
+    }
+
     public static MumplusNetworkDataSource provideJournalNetworkDataSource (Context context) {
         return MumplusNetworkDataSource.getInstance(context.getApplicationContext(), AudreyMumplus.getInstance());
     }
 
     public static Socket provideSocketInstance () {
-        return SocketListener.getInstance().getSocketInstance();
+        return SocketSingleton.getInstance().getSocketInstance();
     }
 
 }

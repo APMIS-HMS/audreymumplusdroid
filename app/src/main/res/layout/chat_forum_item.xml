@@ -11,7 +11,7 @@
     <ImageView
         android:id="@+id/forum_icon"
         android:layout_width="0dp"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:layout_height="50dp"
         app:srcCompat="@drawable/ic_forum_profile"/>
 
@@ -21,9 +21,9 @@
         android:layout_weight="5"
         android:layout_height="wrap_content"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:paddingStart="36dp"
         android:text="GENERAL"
-        android:paddingLeft="15dp" />
+        android:paddingLeft="10dp"
+        android:paddingStart="10dp"/>
 
     <RelativeLayout
         android:layout_width="0dp"
@@ -48,14 +48,16 @@
             android:padding="8dp"
             android:layout_centerHorizontal="true"
             android:textColor="@android:color/white"
-            android:background="@drawable/full_circle"/>
+            android:background="@drawable/full_circle"
+            android:visibility="invisible"/>
         
         <TextView
             android:id="@+id/forum_member_count"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/forum_member_counter"
-            android:layout_alignParentBottom="true"/>
+            android:layout_alignParentBottom="true"
+            android:visibility="invisible"/>
 
     </RelativeLayout>
 

@@ -82,6 +82,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.navigation_drawer);
         ButterKnife.bind(this);
+        InjectorUtils.provideSocketInstance();
         sharedPreferencesManager = new SharedPreferencesManager(getApplicationContext());
 
         setActionBarButton(false, getString(R.string.app_name));
