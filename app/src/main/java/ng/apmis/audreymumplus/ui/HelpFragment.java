@@ -7,10 +7,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import butterknife.BindView;
@@ -28,11 +30,16 @@ public class HelpFragment extends Fragment {
     Button reportButton;
     AppCompatActivity activity;
 
+    @BindView(R.id.tweet_email)
+    TextView emailTweet;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_help, container, false);
         ButterKnife.bind(this, rootView);
+
+        emailTweet.setText(Html.fromHtml(getString(R.string.message_us_msg)));
 
         reportButton.setOnClickListener((view) -> {
 

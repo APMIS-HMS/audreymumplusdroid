@@ -36,6 +36,7 @@ import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.LoginActivity;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.data.database.Person;
+import ng.apmis.audreymumplus.data.network.ChatSocketService;
 import ng.apmis.audreymumplus.ui.AboutFragment;
 import ng.apmis.audreymumplus.ui.Appointments.AppointmentFragment;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumFragment;
@@ -49,6 +50,7 @@ import ng.apmis.audreymumplus.ui.Journal.MyJournalFragment;
 import ng.apmis.audreymumplus.ui.profile.ProfileFragment;
 import ng.apmis.audreymumplus.utils.BottomNavigationViewHelper;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
+import ng.apmis.audreymumplus.utils.NotificationUtils;
 import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
 import ng.apmis.audreymumplus.utils.Week;
 
@@ -84,7 +86,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.navigation_drawer);
         ButterKnife.bind(this);
-        InjectorUtils.provideSocketInstance();
+        NotificationUtils.createNotificationChannel(this);
         sharedPreferencesManager = new SharedPreferencesManager(getApplicationContext());
 
         setActionBarButton(false, getString(R.string.app_name));
@@ -145,8 +147,6 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                 .add(R.id.fragment_container, new HomeFragment())
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .commit();
-
-
     }
 
     public LiveData<Person> getPersonLive() {

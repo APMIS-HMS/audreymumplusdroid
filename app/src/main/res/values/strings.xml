@@ -78,7 +78,7 @@
     <string name="file_report">file a report</string>
     <string name="help_message">Experiencing an issue on the app ? Let us know how we can help.</string>
     <string name="message_us">Message Us</string>
-    <string name="message_us_msg">You can tweet at us on @Audreypack or you can send us an email: help@audreypack.com</string>
+    <string name="message_us_msg">You can tweet at us on <![CDATA[<b><a>@Audreypack</a></b>]]> or you can send us an email: <![CDATA[<b><a>help@audreypack.com</a></b>]]></string>
     <string name="our_mission">Our Mission</string>
     <string name="mission_text"><![CDATA[Our main focus at  The Audrey Pack is the reduction of maternal and child mortality rate. For us, achieving the Millennium development Goals (MDG) 4 & 5, set by the United Nations is our driving force. At the same time helping brands build a strong product brand equity by using the Audrey Pack Platform. We distribute free packs to pregnant and new mums, giving mothers the opportunity to try before they buy the best of baby care and household products]]></string>
     <string name="registered_mum_txt">20,000\nRegistered Mums.</string>
@@ -96,6 +96,9 @@
     <string name="user_name">%s %s</string>
     <string name="no_forum_found">No Forum Found</string>
     <string name="weekly_tips">WEEKLY TIPS</string>
+    <string name="channel_name">Audrey chat channel</string>
+    <string name="channel_description">Chats from Audrey Pack App</string>
+    <string name="notification_body"><![CDATA[<b>%s:</b><br/>%s]]></string>
 
     <string-array name="select">
         <item>@string/title</item>

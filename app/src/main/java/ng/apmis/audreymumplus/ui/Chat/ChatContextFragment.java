@@ -2,6 +2,7 @@ package ng.apmis.audreymumplus.ui.Chat;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -30,8 +31,11 @@ import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.data.database.Person;
+import ng.apmis.audreymumplus.data.network.ChatSocketService;
+import ng.apmis.audreymumplus.data.network.MumplusNetworkDataSource;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
+import ng.apmis.audreymumplus.utils.NotificationUtils;
 
 public class ChatContextFragment extends Fragment {
 
@@ -87,7 +91,7 @@ public class ChatContextFragment extends Fragment {
         ChatFactory forumFactory = InjectorUtils.provideChatFactory(getActivity(), forumName);
         chatViewModel = ViewModelProviders.of(this, forumFactory).get(ChatViewModel.class);
 
-        chatViewModel.getUpdatedChats().observe(this, chatList -> {
+        chatViewModel.getUpdatedChats().observeForever(chatList -> {
             if (chatList.size() > 0) {
                 progressBar.setVisibility(View.GONE);
                 dbForums = (ArrayList<ChatContextModel>) chatList;
@@ -102,32 +106,12 @@ public class ChatContextFragment extends Fragment {
             }
         });
 
-     /*   mSocket.on("created", args -> {
-            JSONObject jsonObject = (JSONObject) args[0];
-            try {
-                ChatContextModel oneChat = new Gson().fromJson(jsonObject.getJSONObject("message").toString(), ChatContextModel.class);
-                if (!oneChat.getEmail().equals(personal.getEmail())) {
-                    activity.runOnUiThread(() -> {
-                        ArrayList<ChatContextModel> chats = new ArrayList<>();
-                        MumplusNetworkDataSource dataSource = InjectorUtils.provideJournalNetworkDataSource(activity);
-                        dataSource.fetchUserName(oneChat.getEmail());
-                        dataSource.getPersonEmail().observe(activity, person -> {
-                            oneChat.setUserName((person != null ? person.getFirstName() : "") + " " + (person != null ? person.getLastName() : ""));
-                        });
-                        chats.add(oneChat);
-                        chatContextAdapter.addChat(oneChat);
-                        chatRecycler.smoothScrollToPosition(chatContextAdapter.getItemCount());
-                    });
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        });
-*/
+        mSocket.on("created", onCreated());
 
         sendBtn.setOnClickListener((view) -> {
             if (chatMessageEditText.getText().toString().length() > 0) {
                 ChatContextModel oneChat = new ChatContextModel(forumName, chatMessageEditText.getText().toString(), globalPerson.getEmail(), globalPerson.getFirstName() + " " + globalPerson.getLastName());
+
                 postChat(oneChat);
                 chatContextAdapter.addChat(oneChat);
                 chatRecycler.smoothScrollToPosition(chatContextAdapter.getItemCount());
@@ -149,6 +133,8 @@ public class ChatContextFragment extends Fragment {
         super.onResume();
         ((DashboardActivity) getActivity()).setActionBarButton(true, getArguments().getString("forumName"));
         ((DashboardActivity) getActivity()).bottomNavVisibility(false);
+        mSocket.connect();
+        activity.stopService(new Intent(getContext(), ChatSocketService.class).setAction("stop-service"));
     }
 
     @Override
@@ -156,7 +142,8 @@ public class ChatContextFragment extends Fragment {
         super.onStop();
         ((DashboardActivity) getActivity()).setActionBarButton(false, getString(R.string.app_name));
         ((DashboardActivity) getActivity()).bottomNavVisibility(true);
-        onDestroy();
+        mSocket.disconnect();
+        activity.startService(new Intent(getContext(), ChatSocketService.class).setAction("start-service"));
     }
 
 
@@ -187,8 +174,6 @@ public class ChatContextFragment extends Fragment {
                     allchats.add(eachChat);
 
                 }
-
-                Log.v("getChats", String.valueOf(allchats));
                 AudreyMumplus.getInstance().diskIO().execute(() -> {
                     InjectorUtils.provideRepository(activity).insertAllChats(allchats);
                 });
@@ -201,11 +186,28 @@ public class ChatContextFragment extends Fragment {
         };
     }
 
-    Emitter.Listener getChat() {
+    Emitter.Listener onCreated () {
         return args -> {
-            JSONArray jar = (JSONArray) args[0];
-            Log.v("getChat", String.valueOf(jar));
+            JSONObject jsonObject = (JSONObject) args[0];
+            try {
+                ChatContextModel oneChat = new Gson().fromJson(jsonObject.getJSONObject("message").toString(), ChatContextModel.class);
 
+                if (!oneChat.getEmail().equals(globalPerson.getEmail())) {
+                    AudreyMumplus.getInstance().networkIO().execute(() -> {
+                        MumplusNetworkDataSource dataSource = InjectorUtils.provideJournalNetworkDataSource(activity);
+                        dataSource.fetchUserName(oneChat.getEmail());
+                        dataSource.getPersonEmail().observe(activity, person -> {
+                            oneChat.setUserName((person != null ? person.getFirstName() : "") + " " + (person != null ? person.getLastName() : ""));
+                            AudreyMumplus.getInstance().diskIO().execute(() -> {
+                                InjectorUtils.provideRepository(activity).insertChat(oneChat);
+                            });
+                        });
+                    });
+                    NotificationUtils.buildForegroundChatNotification(getContext());
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         };
     }
 }

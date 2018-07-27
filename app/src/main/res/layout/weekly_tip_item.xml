@@ -1,83 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!--<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="12dp"
-    app:cardElevation="0dp">
+    app:cardElevation="4dp">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/day_of_week_progress_title"
+            android:id="@+id/some_days_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="8dp"
+            android:text="@string/todays_day_placeholder" />
+
+        <TextView
+            android:id="@+id/some_days_title_intro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:text="Eating Healthy !   "
+            android:maxWidth="200dp"
+            android:text="Bigger baby, heavier baby !"
             android:textColor="@android:color/black" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <ImageButton
-                android:layout_width="10dp"
-                android:layout_height="10dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="20dp"
-                android:background="@drawable/bulletpoint" />
-
-            <TextView
-                android:id="@+id/day_of_week_progress_intro"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="8dp"
-                android:maxWidth="250dp"
-                android:padding="8dp"
-                android:paddingRight="50dp"
-                android:text="Try fortified ready-to-eat or cooked breakfast cereals with fruit. Fortified cereals have added nutrients, like calcium.
-" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-</android.support.v7.widget.CardView>-->
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-android:layout_width="match_parent"
-android:layout_height="wrap_content"
-android:layout_margin="12dp"
-app:cardElevation="4dp">
-
-<RelativeLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/some_days_day"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="@string/todays_day_placeholder"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true" />
-
-    <TextView
-        android:id="@+id/some_days_title_intro"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:maxWidth="200dp"
-        android:text="Bigger baby, heavier baby !"
-        android:textColor="@android:color/black" />
-
-</RelativeLayout>
+    </RelativeLayout>
 </android.support.v7.widget.CardView>

@@ -26,9 +26,7 @@
             android:layout_below="@id/contact_us"
             android:gravity="center"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-            android:textColor="@android:color/black"
-            android:layout_marginTop="10dp"
-            android:textStyle="bold"/>
+            android:layout_marginTop="10dp"/>
 
         <Button
             android:id="@+id/report_btn"
@@ -69,14 +67,13 @@
             android:layout_marginTop="30dp"/>
 
         <TextView
+            android:id="@+id/tweet_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/message_us_msg"
             android:layout_below="@id/message_us"
             android:gravity="center"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-            android:textStyle="bold"
-            android:textColor="@android:color/black"
             android:layout_marginTop="10dp"
             android:layout_margin="30dp"/>
 

@@ -71,6 +71,7 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
         allForums = new ArrayList<>();
         dbForums = new ArrayList<>();
         mSocket = InjectorUtils.provideSocketInstance();
+        mSocket.connect();
 
         forumAdapter = new ForumAdapter(getActivity(), this);
         forumRecycler.setLayoutManager(new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false));

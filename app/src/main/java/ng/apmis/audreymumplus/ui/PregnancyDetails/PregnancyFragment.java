@@ -42,23 +42,25 @@ public class PregnancyFragment extends Fragment {
         ButterKnife.bind(this, rootView);
 
         ((DashboardActivity) activity).getPersonLive().observe(activity, person -> {
-            String[] week = String.valueOf(person.getWeek()).split(" ");
-            weekIndicator.setText(getString(R.string.week_indicator, week[1]));
-            dayIndicator.setText(getString(R.string.day_indicator, String.valueOf(person.getDay())));
+            if (person != null) {
+                String[] week = String.valueOf(person.getWeek()).split(" ");
+                weekIndicator.setText(getString(R.string.week_indicator, week[1]));
+                dayIndicator.setText(getString(R.string.day_indicator, String.valueOf(person.getDay())));
 
-            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-            SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy");
-            Date date = null;
-            String edd = !TextUtils.isEmpty(person.getExpectedDateOfDelivery()) ?  person.getExpectedDateOfDelivery() : null;
-            if (edd != null) {
-                try {
-                    date = inputFormat.parse(person.getExpectedDateOfDelivery());
-                } catch (ParseException e) {
-                    e.printStackTrace();
+                SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy");
+                Date date = null;
+                String edd = !TextUtils.isEmpty(person.getExpectedDateOfDelivery()) ? person.getExpectedDateOfDelivery() : null;
+                if (edd != null) {
+                    try {
+                        date = inputFormat.parse(person.getExpectedDateOfDelivery());
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
 
-            deliveryDate.setText(edd != null ? getString(R.string.expectedDateOfDelivery, DateUtils.getRelativeTimeSpanString(date.getTime())) : getString(R.string.expectedDateOfDelivery,"Not set"));
+                deliveryDate.setText(edd != null ? getString(R.string.expectedDateOfDelivery, DateUtils.getRelativeTimeSpanString(date.getTime())) : getString(R.string.expectedDateOfDelivery, "Not set"));
+            }
 
         });
 
