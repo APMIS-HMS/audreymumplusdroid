@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.github.nkzawa.socketio.client.Socket;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.util.Set;
@@ -39,6 +40,8 @@ import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.data.network.ChatSocketService;
 import ng.apmis.audreymumplus.ui.AboutFragment;
 import ng.apmis.audreymumplus.ui.Appointments.AppointmentFragment;
+import ng.apmis.audreymumplus.ui.Chat.ChatContextFragment;
+import ng.apmis.audreymumplus.ui.Chat.ChatContextModel;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumFragment;
 import ng.apmis.audreymumplus.ui.Faq.FaqFragment;
 import ng.apmis.audreymumplus.ui.HelpFragment;
@@ -88,6 +91,35 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         ButterKnife.bind(this);
         NotificationUtils.createNotificationChannel(this);
         sharedPreferencesManager = new SharedPreferencesManager(getApplicationContext());
+        mFragmentManager = getSupportFragmentManager();
+
+        if (getIntent().getExtras() != null) {
+
+            Log.v("extras",getIntent().getExtras().getString("forumName"));
+
+            Fragment chatForumFragment = new ChatForumFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("forumName", getIntent().getExtras().getString("forumName"));
+            chatForumFragment.setArguments(bundle);
+            mFragmentManager.beginTransaction()
+                    .add(R.id.fragment_container, chatForumFragment)
+                    .addToBackStack(null)
+                    .commit();
+
+            /*Fragment chatFragement =  new ChatContextFragment();
+
+            Bundle chatBundle = new Bundle();
+            chatBundle.putString("forumName", getIntent().getExtras().getString("forumName"));
+
+            chatFragement.setArguments(chatBundle);
+
+            mFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, chatFragement)
+                    .addToBackStack("state-1")
+                    .setReorderingAllowed(true)
+                    .commit();*/
+
+        }
 
         setActionBarButton(false, getString(R.string.app_name));
         queue = Volley.newRequestQueue(this);
@@ -108,6 +140,9 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         getPersonLive().observe(this, theUser -> {
             if (theUser != null) {
                 globalPerson = theUser;
+
+                startService(new Intent(this, ChatSocketService.class).setAction("start-service").putExtra("email", theUser.getEmail()));
+
                 userName.setText(getString(R.string.user_name, theUser.getFirstName(), theUser.getLastName()));
 
                 if (theUser.getDay() == 0) {
@@ -138,7 +173,6 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView);
 
-        mFragmentManager = getSupportFragmentManager();
 
         // placeFragment(new HomeFragment(), true, mFragmentManager);
 
@@ -322,7 +356,19 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-   /* private class GetVersionCode extends AsyncTask<Void, String, String> {
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        startService(new Intent(this, ChatSocketService.class).setAction("start-service").putExtra("email", globalPerson.getEmail()));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
+    /* private class GetVersionCode extends AsyncTask<Void, String, String> {
         @Override
         protected String doInBackground(Void... voids) {
 

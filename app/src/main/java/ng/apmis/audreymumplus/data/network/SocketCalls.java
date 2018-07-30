@@ -9,7 +9,7 @@ import ng.apmis.audreymumplus.utils.InjectorUtils;
 
 public class SocketCalls {
 
-    public Socket mSocket = InjectorUtils.provideSocketInstance();
+   // public Socket mSocket = InjectorUtils.provideSocketInstance();
 
 
 

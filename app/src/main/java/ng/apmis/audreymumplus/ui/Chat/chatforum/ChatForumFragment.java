@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -33,6 +34,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.R;
+import ng.apmis.audreymumplus.data.network.ChatSocketService;
 import ng.apmis.audreymumplus.ui.Chat.ChatContextFragment;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
@@ -56,12 +58,6 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
     ProgressBar progressBar;
 
     Socket mSocket;
-/*    {
-        try {
-            mSocket = IO.socket("https://audrey-mum.herokuapp.com/");
-        } catch (URISyntaxException e) {
-        }
-    }*/
 
     @Nullable
     @Override
@@ -71,7 +67,6 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
         allForums = new ArrayList<>();
         dbForums = new ArrayList<>();
         mSocket = InjectorUtils.provideSocketInstance();
-        mSocket.connect();
 
         forumAdapter = new ForumAdapter(getActivity(), this);
         forumRecycler.setLayoutManager(new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false));
@@ -81,6 +76,19 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
 
         ForumFactory forumFactory = InjectorUtils.provideForumFactory(getActivity());
         forumViewModel = ViewModelProviders.of(this, forumFactory).get(ForumViewModel.class);
+
+     /*   if (getArguments() != null) {
+            Bundle bundle = new Bundle();
+            bundle.putString("forumName", getArguments().getString("forumName"));
+
+            ChatContextFragment myObj = new ChatContextFragment();
+            myObj.setArguments(bundle);
+
+            activity.getSupportFragmentManager().beginTransaction()
+                    .add(R.id.fragment_container, myObj)
+                    .addToBackStack(null)
+                    .commit();
+        }*/
 
         mSocket.emit("getForums", new JSONObject());
 
@@ -156,6 +164,8 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
         super.onResume();
         ((DashboardActivity) getActivity()).setActionBarButton(false, "Forums");
         ((DashboardActivity) getActivity()).bottomNavVisibility(false);
+        activity.startService(new Intent(getContext(), ChatSocketService.class).setAction("start-service"));
+        mSocket.connect();
     }
 
     @Override
@@ -163,6 +173,7 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
         super.onStop();
         ((DashboardActivity) getActivity()).setActionBarButton(false, getString(R.string.app_name));
         ((DashboardActivity) getActivity()).bottomNavVisibility(true);
+        mSocket.close();
     }
 
     @Override

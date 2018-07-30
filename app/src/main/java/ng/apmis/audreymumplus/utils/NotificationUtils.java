@@ -18,6 +18,7 @@ import android.text.Html;
 import java.util.Date;
 
 import ng.apmis.audreymumplus.R;
+import ng.apmis.audreymumplus.ui.Chat.ChatContextModel;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 
 /**
@@ -30,12 +31,16 @@ public class NotificationUtils {
     private static final int NOTIFICATION_ID = 5000;
 
 
-    public static void buildBackgroundChatNotification (Context mContext, String notificationTitle, String notificationBody) {
-        createNotificationChannel(mContext);
+    public static void buildBackgroundChatNotification (Context mContext, ChatContextModel oneChat) {
+
+        String notificationTitle = oneChat.getForumName();
+        String notificationBody = mContext.getString(R.string.notification_body, oneChat.getEmail(), oneChat.getMessage());
 
         Intent intent = new Intent(mContext.getApplicationContext(), DashboardActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, 0);
+        intent.putExtra("forumName", oneChat.getForumName());
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext, CHANNEL_ID)

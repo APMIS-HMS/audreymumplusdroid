@@ -30,16 +30,32 @@ public class ChatSocketService extends IntentService {
         super(name);
     }
 
+    private static boolean isStarted = false;
+
+    private static String globalEmail;
+
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
         Socket socket = InjectorUtils.provideSocketInstance();
+
+        if ((intent != null ? intent.getExtras() : null) != null) {
+            globalEmail = intent.getExtras().getString("email");
+            Log.v("email in service", globalEmail);
+        }
+
         if (intent.getAction().equals("start-service")) {
-            Log.v("socket service started", "Started");
-            socket.connect();
-            socket.on("created", onCreated());
-        } else {
-            Log.v("socket service ended", "Started");
-            socket.disconnect();
+            if (!isStarted) {
+                Log.v("socket service started", "Started");
+                socket.connect();
+                socket.on("created", onCreated());
+                isStarted = true;
+            }
+        }
+
+        if (intent.getAction().equals("stop-service")) {
+            Log.v("socket service ended", "Ended");
+            socket.close();
+            isStarted = false;
         }
     }
 
@@ -48,11 +64,16 @@ public class ChatSocketService extends IntentService {
             JSONObject jsonObject = (JSONObject) args[0];
             try {
                 ChatContextModel oneChat = new Gson().fromJson(jsonObject.getJSONObject("message").toString(), ChatContextModel.class);
-                AudreyMumplus.getInstance().diskIO().execute(() -> {
-                    InjectorUtils.provideRepository(getApplicationContext()).insertChat(oneChat);
-                });
 
-                NotificationUtils.buildBackgroundChatNotification(this, oneChat.getForumName(), getString(R.string.notification_body, oneChat.getEmail(), oneChat.getMessage()));
+                Log.v("is-user-email ?", String.valueOf(!oneChat.getEmail().equals(globalEmail)));
+
+                if (!oneChat.getEmail().equals(globalEmail)) {
+                    AudreyMumplus.getInstance().diskIO().execute(() -> {
+                        InjectorUtils.provideRepository(getApplicationContext()).insertChat(oneChat);
+                    });
+                    NotificationUtils.buildBackgroundChatNotification(this, oneChat);
+                }
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }

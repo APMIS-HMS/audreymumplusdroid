@@ -3,6 +3,9 @@ package ng.apmis.audreymumplus.ui.Chat;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -59,7 +62,6 @@ public class ChatContextFragment extends Fragment {
     ProgressBar progressBar;
 
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -73,7 +75,6 @@ public class ChatContextFragment extends Fragment {
 
         chatContextAdapter = new ChatContextAdapter(getActivity(), globalPerson.getEmail(), getActivity());
         chatRecycler.setAdapter(chatContextAdapter);
-
 
         if (getArguments() != null) {
             forumName = getArguments().getString("forumName");
@@ -98,6 +99,7 @@ public class ChatContextFragment extends Fragment {
                 /*progressBar.setVisibility(View.GONE);
                 emptyView.setVisibility(View.GONE);*/
                 chatContextAdapter.setAllChats(chatList);
+                chatRecycler.smoothScrollToPosition(chatContextAdapter.getItemCount());
             } else {
                 //check internet connectivity if true setLoading and emit  get forums
                /* progressBar.setVisibility(View.VISIBLE);
@@ -134,16 +136,17 @@ public class ChatContextFragment extends Fragment {
         ((DashboardActivity) getActivity()).setActionBarButton(true, getArguments().getString("forumName"));
         ((DashboardActivity) getActivity()).bottomNavVisibility(false);
         mSocket.connect();
-        activity.stopService(new Intent(getContext(), ChatSocketService.class).setAction("stop-service"));
+        activity.startService(new Intent(getContext(), ChatSocketService.class).setAction("stop-service"));
     }
+
 
     @Override
     public void onStop() {
         super.onStop();
         ((DashboardActivity) getActivity()).setActionBarButton(false, getString(R.string.app_name));
         ((DashboardActivity) getActivity()).bottomNavVisibility(true);
-        mSocket.disconnect();
-        activity.startService(new Intent(getContext(), ChatSocketService.class).setAction("start-service"));
+        mSocket.close();
+        activity.startService(new Intent(getContext(), ChatSocketService.class).setAction("start-service").putExtra("email", globalPerson.getEmail()));
     }
 
 
@@ -186,24 +189,20 @@ public class ChatContextFragment extends Fragment {
         };
     }
 
-    Emitter.Listener onCreated () {
+    Emitter.Listener onCreated() {
         return args -> {
             JSONObject jsonObject = (JSONObject) args[0];
             try {
                 ChatContextModel oneChat = new Gson().fromJson(jsonObject.getJSONObject("message").toString(), ChatContextModel.class);
+                Log.v("socket foreground", String.valueOf(oneChat));
+
+                AudreyMumplus.getInstance().diskIO().execute(() -> {
+                    InjectorUtils.provideRepository(activity).insertChat(oneChat);
+                });
 
                 if (!oneChat.getEmail().equals(globalPerson.getEmail())) {
-                    AudreyMumplus.getInstance().networkIO().execute(() -> {
-                        MumplusNetworkDataSource dataSource = InjectorUtils.provideJournalNetworkDataSource(activity);
-                        dataSource.fetchUserName(oneChat.getEmail());
-                        dataSource.getPersonEmail().observe(activity, person -> {
-                            oneChat.setUserName((person != null ? person.getFirstName() : "") + " " + (person != null ? person.getLastName() : ""));
-                            AudreyMumplus.getInstance().diskIO().execute(() -> {
-                                InjectorUtils.provideRepository(activity).insertChat(oneChat);
-                            });
-                        });
-                    });
-                    NotificationUtils.buildForegroundChatNotification(getContext());
+                    NotificationUtils.buildForegroundChatNotification(activity);
+                    chatRecycler.smoothScrollToPosition(chatContextAdapter.getItemCount());
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
