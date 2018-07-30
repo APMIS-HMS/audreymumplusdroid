@@ -26,7 +26,6 @@ import android.widget.Toast;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
-import com.github.nkzawa.socketio.client.Socket;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.util.Set;
@@ -40,8 +39,6 @@ import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.data.network.ChatSocketService;
 import ng.apmis.audreymumplus.ui.AboutFragment;
 import ng.apmis.audreymumplus.ui.Appointments.AppointmentFragment;
-import ng.apmis.audreymumplus.ui.Chat.ChatContextFragment;
-import ng.apmis.audreymumplus.ui.Chat.ChatContextModel;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumFragment;
 import ng.apmis.audreymumplus.ui.Faq.FaqFragment;
 import ng.apmis.audreymumplus.ui.HelpFragment;
@@ -141,7 +138,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
             if (theUser != null) {
                 globalPerson = theUser;
 
-                startService(new Intent(this, ChatSocketService.class).setAction("start-service").putExtra("email", theUser.getEmail()));
+                startService(new Intent(this, ChatSocketService.class).setAction("start-background").putExtra("email", theUser.getEmail()));
 
                 userName.setText(getString(R.string.user_name, theUser.getFirstName(), theUser.getLastName()));
 
@@ -359,7 +356,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        startService(new Intent(this, ChatSocketService.class).setAction("start-service").putExtra("email", globalPerson.getEmail()));
+        startService(new Intent(this, ChatSocketService.class).setAction("start-background").putExtra("email", globalPerson.getEmail()));
     }
 
     @Override

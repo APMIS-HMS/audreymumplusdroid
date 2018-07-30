@@ -24,6 +24,7 @@ public class SocketSingleton {
         } catch (URISyntaxException e) {
             Log.v("socket error", e.getMessage());
         }
+        mSocket.connect();
     }
 
 

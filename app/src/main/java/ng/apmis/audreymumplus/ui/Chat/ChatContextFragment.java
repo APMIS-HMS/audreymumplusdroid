@@ -3,15 +3,11 @@ package ng.apmis.audreymumplus.ui.Chat;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,26 +15,17 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.data.network.ChatSocketService;
-import ng.apmis.audreymumplus.data.network.MumplusNetworkDataSource;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
-import ng.apmis.audreymumplus.utils.NotificationUtils;
 
 public class ChatContextFragment extends Fragment {
 
@@ -46,7 +33,6 @@ public class ChatContextFragment extends Fragment {
     ImageView sendBtn;
     @BindView(R.id.add_chat)
     EditText chatMessageEditText;
-    Socket mSocket;
     ChatContextAdapter chatContextAdapter;
     RecyclerView chatRecycler;
     String forumName;
@@ -54,7 +40,6 @@ public class ChatContextFragment extends Fragment {
     Person globalPerson;
 
     ArrayList<ChatContextModel> dbForums;
-    ArrayList<ChatContextModel> allchats;
     ChatViewModel chatViewModel;
 
 
@@ -67,9 +52,7 @@ public class ChatContextFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_chat_context, container, false);
         ButterKnife.bind(this, rootView);
-        mSocket = InjectorUtils.provideSocketInstance();
         globalPerson = ((DashboardActivity) getActivity()).globalPerson;
-        allchats = new ArrayList<>();
         chatRecycler = rootView.findViewById(R.id.chat_recycler);
         chatRecycler.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
@@ -78,21 +61,14 @@ public class ChatContextFragment extends Fragment {
 
         if (getArguments() != null) {
             forumName = getArguments().getString("forumName");
-
-            try {
-                JSONObject getChats = new JSONObject().put("forumName", forumName);
-                mSocket.emit("getChats", getChats);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            activity.startService(new Intent(getContext(), ChatSocketService.class).setAction("start-foreground").putExtra("forumName", forumName));
         }
 
-        mSocket.on("getChats", getChats());
 
         ChatFactory forumFactory = InjectorUtils.provideChatFactory(getActivity(), forumName);
         chatViewModel = ViewModelProviders.of(this, forumFactory).get(ChatViewModel.class);
 
-        chatViewModel.getUpdatedChats().observeForever(chatList -> {
+        chatViewModel.getUpdatedChats().observe(this, chatList -> {
             if (chatList.size() > 0) {
                 progressBar.setVisibility(View.GONE);
                 dbForums = (ArrayList<ChatContextModel>) chatList;
@@ -108,7 +84,6 @@ public class ChatContextFragment extends Fragment {
             }
         });
 
-        mSocket.on("created", onCreated());
 
         sendBtn.setOnClickListener((view) -> {
             if (chatMessageEditText.getText().toString().length() > 0) {
@@ -116,7 +91,7 @@ public class ChatContextFragment extends Fragment {
 
                 postChat(oneChat);
                 chatContextAdapter.addChat(oneChat);
-                chatRecycler.smoothScrollToPosition(chatContextAdapter.getItemCount());
+                chatRecycler.scrollToPosition(chatContextAdapter.getItemCount());
                 chatMessageEditText.setText("");
             }
         });
@@ -135,8 +110,8 @@ public class ChatContextFragment extends Fragment {
         super.onResume();
         ((DashboardActivity) getActivity()).setActionBarButton(true, getArguments().getString("forumName"));
         ((DashboardActivity) getActivity()).bottomNavVisibility(false);
-        mSocket.connect();
-        activity.startService(new Intent(getContext(), ChatSocketService.class).setAction("stop-service"));
+        activity.startService(new Intent(getContext(), ChatSocketService.class).setAction("get-chats"));
+        activity.startService(new Intent(getContext(), ChatSocketService.class).setAction("start-foreground").putExtra("email", globalPerson.getEmail()));
     }
 
 
@@ -145,8 +120,7 @@ public class ChatContextFragment extends Fragment {
         super.onStop();
         ((DashboardActivity) getActivity()).setActionBarButton(false, getString(R.string.app_name));
         ((DashboardActivity) getActivity()).bottomNavVisibility(true);
-        mSocket.close();
-        activity.startService(new Intent(getContext(), ChatSocketService.class).setAction("start-service").putExtra("email", globalPerson.getEmail()));
+        activity.startService(new Intent(getContext(), ChatSocketService.class).setAction("start-background"));
     }
 
 
@@ -154,59 +128,7 @@ public class ChatContextFragment extends Fragment {
 
         Gson gson = new Gson();
         String cht = gson.toJson(chat);
-
-        JSONObject newChat;
-        try {
-            newChat = new JSONObject(cht);
-            mSocket.emit("chat", newChat);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
+        activity.startService(new Intent(getContext(), ChatSocketService.class).setAction("start-foreground").putExtra("chat", cht));
     }
 
-    Emitter.Listener getChats() {
-        return args -> {
-
-            try {
-                JSONArray jar = (JSONArray) args[0];
-
-                for (int i = 0; i < jar.length(); i++) {
-                    JSONObject chatObj = (JSONObject) jar.get(i);
-                    ChatContextModel eachChat = new Gson().fromJson(chatObj.toString(), ChatContextModel.class);
-                    allchats.add(eachChat);
-
-                }
-                AudreyMumplus.getInstance().diskIO().execute(() -> {
-                    InjectorUtils.provideRepository(activity).insertAllChats(allchats);
-                });
-
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-        };
-    }
-
-    Emitter.Listener onCreated() {
-        return args -> {
-            JSONObject jsonObject = (JSONObject) args[0];
-            try {
-                ChatContextModel oneChat = new Gson().fromJson(jsonObject.getJSONObject("message").toString(), ChatContextModel.class);
-                Log.v("socket foreground", String.valueOf(oneChat));
-
-                AudreyMumplus.getInstance().diskIO().execute(() -> {
-                    InjectorUtils.provideRepository(activity).insertChat(oneChat);
-                });
-
-                if (!oneChat.getEmail().equals(globalPerson.getEmail())) {
-                    NotificationUtils.buildForegroundChatNotification(activity);
-                    chatRecycler.smoothScrollToPosition(chatContextAdapter.getItemCount());
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        };
-    }
 }

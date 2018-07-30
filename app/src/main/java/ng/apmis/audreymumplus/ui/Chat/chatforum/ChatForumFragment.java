@@ -57,8 +57,6 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
 
-    Socket mSocket;
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -66,7 +64,6 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
         ButterKnife.bind(this, rootView);
         allForums = new ArrayList<>();
         dbForums = new ArrayList<>();
-        mSocket = InjectorUtils.provideSocketInstance();
 
         forumAdapter = new ForumAdapter(getActivity(), this);
         forumRecycler.setLayoutManager(new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false));
@@ -74,7 +71,8 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
         forumRecycler.addItemDecoration(new DividerItemDecoration(getContext(),
                 DividerItemDecoration.VERTICAL));
 
-        ForumFactory forumFactory = InjectorUtils.provideForumFactory(getActivity());
+
+        ForumFactory forumFactory = InjectorUtils.provideForumFactory(activity);
         forumViewModel = ViewModelProviders.of(this, forumFactory).get(ForumViewModel.class);
 
      /*   if (getArguments() != null) {
@@ -90,7 +88,6 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
                     .commit();
         }*/
 
-        mSocket.emit("getForums", new JSONObject());
 
         forumViewModel.getUpdatedForums().observe(this, forumModelList -> {
             if (forumModelList.size() > 0) {
@@ -105,31 +102,6 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
             }
         });
 
-
-        mSocket.on("getForums", args -> {
-            JSONObject jsonObject = (JSONObject) args[0];
-
-            try {
-                JSONObject job = new JSONObject(jsonObject.toString());
-                JSONArray jar = job.getJSONArray("data");
-
-                for (int i = 0; i < jar.length(); i++) {
-                    JSONObject forumObj = (JSONObject) jar.get(i);
-                    ChatForumModel eachForum = new Gson().fromJson(forumObj.toString(), ChatForumModel.class);
-                    allForums.add(eachForum);
-                }
-                Log.v("fors", String.valueOf(allForums));
-                   // checkForumChanges(allForums);
-                //TODO Move to check forum changes when it works
-                 AudreyMumplus.getInstance().diskIO().execute(() -> {
-                    InjectorUtils.provideRepository(activity).insertAllForums(allForums);
-                });
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-        });
 
         return rootView;
     }
@@ -164,8 +136,8 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
         super.onResume();
         ((DashboardActivity) getActivity()).setActionBarButton(false, "Forums");
         ((DashboardActivity) getActivity()).bottomNavVisibility(false);
-        activity.startService(new Intent(getContext(), ChatSocketService.class).setAction("start-service"));
-        mSocket.connect();
+        activity.startService(new Intent(activity, ChatSocketService.class).setAction("get-forums"));
+        activity.startService(new Intent(activity, ChatSocketService.class).setAction("start-background"));
     }
 
     @Override
@@ -173,7 +145,6 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
         super.onStop();
         ((DashboardActivity) getActivity()).setActionBarButton(false, getString(R.string.app_name));
         ((DashboardActivity) getActivity()).bottomNavVisibility(true);
-        mSocket.close();
     }
 
     @Override
