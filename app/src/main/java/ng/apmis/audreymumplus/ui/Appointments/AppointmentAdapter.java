@@ -23,7 +23,6 @@ public class AppointmentAdapter extends BaseAdapter {
     public void setAppointmentModels(List<Appointment> appointmentModels) {
         if (appointmentModels != null) {
             mAppointmentModels = new ArrayList<>();
-            notifyDataSetChanged();
         }
         mAppointmentModels = appointmentModels;
         notifyDataSetChanged();

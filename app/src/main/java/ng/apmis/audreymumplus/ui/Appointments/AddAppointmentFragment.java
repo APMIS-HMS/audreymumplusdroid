@@ -179,7 +179,6 @@ public class AddAppointmentFragment extends Fragment {
         if (requestCode == 1000 && resultCode == RESULT_OK) {
             AudreyMumplus.getInstance().diskIO().execute(() -> InjectorUtils.provideRepository(getActivity()).saveAppointment(thisAppointment));
             getActivity().getSupportFragmentManager().popBackStack("ADD_NEW", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            getActivity().onBackPressed();
         }
     }
 }

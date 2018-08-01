@@ -13,6 +13,7 @@ import android.provider.CalendarContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,7 +37,7 @@ import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 
-public class AppointmentFragment extends android.support.v4.app.Fragment {
+public class AppointmentFragment extends Fragment {
 
     @BindView(R.id.fab2)
     FloatingActionButton fab2;
@@ -70,6 +71,15 @@ public class AppointmentFragment extends android.support.v4.app.Fragment {
         appointmentAdapter = new AppointmentAdapter(getActivity());
         listView.setAdapter(appointmentAdapter);
 
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            databaseQuery();
+        } else {
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CALENDAR}, 9000);
+            } else {
+                databaseQuery();
+            }
+        }
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             Appointment clicked = (Appointment) parent.getItemAtPosition(position);
@@ -92,15 +102,7 @@ public class AppointmentFragment extends android.support.v4.app.Fragment {
                 .commit());
 
 
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                databaseQuery();
-            } else {
-                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CALENDAR}, 9000);
-                } else {
-                    databaseQuery();
-                }
-            }
+
 
 
         return rootView;
