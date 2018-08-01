@@ -19,6 +19,7 @@ import ng.apmis.audreymumplus.ui.Appointments.Appointment;
 import ng.apmis.audreymumplus.ui.Chat.ChatContextModel;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumModel;
 import ng.apmis.audreymumplus.ui.Journal.JournalModel;
+import ng.apmis.audreymumplus.utils.InjectorUtils;
 import ng.apmis.audreymumplus.utils.Week;
 
 /**
@@ -113,24 +114,40 @@ public class AudreyRepository {
             //Convert to Joda LocalDate for comparison
             LocalDate eddDate = LocalDate.fromDateFields(convertDateTime);
 
-            //Difference between today and edd
+            int whatDay = eddDate.getDayOfYear();
+            Log.v("diff of year", String.valueOf(whatDay));
+
+            //Number of days left to get to EDD
             Days howMany = Days.daysBetween(LocalDate.fromDateFields(new Date()), eddDate);
+
+
+            Log.v("diff days remaining", String.valueOf(howMany.getDays()));
 
             //Get current week divide totals days spent by 7
             int getWeek = (totalPregDays - howMany.getDays()) / 7;
 
+            if ((totalPregDays - howMany.getDays()) % 7 > 0) {
+                getWeek = getWeek + 1;
+            }
+
+            if (getWeek < 0) {
+                getWeek = 1;
+            }
+
             String currentWeekProgress = Week.valueOf("Week" + getWeek).getWeek();
             Log.v("current week", currentWeekProgress);
-            int currentDayProgress = howMany.getDays();
+
+            //The actual day we are on in the pregnancy progress
+            int currentDayProgress = totalPregDays - howMany.getDays();
 
 
             person.setWeek(currentWeekProgress);
             person.setDay(currentDayProgress);
 
-            Log.v("person of update", person.toString());
-
+            //TODO update server with week and day and not just local only for logging to other devices
             AudreyMumplus.getInstance().diskIO().execute(() -> {
                     updatePersonWithPregWeekDay(person);
+                Log.v("week - day update", person.toString());
             });
 
         }

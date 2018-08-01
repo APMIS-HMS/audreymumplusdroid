@@ -39,6 +39,7 @@ import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.data.network.ChatSocketService;
 import ng.apmis.audreymumplus.ui.AboutFragment;
 import ng.apmis.audreymumplus.ui.Appointments.AppointmentFragment;
+import ng.apmis.audreymumplus.ui.Chat.ChatContextFragment;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumFragment;
 import ng.apmis.audreymumplus.ui.Faq.FaqFragment;
 import ng.apmis.audreymumplus.ui.HelpFragment;
@@ -90,34 +91,6 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         sharedPreferencesManager = new SharedPreferencesManager(getApplicationContext());
         mFragmentManager = getSupportFragmentManager();
 
-        if (getIntent().getExtras() != null) {
-
-            Log.v("extras",getIntent().getExtras().getString("forumName"));
-
-            Fragment chatForumFragment = new ChatForumFragment();
-            Bundle bundle = new Bundle();
-            bundle.putString("forumName", getIntent().getExtras().getString("forumName"));
-            chatForumFragment.setArguments(bundle);
-            mFragmentManager.beginTransaction()
-                    .add(R.id.fragment_container, chatForumFragment)
-                    .addToBackStack(null)
-                    .commit();
-
-            /*Fragment chatFragement =  new ChatContextFragment();
-
-            Bundle chatBundle = new Bundle();
-            chatBundle.putString("forumName", getIntent().getExtras().getString("forumName"));
-
-            chatFragement.setArguments(chatBundle);
-
-            mFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, chatFragement)
-                    .addToBackStack("state-1")
-                    .setReorderingAllowed(true)
-                    .commit();*/
-
-        }
-
         setActionBarButton(false, getString(R.string.app_name));
         queue = Volley.newRequestQueue(this);
 
@@ -142,6 +115,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
                 userName.setText(getString(R.string.user_name, theUser.getFirstName(), theUser.getLastName()));
 
+                //TODO add a field in remote to store last day compare with today if match or no
                 if (theUser.getDay() == 0) {
                     InjectorUtils.provideRepository(this).getDayWeek(theUser);
                 }
@@ -173,11 +147,40 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
         // placeFragment(new HomeFragment(), true, mFragmentManager);
 
+        if (getIntent().getExtras() != null) {
 
-        mFragmentManager.beginTransaction()
-                .add(R.id.fragment_container, new HomeFragment())
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .commit();
+            Log.v("forumName notification",getIntent().getExtras().getString("forumName"));
+
+            mFragmentManager.beginTransaction()
+                    .add(R.id.fragment_container, new HomeFragment())
+                    .setReorderingAllowed(true)
+                    .commit();
+
+            mFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, new ChatForumFragment())
+                    .addToBackStack(null)
+                    .setReorderingAllowed(true)
+                    .commit();
+
+            Fragment chatFragement =  new ChatContextFragment();
+            Bundle chatBundle = new Bundle();
+            chatBundle.putString("forumName", getIntent().getExtras().getString("forumName"));
+            chatFragement.setArguments(chatBundle);
+
+            mFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, chatFragement)
+                    .addToBackStack(null)
+                    .setReorderingAllowed(true)
+                    .commit();
+
+        } else {
+            mFragmentManager.beginTransaction()
+                    .add(R.id.fragment_container, new HomeFragment())
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .commit();
+        }
+
+
     }
 
     public LiveData<Person> getPersonLive() {

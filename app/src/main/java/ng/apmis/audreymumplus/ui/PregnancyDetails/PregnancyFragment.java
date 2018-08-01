@@ -41,7 +41,7 @@ public class PregnancyFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.activity_pregnancy_details, container, false);
         ButterKnife.bind(this, rootView);
 
-        ((DashboardActivity) activity).getPersonLive().observe(activity, person -> {
+        ((DashboardActivity)getActivity()).getPersonLive().observe(this, person -> {
             if (person != null) {
                 String[] week = String.valueOf(person.getWeek()).split(" ");
                 weekIndicator.setText(getString(R.string.week_indicator, week[1]));

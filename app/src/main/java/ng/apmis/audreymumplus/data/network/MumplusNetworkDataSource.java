@@ -4,17 +4,15 @@ import android.app.ProgressDialog;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.RetryPolicy;
-import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -31,7 +29,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +36,6 @@ import java.util.concurrent.TimeUnit;
 
 import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.data.DatabaseFirebaseJobService;
-import ng.apmis.audreymumplus.data.database.DailyJournal;
 import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.ui.Journal.JournalModel;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
@@ -245,7 +241,7 @@ public class MumplusNetworkDataSource {
 
     }
 
-    public void updateProfileGetAudrey(String currentPersonId, JSONObject changeFields, Context context, boolean getAudrey) {
+    public void updateProfileGetAudrey(String currentPersonId, JSONObject changeFields, FragmentActivity context, boolean getAudrey) {
         ProgressDialog pd = new ProgressDialog(context);
         pd.setTitle("Updating Profile");
         pd.setMessage("Please wait...");
@@ -273,6 +269,7 @@ public class MumplusNetworkDataSource {
                         });
                         pd.dismiss();
                         Toast.makeText(mContext, "Update update successful", Toast.LENGTH_SHORT).show();
+                        context.getSupportFragmentManager().popBackStack("preg-frag", FragmentManager.POP_BACK_STACK_INCLUSIVE);
                     },
                     error -> {
                         Log.v("profile update err", error.toString());
@@ -390,12 +387,5 @@ public class MumplusNetworkDataSource {
         dispatcher.schedule(databaseSyncJob);
         Log.d(LOG_TAG, "Job scheduled");
     }
-
-    /**
-     * All socket calls and responses*/
-    public SocketCalls getSocketCalls () {
-        return new SocketCalls();
-    }
-
 
 }

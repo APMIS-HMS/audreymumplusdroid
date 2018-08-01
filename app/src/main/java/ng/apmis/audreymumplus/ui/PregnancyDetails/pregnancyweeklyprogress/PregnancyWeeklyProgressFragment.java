@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,7 +27,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -79,6 +83,10 @@ public class PregnancyWeeklyProgressFragment extends Fragment{
         weeklyProgressModelArrayList = new ArrayList<>();
         queue = Volley.newRequestQueue(getActivity());
 
+        weeklyProgressRecycler.setLayoutManager(new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL,false));
+        weeklyProgressAdapter = new PregnancyWeeklyProgressAdapter(activity, getChildFragmentManager());
+        weeklyProgressRecycler.setAdapter(weeklyProgressAdapter);
+
         ((DashboardActivity)getActivity()).getPersonLive().observe(this, person -> {
             if (person != null) {
                 edd = person.getExpectedDateOfDelivery();
@@ -86,17 +94,29 @@ public class PregnancyWeeklyProgressFragment extends Fragment{
                 currentWeek = String.valueOf(person.getWeek()).split(" ")[1];
                 currentWeekTv.setText(getString(R.string.week_title, person.getWeek()));
             }
+            if (edd != null) {
+                getWeeklyProgress();
+            }
         });
 
-        weeklyProgressRecycler.setLayoutManager(new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL,false));
-        weeklyProgressAdapter = new PregnancyWeeklyProgressAdapter(activity, getChildFragmentManager());
-        weeklyProgressRecycler.setAdapter(weeklyProgressAdapter);
+        getAudreyButton.setOnClickListener(view -> {
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .add(R.id.fragment_container, new GetAudreyFragment())
+                    .addToBackStack("preg-frag")
+                    .commit();
+        });
 
+        return rootView;
+    }
+
+    private void getWeeklyProgress() {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, "https://audrey-mum.herokuapp.com/weekly-progres", new JSONObject(),
                 response -> {
+                    progressBar.setVisibility(View.GONE);
+
                     try {
                         JSONArray remoteWeeksArray = response.getJSONArray("data");
-                        Log.v("remoteweekarray", remoteWeeksArray.toString());
+//                        Log.v("remoteweekarray", remoteWeeksArray.toString());
 
                         JSONObject weekOne = new JSONObject(remoteWeeksArray.get(1).toString());
                         JSONArray remoteWeekDaysArray = weekOne.getJSONArray("data");
@@ -134,18 +154,16 @@ public class PregnancyWeeklyProgressFragment extends Fragment{
 
 
                     if (weeklyProgressAdapter.getItemCount() < 1 && edd != null) {
-                            Snackbar.make(contentView, "Check Internet and Retry", Snackbar.LENGTH_INDEFINITE)
-                                    .setAction("Ok", view -> {}).show();
+                        Snackbar.make(contentView, "Check Internet and Retry", Snackbar.LENGTH_INDEFINITE)
+                                .setAction("Ok", view -> {}).show();
                     }
                     if (weeklyProgressAdapter.getItemCount() < 1 && edd == null){
                         contentView.setVisibility(View.GONE);
                         getAudreyView.setVisibility(View.VISIBLE);
-                        progressBar.setVisibility(View.GONE);
                     }
                     if (weeklyProgressAdapter.getItemCount() > 0 && edd != null) {
                         contentView.setVisibility(View.VISIBLE);
                         getAudreyView.setVisibility(View.GONE);
-                        progressBar.setVisibility(View.GONE);
                     }
 
                 },
@@ -156,16 +174,6 @@ public class PregnancyWeeklyProgressFragment extends Fragment{
                             .setAction("Ok", view -> {}).show();
                 });
         queue.add(jsonObjectRequest);
-
-        getAudreyButton.setOnClickListener(view -> {
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, new GetAudreyFragment())
-                    .addToBackStack(null)
-                    .commit();
-        });
-
-
-        return rootView;
     }
 
     @Override

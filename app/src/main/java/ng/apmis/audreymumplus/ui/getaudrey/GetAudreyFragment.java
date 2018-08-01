@@ -124,7 +124,6 @@ public class GetAudreyFragment extends Fragment {
                     InjectorUtils.provideRepository(getActivity()).getPerson().observe(this, person -> {
                         MumplusNetworkDataSource dataSource = InjectorUtils.provideJournalNetworkDataSource(getActivity());
                         dataSource.updateProfileGetAudrey(person.getPersonId(), registrationData, getActivity(), true);
-                        getActivity().getSupportFragmentManager().popBackStack();
                     });
                 });
             }

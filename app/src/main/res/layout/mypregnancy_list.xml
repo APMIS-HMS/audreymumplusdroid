@@ -134,7 +134,8 @@
         android:id="@+id/get_audrey_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true">
+        android:layout_centerInParent="true"
+        android:visibility="invisible">
 
         <ImageView
             android:id="@+id/empty_image"
