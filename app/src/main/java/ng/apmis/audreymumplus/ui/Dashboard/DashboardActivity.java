@@ -116,10 +116,11 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
                 userName.setText(getString(R.string.user_name, theUser.getFirstName(), theUser.getLastName()));
 
-                //TODO add a field in remote to store last day compare with today if match or no
+                //TODO add a field in remote to store last day compare with today if match or not
                 if (theUser.getDay() == 0) {
                     InjectorUtils.provideRepository(this).getDayWeek(theUser);
                 }
+
                 Glide.with(DashboardActivity.this)
                         .load(theUser.getProfileImage() != null ? theUser.getProfileImage() : R.drawable.ic_profile_place_holder)
                         .into(profileCircularImageView);

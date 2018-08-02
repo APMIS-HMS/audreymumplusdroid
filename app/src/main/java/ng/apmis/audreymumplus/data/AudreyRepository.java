@@ -140,7 +140,6 @@ public class AudreyRepository {
             //The actual day we are on in the pregnancy progress
             int currentDayProgress = totalPregDays - howMany.getDays();
 
-
             person.setWeek(currentWeekProgress);
             person.setDay(currentDayProgress);
 

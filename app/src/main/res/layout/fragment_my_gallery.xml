@@ -6,28 +6,35 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.PregnancyDetails.pregnancyimagegallery.MyGalleryFragment">
 
-    <TextView
-        android:id="@+id/gallerytext"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="12dp"
-        android:textSize="16sp"
-        android:text="Uploaded Pictures"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="12dp"/>
-
-    <Spinner
-        android:id="@+id/gallery_option_spinner"
-        android:layout_marginTop="10dp"
-        android:layout_alignParentRight="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:focusable="true"
-        android:spinnerMode="dropdown"
-        android:entries="@array/gallery_options"
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="12dp" />
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/gallerytext"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="Uploaded Pictures"/>
+
+        <Spinner
+            android:id="@+id/gallery_option_spinner"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:spinnerMode="dropdown"
+            android:entries="@array/gallery_options"
+            android:layout_marginEnd="12dp" />
+
+    </LinearLayout>
 
     <View
         android:id="@+id/view_divider"
@@ -35,7 +42,7 @@
         android:layout_height="1dp"
         android:layout_margin="12dp"
         android:background="@android:color/darker_gray"
-        android:layout_below="@+id/gallery_option_spinner"/>
+        android:layout_below="@+id/header"/>
 
     <android.support.v7.widget.RecyclerView
         android:layout_below="@id/view_divider"

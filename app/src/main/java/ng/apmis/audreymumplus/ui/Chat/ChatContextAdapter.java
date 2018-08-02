@@ -74,7 +74,7 @@ public class ChatContextAdapter extends RecyclerView.Adapter<ChatContextAdapter.
         ChatContextModel currentChat = allChats.get(position);
         if (currentChat != null) {
             holder.chatText.setText(currentChat.getMessage());
-            holder.userName.setText(currentChat.getEmail());
+            holder.userName.setText(!TextUtils.isEmpty(currentChat.getUserName()) ? currentChat.getUserName() : "Anonymous");
         }
     }
 

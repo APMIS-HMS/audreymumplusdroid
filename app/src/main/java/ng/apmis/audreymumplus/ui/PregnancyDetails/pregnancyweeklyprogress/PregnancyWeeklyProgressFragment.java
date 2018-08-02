@@ -37,6 +37,7 @@ import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.ui.getaudrey.GetAudreyFragment;
+import ng.apmis.audreymumplus.utils.Week;
 
 public class PregnancyWeeklyProgressFragment extends Fragment{
 
@@ -74,6 +75,7 @@ public class PregnancyWeeklyProgressFragment extends Fragment{
     private String edd;
 
     AppCompatActivity activity;
+    String week;
 
     @Nullable
     @Override
@@ -89,6 +91,7 @@ public class PregnancyWeeklyProgressFragment extends Fragment{
 
         ((DashboardActivity)getActivity()).getPersonLive().observe(this, person -> {
             if (person != null) {
+                week = person.getWeek();
                 edd = person.getExpectedDateOfDelivery();
                 currentDay = String.valueOf(person.getDay());
                 currentWeek = String.valueOf(person.getWeek()).split(" ")[1];
@@ -98,6 +101,8 @@ public class PregnancyWeeklyProgressFragment extends Fragment{
                 getWeeklyProgress();
             }
         });
+
+
 
         getAudreyButton.setOnClickListener(view -> {
             getActivity().getSupportFragmentManager().beginTransaction()
@@ -118,8 +123,12 @@ public class PregnancyWeeklyProgressFragment extends Fragment{
                         JSONArray remoteWeeksArray = response.getJSONArray("data");
 //                        Log.v("remoteweekarray", remoteWeeksArray.toString());
 
-                        JSONObject weekOne = new JSONObject(remoteWeeksArray.get(1).toString());
-                        JSONArray remoteWeekDaysArray = weekOne.getJSONArray("data");
+                        JSONObject currentWeek = new JSONObject(remoteWeeksArray.get(checkWeekAndSelectWeekProgress()).toString());
+                        if (currentWeek.getJSONArray("data").length() < 1) {
+                            currentWeek = new JSONObject(remoteWeeksArray.get(0).toString());
+                        }
+
+                        JSONArray remoteWeekDaysArray = currentWeek.getJSONArray("data");
 
                         for (int day = 0; day < remoteWeekDaysArray.length(); day++) {
                             PregnancyWeeklyProgressModel oneItem = new Gson().fromJson(remoteWeekDaysArray.get(day).toString(), PregnancyWeeklyProgressModel.class);
@@ -180,5 +189,20 @@ public class PregnancyWeeklyProgressFragment extends Fragment{
     public void onAttach(Context context) {
         super.onAttach(context);
         activity = (AppCompatActivity) context;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        queue.cancelAll(this);
+    }
+
+    int checkWeekAndSelectWeekProgress () {
+        int wk = Integer.parseInt(week.split(" ")[1]);
+        if (wk < 1) {
+            wk = 1;
+        }
+        Log.v("Week integer", String.valueOf(wk));
+        return wk - 1;
     }
 }
