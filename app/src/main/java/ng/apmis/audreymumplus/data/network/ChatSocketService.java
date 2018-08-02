@@ -40,25 +40,27 @@ public class ChatSocketService extends IntentService {
 
     private static String globalEmail;
 
-    private static Socket mSocket;
-
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
 
-        mSocket = InjectorUtils.provideSocketInstance();
+        Socket mSocket = InjectorUtils.provideSocketInstance();
 
-        if ((intent != null ? intent.getExtras() : null) != null) {
-            globalEmail = intent.getExtras().getString("email");
+        if (intent.getExtras() != null && !TextUtils.isEmpty(intent.getExtras().getString("email"))) {
+            if (!mSocket.connected()) {
+                globalEmail = intent.getExtras().getString("email");
+                mSocket.on("created", onCreated());
+                mSocket.on("getForums", onGetForums());
+                mSocket.on("getChats", getChats());
+            }
         }
 
         if (intent.getAction().equals("start-background")) {
-            Log.v("socket background start", "background");
+            Log.d("socket background start", "background");
             isForeground = false;
-            mSocket.on("created", onCreated());
         }
 
         if (intent.getAction().equals("start-foreground")) {
-            Log.v("socket foreground start", "foreground");
+            Log.d("socket foreground start", "foreground");
             isForeground = true;
             if (!TextUtils.isEmpty(intent.getExtras().getString("chat"))) {
                 String cht = intent.getExtras().getString("chat");
@@ -81,19 +83,10 @@ public class ChatSocketService extends IntentService {
                 }
             }
 
-            mSocket.on("created", onCreated());
         }
 
         if (intent.getAction().equals("get-forums")) {
-            Log.v("socket get forums", "forums");
             mSocket.emit("getForums", new JSONObject());
-
-            mSocket.on("getForums", onGetForums());
-        }
-
-        if (intent.getAction().equals("get-chats")) {
-            Log.v("Get chats", "getting chats");
-            mSocket.on("getChats", getChats());
         }
 
     }
@@ -103,8 +96,6 @@ public class ChatSocketService extends IntentService {
             JSONObject jsonObject = (JSONObject) args[0];
             try {
                 ChatContextModel oneChat = new Gson().fromJson(jsonObject.getJSONObject("message").toString(), ChatContextModel.class);
-
-                Log.v("is-user-email ?", String.valueOf(!oneChat.getEmail().equals(globalEmail)));
 
                 AudreyMumplus.getInstance().diskIO().execute(() -> {
                     InjectorUtils.provideRepository(getApplicationContext()).insertChat(oneChat);
@@ -117,9 +108,6 @@ public class ChatSocketService extends IntentService {
                         NotificationUtils.buildBackgroundChatNotification(this, oneChat);
                     }
                 }
-
-                mSocket.off("created", onCreated());
-
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -142,13 +130,10 @@ public class ChatSocketService extends IntentService {
                     ChatForumModel eachForum = new Gson().fromJson(forumObj.toString(), ChatForumModel.class);
                     allForums.add(eachForum);
                 }
-                // checkForumChanges(allForums);
-                //TODO Move to check forum changes when it works
+
                 AudreyMumplus.getInstance().diskIO().execute(() -> {
                     InjectorUtils.provideRepository(this).insertAllForums(allForums);
                 });
-
-                mSocket.off("getForums", onGetForums());
 
             } catch (JSONException e) {
                 e.printStackTrace();

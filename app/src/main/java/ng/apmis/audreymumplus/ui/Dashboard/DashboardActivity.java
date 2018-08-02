@@ -37,6 +37,7 @@ import ng.apmis.audreymumplus.LoginActivity;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.data.network.ChatSocketService;
+import ng.apmis.audreymumplus.data.network.SocketSingleton;
 import ng.apmis.audreymumplus.ui.AboutFragment;
 import ng.apmis.audreymumplus.ui.Appointments.AppointmentFragment;
 import ng.apmis.audreymumplus.ui.Chat.ChatContextFragment;
@@ -182,6 +183,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
 
     }
+
 
     public LiveData<Person> getPersonLive() {
         return person;
@@ -356,16 +358,10 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        startService(new Intent(this, ChatSocketService.class).setAction("start-background").putExtra("email", globalPerson.getEmail()));
-    }
 
     @Override
     protected void onResume() {
         super.onResume();
-
     }
 
     /* private class GetVersionCode extends AsyncTask<Void, String, String> {

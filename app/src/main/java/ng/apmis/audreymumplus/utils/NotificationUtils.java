@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -44,7 +45,7 @@ public class NotificationUtils {
 
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext, CHANNEL_ID)
-                .setSmallIcon(R.drawable.audrey_icon)
+                .setSmallIcon(R.mipmap.audrey_icon)
                 .setContentTitle(notificationTitle)
                 .setContentText(Html.fromHtml(notificationBody))
                 .setStyle(new NotificationCompat.BigTextStyle()
@@ -62,7 +63,20 @@ public class NotificationUtils {
     public static void buildForegroundChatNotification (Context mContext) {
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Ringtone r = RingtoneManager.getRingtone(mContext, defaultSoundUri);
-        r.play();
+
+        AudioManager audioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+        MediaPlayer thePlayer = MediaPlayer.create(mContext.getApplicationContext(), RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+
+        try {
+            thePlayer.setVolume(((float) (audioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION) / 7.0)),
+                    (float) (audioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION) / 7.0));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (thePlayer.isPlaying()) {
+            thePlayer.stop();
+        }
+        thePlayer.start();
     }
 
 

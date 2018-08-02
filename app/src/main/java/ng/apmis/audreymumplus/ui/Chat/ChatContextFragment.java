@@ -52,18 +52,23 @@ public class ChatContextFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_chat_context, container, false);
         ButterKnife.bind(this, rootView);
-        globalPerson = ((DashboardActivity) getActivity()).globalPerson;
+        //globalPerson = ((DashboardActivity) getActivity()).globalPerson;
+
         chatRecycler = rootView.findViewById(R.id.chat_recycler);
         chatRecycler.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
 
-        chatContextAdapter = new ChatContextAdapter(getActivity(), globalPerson.getEmail(), getActivity());
-        chatRecycler.setAdapter(chatContextAdapter);
+        InjectorUtils.provideRepository(getActivity()).getPerson().observe(this, person -> {
+            if (person != null) {
+                globalPerson = person;
+                chatContextAdapter = new ChatContextAdapter(getActivity(), person.getEmail(), getActivity());
+                chatRecycler.setAdapter(chatContextAdapter);
+            }
+        });
 
         if (getArguments() != null) {
             forumName = getArguments().getString("forumName");
-            activity.startService(new Intent(getContext(), ChatSocketService.class).setAction("start-foreground").putExtra("forumName", forumName));
+            getActivity().startService(new Intent(getContext(), ChatSocketService.class).setAction("start-foreground").putExtra("forumName", forumName));
         }
-
 
         ChatFactory forumFactory = InjectorUtils.provideChatFactory(getActivity(), forumName);
         chatViewModel = ViewModelProviders.of(this, forumFactory).get(ChatViewModel.class);
@@ -75,7 +80,7 @@ public class ChatContextFragment extends Fragment {
                 /*progressBar.setVisibility(View.GONE);
                 emptyView.setVisibility(View.GONE);*/
                 chatContextAdapter.setAllChats(chatList);
-                chatRecycler.smoothScrollToPosition(chatContextAdapter.getItemCount());
+                chatRecycler.scrollToPosition(chatList.size());
             } else {
                 //check internet connectivity if true setLoading and emit  get forums
                /* progressBar.setVisibility(View.VISIBLE);
@@ -91,7 +96,7 @@ public class ChatContextFragment extends Fragment {
 
                 postChat(oneChat);
                 chatContextAdapter.addChat(oneChat);
-                chatRecycler.scrollToPosition(chatContextAdapter.getItemCount());
+                chatRecycler.smoothScrollToPosition(chatContextAdapter.getItemCount());
                 chatMessageEditText.setText("");
             }
         });
@@ -110,8 +115,6 @@ public class ChatContextFragment extends Fragment {
         super.onResume();
         ((DashboardActivity) getActivity()).setActionBarButton(true, getArguments().getString("forumName"));
         ((DashboardActivity) getActivity()).bottomNavVisibility(false);
-        activity.startService(new Intent(getContext(), ChatSocketService.class).setAction("get-chats"));
-        activity.startService(new Intent(getContext(), ChatSocketService.class).setAction("start-foreground").putExtra("email", globalPerson.getEmail()));
     }
 
 
@@ -125,7 +128,6 @@ public class ChatContextFragment extends Fragment {
 
 
     public void postChat(ChatContextModel chat) {
-
         Gson gson = new Gson();
         String cht = gson.toJson(chat);
         activity.startService(new Intent(getContext(), ChatSocketService.class).setAction("start-foreground").putExtra("chat", cht));
