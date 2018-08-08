@@ -72,6 +72,7 @@
             </intent-filter>
         </service>
         <service android:name=".data.network.ChatSocketService" />
+        <receiver android:name=".utils.AlarmBroadcast"/>
     </application>
 
 </manifest>

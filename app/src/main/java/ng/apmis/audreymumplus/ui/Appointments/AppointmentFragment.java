@@ -1,6 +1,8 @@
 package ng.apmis.audreymumplus.ui.Appointments;
 
 import android.Manifest;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Intent;
@@ -35,6 +37,8 @@ import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
+import ng.apmis.audreymumplus.utils.AlarmBroadcast;
+import ng.apmis.audreymumplus.utils.AlarmMangerSingleton;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 
 public class AppointmentFragment extends Fragment {
@@ -65,6 +69,15 @@ public class AppointmentFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_appointment, container, false);
         ButterKnife.bind(this, rootView);
         appointmentFromAndroidCalendar = new ArrayList<>();
+
+
+        Intent alarmIntent = new Intent(getActivity(), AlarmBroadcast.class);
+        alarmIntent.putExtra("appointment","One appointment");
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        AlarmManager alarmManager =  new AlarmMangerSingleton(getActivity()).getInstance().getAlarmManager();
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, 15000, pendingIntent);
 
         ListView listView = rootView.findViewById(R.id.appointment);
 
@@ -100,10 +113,6 @@ public class AppointmentFragment extends Fragment {
                 .add(R.id.fragment_container, new AddAppointmentFragment())
                 .addToBackStack("ADD_NEW")
                 .commit());
-
-
-
-
 
         return rootView;
 
