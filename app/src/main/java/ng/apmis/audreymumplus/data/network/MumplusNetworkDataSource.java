@@ -269,7 +269,11 @@ public class MumplusNetworkDataSource {
                         });
                         pd.dismiss();
                         Toast.makeText(mContext, "Update update successful", Toast.LENGTH_SHORT).show();
-                        context.getSupportFragmentManager().popBackStack("preg-frag", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                        try {
+                            context.getSupportFragmentManager().popBackStack("preg-frag", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                        } catch (IllegalStateException e) {
+                            Log.e(LOG_TAG + ": Illegalstate", e.getMessage());
+                        }
                     },
                     error -> {
                         Log.v("profile update err", error.toString());
