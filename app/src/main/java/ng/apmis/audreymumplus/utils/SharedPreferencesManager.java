@@ -48,12 +48,12 @@ public class SharedPreferencesManager {
         return pref.getBoolean(IS_FIRST_TIME_LAUNCH, true);
     }
 
-    public void setIsLoggedIn (boolean isLoggedIn) {
+    public void setJustLoggedIn (boolean isLoggedIn) {
         editor.putBoolean(IS_LOGGED_IN, isLoggedIn);
         editor.commit();
     }
 
-    public boolean isLoggedIn () {
+    public boolean justLoggedIn () {
         return pref.getBoolean(IS_LOGGED_IN, false);
     }
 

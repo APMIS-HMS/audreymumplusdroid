@@ -1,11 +1,15 @@
 package ng.apmis.audreymumplus.ui.Dashboard;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -28,6 +32,7 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
+import java.util.Calendar;
 import java.util.Set;
 
 import butterknife.BindView;
@@ -44,12 +49,15 @@ import ng.apmis.audreymumplus.ui.Chat.ChatContextFragment;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumFragment;
 import ng.apmis.audreymumplus.ui.Faq.FaqFragment;
 import ng.apmis.audreymumplus.ui.HelpFragment;
+import ng.apmis.audreymumplus.ui.Journal.AddJournalFragment;
 import ng.apmis.audreymumplus.ui.PregnancyDetails.PregnancyFragment;
 import ng.apmis.audreymumplus.ui.SettingFragment;
 import ng.apmis.audreymumplus.ui.getaudrey.GetAudreyFragment;
 import ng.apmis.audreymumplus.ui.Home.HomeFragment;
 import ng.apmis.audreymumplus.ui.Journal.MyJournalFragment;
 import ng.apmis.audreymumplus.ui.profile.ProfileFragment;
+import ng.apmis.audreymumplus.utils.AlarmBroadcast;
+import ng.apmis.audreymumplus.utils.AlarmMangerSingleton;
 import ng.apmis.audreymumplus.utils.BottomNavigationViewHelper;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 import ng.apmis.audreymumplus.utils.NotificationUtils;
@@ -116,9 +124,28 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
                 userName.setText(getString(R.string.user_name, theUser.getFirstName(), theUser.getLastName()));
 
-                //TODO add a field in remote to store last day compare with today if match or not
-                if (theUser.getDay() == 0) {
+                if (theUser.getDay() == 0 || sharedPreferencesManager.justLoggedIn()) {
                     InjectorUtils.provideRepository(this).getDayWeek(theUser);
+
+                    /*Set repeat alarm for week update start*/
+                    Intent alarmIntent = new Intent(this, AlarmBroadcast.class);
+                    alarmIntent.setAction("update-week");
+
+                    Calendar calendar = Calendar.getInstance();
+
+                    calendar.set(Calendar.HOUR_OF_DAY, 23);
+                    calendar.set(Calendar.MINUTE, 59);
+                    calendar.set(Calendar.SECOND, 59);
+
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
+
+                    AlarmManager alarmManager =  new AlarmMangerSingleton(this).getInstance().getAlarmManager();
+                    alarmManager.setRepeating(AlarmManager.RTC, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+
+                    Log.v("Just logged in", "true");
+                    sharedPreferencesManager.setJustLoggedIn(false);
+
+/*Set repeat alarm for week update end*/
                 }
 
                 Glide.with(DashboardActivity.this)
@@ -181,7 +208,6 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                     .commit();
         }
-
 
     }
 

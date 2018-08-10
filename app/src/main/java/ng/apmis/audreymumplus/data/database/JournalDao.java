@@ -37,8 +37,14 @@ public interface JournalDao {
     @Query("SELECT * FROM appointments")
     LiveData<List<Appointment>> getSavedAppointments();
 
+    @Query("SELECT * FROM appointments WHERE _id = :appointment_id")
+    Appointment getStaticAppointment(long appointment_id);
+
     @Insert()
-    void insertAppointment(Appointment appointment);
+    long insertAppointment(Appointment appointment);
+
+    @Delete()
+    void deleteAppointment(Appointment appointment);
 
     @Query("SELECT * FROM journal WHERE date = :date")
     LiveData<JournalModel> getJournalByDate(Date date);
@@ -61,9 +67,16 @@ public interface JournalDao {
     @Query("SELECT * FROM person")
     LiveData<Person> getPerson();
 
+    @Query("SELECT * FROM person")
+    Person getStaticPerson();
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void bulkInsertForums (List<ChatForumModel> allForums);
 
+
+    /*
+    * Chats and Forum queries
+    * */
     @Query("SELECT * FROM forums")
     LiveData<List<ChatForumModel>> getChatForums();
 
@@ -76,8 +89,5 @@ public interface JournalDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertChat(ChatContextModel chatContextModel);
 
-
-    /*@Query("DELETE FROM journal WHERE date < :date")
-    void deleteOldWeather(String date);*/
 
 }

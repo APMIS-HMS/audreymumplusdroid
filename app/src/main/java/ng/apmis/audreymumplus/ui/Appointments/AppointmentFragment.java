@@ -1,35 +1,28 @@
 package ng.apmis.audreymumplus.ui.Appointments;
 
 import android.Manifest;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.CalendarContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -37,23 +30,26 @@ import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
-import ng.apmis.audreymumplus.utils.AlarmBroadcast;
-import ng.apmis.audreymumplus.utils.AlarmMangerSingleton;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 
-public class AppointmentFragment extends Fragment {
+public class AppointmentFragment extends Fragment implements AppointmentAdapter.OptionPopupListener, PopupMenu.OnMenuItemClickListener{
 
     @BindView(R.id.fab2)
     FloatingActionButton fab2;
     List<Appointment> appointmentFromAndroidCalendar;
-    Cursor cur;
     AppointmentAdapter appointmentAdapter;
+    Appointment selectedAppointment;
 
     @Override
     public void onResume() {
         super.onResume();
         ((DashboardActivity) getActivity()).setActionBarButton(false, "Appointments");
         ((DashboardActivity) getActivity()).bottomNavVisibility(false);
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 9000);
+        } else {
+            getAppointmentsFromDb();
+        }
     }
 
     @Override
@@ -70,42 +66,10 @@ public class AppointmentFragment extends Fragment {
         ButterKnife.bind(this, rootView);
         appointmentFromAndroidCalendar = new ArrayList<>();
 
-
-        Intent alarmIntent = new Intent(getActivity(), AlarmBroadcast.class);
-        alarmIntent.putExtra("appointment","One appointment");
-
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        AlarmManager alarmManager =  new AlarmMangerSingleton(getActivity()).getInstance().getAlarmManager();
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, 15000, pendingIntent);
-
         ListView listView = rootView.findViewById(R.id.appointment);
 
-        appointmentAdapter = new AppointmentAdapter(getActivity());
+        appointmentAdapter = new AppointmentAdapter(getActivity(), this);
         listView.setAdapter(appointmentAdapter);
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            databaseQuery();
-        } else {
-            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CALENDAR}, 9000);
-            } else {
-                databaseQuery();
-            }
-        }
-
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-            Appointment clicked = (Appointment) parent.getItemAtPosition(position);
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-
-            intent.setData(Uri.parse("content://com.android.calendar/events/" + String.valueOf(clicked.getID())));
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                    | Intent.FLAG_ACTIVITY_SINGLE_TOP
-                    | Intent.FLAG_ACTIVITY_CLEAR_TOP
-                    | Intent.FLAG_ACTIVITY_NO_HISTORY
-                    | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
-            getActivity().startActivity(intent);
-        });
 
         listView.setEmptyView(rootView.findViewById(R.id.empty_view));
 
@@ -118,98 +82,44 @@ public class AppointmentFragment extends Fragment {
 
     }
 
-    public void databaseQuery() {
-
-        final int PROJECTION_ID_INDEX = 0;
-        final int PROJECTION_BEGIN_INDEX = 1;
-        final int PROJECTION_TITLE_INDEX = 2;
-
-        final String[] INSTANCE_PROJECTION = new String[]{
-                CalendarContract.Instances.EVENT_ID,      // 0
-                CalendarContract.Instances.BEGIN,         // 1
-                CalendarContract.Instances.TITLE,          // 2
-                CalendarContract.Instances.START_DAY,       //3
-                CalendarContract.Instances.DESCRIPTION,     //4
-                CalendarContract.Instances.EVENT_LOCATION   //5
-        };
-
-
+    public void getAppointmentsFromDb() {
         AudreyMumplus.getInstance().diskIO().execute(() -> {
-
-            ArrayList<Appointment> appointments = new ArrayList<>();
-
             InjectorUtils.provideRepository(getActivity()).getAllAppointments().observe(this, appointments1 -> {
-                appointments.addAll(appointments1);
-
-                ContentResolver cr = getActivity().getContentResolver();
-
-                Uri.Builder builder = CalendarContract.Instances.CONTENT_URI.buildUpon();
-                ContentUris.appendId(builder, new Date().getTime());
-                Calendar cal = Calendar.getInstance();
-                cal.add(Calendar.MONTH, 1);
-                Date oneMonthAhead = new Date(cal.getTimeInMillis());
-                ContentUris.appendId(builder, oneMonthAhead.getTime());
-
-                cur = cr.query(builder.build(),
-                        INSTANCE_PROJECTION,
-                        null,
-                        null,
-                        INSTANCE_PROJECTION[3] + " ASC");
-
-                if (cur != null) {
-                    while (cur.moveToNext()) {
-                        String title = null;
-                        long eventID = 0;
-                        long beginVal = 0;
-
-                        // Get the field values
-                        eventID = cur.getLong(PROJECTION_ID_INDEX);
-                        beginVal = cur.getLong(PROJECTION_BEGIN_INDEX);
-
-
-                        String appointmentTitle = cur.getString(PROJECTION_TITLE_INDEX);
-                        String appointmentTime = new SimpleDateFormat("h:mma").format(beginVal);
-
-                        // Do something with the values.
-                        String[] monthDate = TextUtils.split(DateFormat.getDateInstance().format(beginVal).toString(), ",");
-                        String dayOfWeek = new SimpleDateFormat("EEEE").format(beginVal);
-
-
-                        Appointment thisAppointment = new Appointment(eventID, appointmentTitle, appointmentTime, monthDate[0], dayOfWeek);
-
-                        for (int app = 0; app < appointments.size(); app++) {
-
-                            if (appointments.get(app).getTitle().equals(thisAppointment.getTitle())) {
-                                appointmentFromAndroidCalendar.add(thisAppointment);
-                                Log.v("This appointment", thisAppointment.toString());
-                            }
-                        }
-
-                    }
-                }
-                if (cur != null) {
-                    cur.close();
-                }
-                getActivity().runOnUiThread(() -> {
-                    appointmentAdapter.setAppointmentModels(appointmentFromAndroidCalendar);
-                });
-
-
+                Collections.reverse(appointments1);
+                appointmentAdapter.setAppointmentModels(appointments1);
             });
 
         });
 
     }
 
+    @Override
+    public void onPopupOptionPressed(View v, Appointment appointment) {
+        selectedAppointment = appointment;
+        PopupMenu popup = new PopupMenu(getActivity(), v);
+        popup.setOnMenuItemClickListener(this);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.popup_actions, popup.getMenu());
+        popup.show();
+    }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 9000 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            databaseQuery();
-        } else {
-            Toast.makeText(getActivity(), "you need to grant permission to view appointments", Toast.LENGTH_SHORT).show();
-            getActivity().onBackPressed();
+    public boolean onMenuItemClick(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.details:
+                Toast.makeText(getActivity(), "Details", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.delete:
+                deleteAppointment(selectedAppointment);
+                return true;
+            default:
+                return false;
         }
+    }
+
+    void deleteAppointment (Appointment appointment) {
+        AudreyMumplus.getInstance().diskIO().execute(()-> {
+            InjectorUtils.provideRepository(getActivity()).deleteAppointment(appointment);
+        });
     }
 }

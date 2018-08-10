@@ -1,6 +1,11 @@
 package ng.apmis.audreymumplus.data;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.arch.lifecycle.LiveData;
+import android.content.Context;
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -8,6 +13,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -19,6 +25,8 @@ import ng.apmis.audreymumplus.ui.Appointments.Appointment;
 import ng.apmis.audreymumplus.ui.Chat.ChatContextModel;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumModel;
 import ng.apmis.audreymumplus.ui.Journal.JournalModel;
+import ng.apmis.audreymumplus.utils.AlarmBroadcast;
+import ng.apmis.audreymumplus.utils.AlarmMangerSingleton;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 import ng.apmis.audreymumplus.utils.Week;
 
@@ -78,6 +86,10 @@ public class AudreyRepository {
         mJournalDao.insertPerson(person);
     }
 
+    public void updatePerson (Person person) {
+        mJournalDao.updatePerson(person);
+    }
+
     public void deletePerson () {
         mJournalDao.deletePerson();
     }
@@ -86,12 +98,24 @@ public class AudreyRepository {
         return mJournalDao.getPerson();
     }
 
-    public void saveAppointment (Appointment appointment) {
-        mJournalDao.insertAppointment(appointment);
+    public Person getStaticPerson () {
+        return mJournalDao.getStaticPerson();
+    }
+
+    public long saveAppointment (Appointment appointment) {
+        return mJournalDao.insertAppointment(appointment);
     }
 
     public LiveData<List<Appointment>> getAllAppointments () {
         return mJournalDao.getSavedAppointments();
+    }
+
+    public Appointment getStaticAppointment (long appointment_id) {
+        return mJournalDao.getStaticAppointment(appointment_id);
+    }
+
+    public void deleteAppointment (Appointment appointment) {
+        mJournalDao.deleteAppointment(appointment);
     }
 
     public void updatePersonWithPregWeekDay (Person person) {
@@ -143,7 +167,6 @@ public class AudreyRepository {
             person.setWeek(currentWeekProgress);
             person.setDay(currentDayProgress);
 
-            //TODO update server with week and day and not just local only for logging to other devices
             AudreyMumplus.getInstance().diskIO().execute(() -> {
                     updatePersonWithPregWeekDay(person);
                 Log.v("week - day update", person.toString());

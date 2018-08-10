@@ -19,6 +19,7 @@ import android.text.Html;
 import java.util.Date;
 
 import ng.apmis.audreymumplus.R;
+import ng.apmis.audreymumplus.ui.Appointments.Appointment;
 import ng.apmis.audreymumplus.ui.Chat.ChatContextModel;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 
@@ -53,6 +54,33 @@ public class NotificationUtils {
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .setWhen(new Date().getTime());
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(mContext);
+        notificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+    }
+
+    public static void buildAppointmentNotification (Context mContext, Appointment appointment) {
+
+        String notificationTitle = appointment.getTitle();
+        String notificationBody = mContext.getString(R.string.notification_body, appointment.getAppointmentDetails(), appointment.getAppointmentAddress());
+
+        Intent intent = new Intent(mContext.getApplicationContext(), DashboardActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext, CHANNEL_ID)
+                .setSmallIcon(R.mipmap.audrey_icon)
+                .setContentTitle(Html.fromHtml("<b>Reminder for </b> " +notificationTitle))
+                .setContentText(Html.fromHtml(notificationBody))
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(Html.fromHtml(notificationBody)))
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setSound(defaultSoundUri)
+                .setFullScreenIntent(pendingIntent, true)
                 .setAutoCancel(true)
                 .setWhen(new Date().getTime());
 

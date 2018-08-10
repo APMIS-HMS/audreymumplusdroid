@@ -14,22 +14,19 @@
         android:layout_height="0dp"
         android:layout_weight="3"
         android:background="@drawable/gradient"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetRight="0dp"
+        app:contentInsetEnd="0dp"
         android:elevation="4dp">
-
-        <TextView
-            android:id="@+id/title_toolbar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textColor="@color/colorPrimary"
-            android:textSize="20sp"
-            android:textStyle="bold" />
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:orientation="vertical">
 
             <TextView
@@ -50,108 +47,136 @@
                 android:textColor="@android:color/white" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
                 android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:id="@+id/action_happy">
 
                     <ImageButton
                         android:layout_width="36dp"
                         android:layout_height="36dp"
-                        android:layout_marginRight="24dp"
                         android:adjustViewBounds="true"
                         android:background="@null"
                         android:maxHeight="60dp"
                         android:maxWidth="42dp"
                         android:scaleType="fitCenter"
-                        app:srcCompat="@drawable/ic_happy__icon" />
+                        app:srcCompat="@drawable/ic_happy__icon"
+                        android:clickable="false"
+                        android:focusable="false"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
-                        android:layout_marginRight="12dp"
-                        android:paddingLeft="4dp"
                         android:paddingTop="2dp"
                         android:text="Happy"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                        android:textColor="@android:color/white" />
+                        android:textColor="@android:color/white"
+                        android:clickable="false"
+                        android:focusable="false"/>
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:id="@+id/action_okay">
 
                     <ImageButton
                         android:layout_width="36dp"
                         android:layout_height="36dp"
-                        android:layout_marginRight="24dp"
                         android:background="@null"
                         android:scaleType="fitCenter"
-                        app:srcCompat="@drawable/ic_okay_icon" />
+                        app:srcCompat="@drawable/ic_okay_icon"
+                        android:clickable="false"
+                        android:focusable="false" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="4dp"
                         android:paddingTop="2dp"
                         android:text="Okay"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                        android:textColor="@android:color/white" />
+                        android:textColor="@android:color/white"
+                        android:clickable="false"
+                        android:focusable="false"/>
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:id="@+id/action_sick"
+                    android:clickable="true"
+                    android:focusable="true">
 
                     <ImageButton
                         android:layout_width="36dp"
                         android:layout_height="36dp"
-                        android:layout_marginRight="24dp"
                         android:background="@null"
                         android:scaleType="fitCenter"
-                        app:srcCompat="@drawable/ic_sick_smiley" />
+                        app:srcCompat="@drawable/ic_sick_smiley"
+                        android:clickable="false"
+                        android:focusable="false" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
-                        android:layout_marginRight="12dp"
-                        android:paddingLeft="2dp"
                         android:paddingTop="2dp"
                         android:text="Sick"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                        android:textColor="@android:color/white" />
+                        android:textColor="@android:color/white"
+                        android:clickable="false"
+                        android:focusable="false" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:id="@+id/action_sad"
+                    android:clickable="true"
+                    android:focusable="true">
 
                     <ImageButton
                         android:layout_width="36dp"
                         android:layout_height="36dp"
-                        android:layout_marginRight="12dp"
                         android:background="@null"
                         android:scaleType="fitCenter"
-                        app:srcCompat="@drawable/ic_crying_smiley" />
+                        app:srcCompat="@drawable/ic_crying_smiley"
+                        android:clickable="false"
+                        android:focusable="false" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="8dp"
                         android:paddingTop="2dp"
                         android:text="Sad"
                         android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                        android:textColor="@android:color/white" />
+                        android:textColor="@android:color/white"
+                        android:clickable="false"
+                        android:focusable="false" />
                 </LinearLayout>
 
 
@@ -160,7 +185,6 @@
         </LinearLayout>
 
     </android.support.v7.widget.Toolbar>
-
 
     <GridView
         android:id="@+id/grid"

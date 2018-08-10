@@ -1,26 +1,36 @@
 package ng.apmis.audreymumplus.ui.Appointments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.text.format.DateFormat;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import ng.apmis.audreymumplus.R;
 
 public class AppointmentAdapter extends BaseAdapter {
-    List<Appointment> mAppointmentModels;
-    Context mCon;
-    public AppointmentAdapter(Context context){
+    private List<Appointment> mAppointmentModels;
+    private Context mCon;
+    private OptionPopupListener optionPopupListener;
+
+    AppointmentAdapter(Context context, OptionPopupListener optionPopupListener){
         mCon = context;
         mAppointmentModels = new ArrayList<>();
+        this.optionPopupListener = optionPopupListener;
     }
 
-    public void setAppointmentModels(List<Appointment> appointmentModels) {
+    void setAppointmentModels(List<Appointment> appointmentModels) {
         if (appointmentModels != null) {
             mAppointmentModels = new ArrayList<>();
         }
@@ -45,33 +55,44 @@ public class AppointmentAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        // inflate the layout for each list row
+
         if (convertView == null) {
             convertView = LayoutInflater.from(mCon).
                     inflate(R.layout.my_appointments, parent, false);
         }
 
-        // get current item to be displayed
         Appointment appointmentModel = (Appointment) getItem(position);
 
-        //sets the text for item name and item description from the current item object
-     //   textViewItemDescription.setText(appointmentModel.getT);
+        ImageView optionImage = convertView.findViewById(R.id.popup_option);
+        optionImage.setOnClickListener((view -> {
+            optionPopupListener.onPopupOptionPressed(view, appointmentModel);
+        }));
 
         TextView appointmentText = convertView.findViewById(R.id.appointment_text);
-
         appointmentText.setText(appointmentModel.getTitle());
 
+        String day          = (String) DateFormat.format("dd", appointmentModel.getAppointmentTime()); // 20
+        String monthString  = (String) DateFormat.format("MMM", appointmentModel.getAppointmentTime()); // Jun
+        String dayOfTheWeek = (String) DateFormat.format("EEEE", appointmentModel.getAppointmentTime());
+
+        Date dt = new Date(appointmentModel.getAppointmentTime());
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa");
+        String time = sdf.format(dt);
+
         TextView appointmentTime = convertView.findViewById(R.id.time1);
-        appointmentTime.setText(appointmentModel.getStartTime());
+        appointmentTime.setText(time);
 
         TextView appointmentDate = convertView.findViewById(R.id.date1);
-        appointmentDate.setText(appointmentModel.getDateMonth());
+        appointmentDate.setText(day  + " " + monthString);
 
         TextView appointmentDay = convertView.findViewById(R.id.day1);
-        appointmentDay.setText(appointmentModel.getDayOfWeek());
+        appointmentDay.setText(dayOfTheWeek);
 
-
-        // returns the view for the current row
         return convertView;
     }
+
+    interface OptionPopupListener {
+        void onPopupOptionPressed(View view, Appointment appointment);
+    }
+
 }

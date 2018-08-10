@@ -20,6 +20,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
+import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.ui.Journal.JournalFactory;
 import ng.apmis.audreymumplus.ui.Journal.JournalModel;
 import ng.apmis.audreymumplus.ui.Journal.JournalViewModel;
@@ -111,6 +112,5 @@ public class MyGalleryFragment extends android.support.v4.app.Fragment {
 
         return rootView;
     }
-
 
 }

@@ -103,7 +103,6 @@ public class PregnancyWeeklyProgressFragment extends Fragment{
         });
 
 
-
         getAudreyButton.setOnClickListener(view -> {
             getActivity().getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, new GetAudreyFragment())

@@ -1,18 +1,18 @@
 package ng.apmis.audreymumplus.ui.Appointments;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.CalendarContract;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,9 +28,10 @@ import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
+import ng.apmis.audreymumplus.utils.AlarmBroadcast;
+import ng.apmis.audreymumplus.utils.AlarmMangerSingleton;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 
-import static android.app.Activity.RESULT_OK;
 import static java.lang.Integer.parseInt;
 
 /**
@@ -55,15 +56,15 @@ public class AddAppointmentFragment extends Fragment {
     Button saveAppointment;
 
     @BindView(R.id.appointment_time)
-    TextInputEditText appointmentTime;
+    TextInputEditText appointmentTimeEdittext;
 
 
     DialogFragment dialogfragment;
 
     Appointment thisAppointment;
 
+    Calendar appointmentTime;
 
-    int mYear, mMonth, mDate = 0;
 
     @SuppressLint("ClickableViewAccessibility")
     @Nullable
@@ -71,21 +72,22 @@ public class AddAppointmentFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.new_appointment, container, false);
         ButterKnife.bind(this, rootView);
+        appointmentTime = Calendar.getInstance();
 
         calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
-            mYear = year;
-            mMonth = month;
-            mDate = dayOfMonth;
+            appointmentTime.set(Calendar.YEAR, year);
+            appointmentTime.set(Calendar.MONTH, month);
+            appointmentTime.set(Calendar.DAY_OF_MONTH, dayOfMonth);
             Toast.makeText(getActivity(), "" + year + " " + month + " " + dayOfMonth, Toast.LENGTH_SHORT).show();
         });
 
         saveAppointment.setOnClickListener((view) -> {
             if (checkFields()) {
-                insertCalendarEvent();
+                insertAppointment();
             }
         });
 
-        appointmentTime.setOnTouchListener((view, motionEvent) -> {
+        appointmentTimeEdittext.setOnTouchListener((view, motionEvent) -> {
             if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                 dialogfragment = new DialogTime();
                 dialogfragment.show(getActivity().getFragmentManager(), "Select Time");
@@ -94,12 +96,11 @@ public class AddAppointmentFragment extends Fragment {
             return false;
         });
 
-
         return rootView;
     }
 
     boolean checkFields () {
-        if (mYear == 0 || mMonth == 0 || mDate == 0) {
+        if (appointmentTime.get(Calendar.MONTH) <= 0) {
             Toast.makeText(getActivity(), "Select date from calendar", Toast.LENGTH_SHORT).show();
             return false;
         }
@@ -111,8 +112,8 @@ public class AddAppointmentFragment extends Fragment {
             appointmentDetails.setError("required");
             return false;
         }
-        if (appointmentTime.getText().toString().equals("")) {
-            appointmentTime.setError("Select time");
+        if (appointmentTimeEdittext.getText().toString().equals("")) {
+            appointmentTimeEdittext.setError("Select time");
             return false;
         }
 
@@ -120,22 +121,32 @@ public class AddAppointmentFragment extends Fragment {
         return true;
     }
 
-    public void insertCalendarEvent () {
-        String time[] = TextUtils.split(appointmentTime.getText().toString(), ":");
-        Calendar beginTime = Calendar.getInstance();
-        beginTime.set(mYear, mMonth, mDate, parseInt(time[0]), parseInt(time[1]));
-        Calendar endTime = Calendar.getInstance();
-        endTime.set(mYear, mMonth, mDate, parseInt(time[0]) + 1, parseInt(time[1]));
-        thisAppointment = new Appointment(appointmentTitle.getText().toString(),"","","");
-        Intent intent = new Intent(Intent.ACTION_INSERT)
-                .setData(CalendarContract.Events.CONTENT_URI)
-                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, beginTime.getTimeInMillis())
-                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endTime.getTimeInMillis())
-                .putExtra(CalendarContract.Events.TITLE, appointmentTitle.getText().toString())
-                .putExtra(CalendarContract.Events.DESCRIPTION, appointmentDetails.getText().toString())
-                .putExtra(CalendarContract.Events.EVENT_LOCATION, locationAddress.getText().toString())
-                .putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_BUSY);
-        startActivityForResult(intent, 1000);
+    public void insertAppointment() {
+        String time[] = TextUtils.split(appointmentTimeEdittext.getText().toString(), ":");
+        appointmentTime.set(Calendar.HOUR_OF_DAY, parseInt(time[0]));
+        appointmentTime.set(Calendar.MINUTE, parseInt(time[1]));
+
+        thisAppointment = new Appointment(appointmentTitle.getText().toString(),locationAddress.getText().toString(),appointmentDetails.getText().toString(),appointmentTime.getTimeInMillis());
+
+        AudreyMumplus.getInstance().diskIO().execute(() -> {
+            long _id = InjectorUtils.provideRepository(getActivity()).saveAppointment(thisAppointment);
+
+            Intent alarmIntent = new Intent(getActivity(), AlarmBroadcast.class);
+            alarmIntent.setAction("appointment");
+            alarmIntent.putExtra("appointment", _id);
+
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, alarmIntent, 0);
+
+            AlarmManager alarmManager =  new AlarmMangerSingleton(getActivity()).getInstance().getAlarmManager();
+            alarmManager.set(AlarmManager.RTC, appointmentTime.getTimeInMillis(), pendingIntent);
+            getActivity().runOnUiThread(() -> {
+                Toast.makeText(getActivity(), String.valueOf(_id), Toast.LENGTH_SHORT).show();
+            });
+
+            getActivity().getSupportFragmentManager().popBackStack("ADD_NEW", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        });
+
+
     }
 
     @Override
@@ -157,10 +168,10 @@ public class AddAppointmentFragment extends Fragment {
         @Override
         public void onTimeSet(android.widget.TimePicker timePicker, int i, int i1) {
             TextInputEditText et = getActivity().findViewById(R.id.appointment_time);
+            //TODO check if this 24 hour thing works
             String hour = i < 10 ? "0" + i : i+"";
             String minutes = i1 < 10 ? "0" + i1 : i1+"";
             et.setText(hour + ":" + minutes);
-
         }
 
         @Override
@@ -173,12 +184,4 @@ public class AddAppointmentFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1000 && resultCode == RESULT_OK) {
-            AudreyMumplus.getInstance().diskIO().execute(() -> InjectorUtils.provideRepository(getActivity()).saveAppointment(thisAppointment));
-            getActivity().getSupportFragmentManager().popBackStack("ADD_NEW", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        }
-    }
 }

@@ -10,10 +10,10 @@ import ng.apmis.audreymumplus.ui.Journal.MyJournalFragment;
 import ng.apmis.audreymumplus.ui.PregnancyDetails.pregnancyimagegallery.MyGalleryFragment;
 import ng.apmis.audreymumplus.ui.PregnancyDetails.pregnancyweeklyprogress.PregnancyWeeklyProgressFragment;
 
-public class CategoryAdapter extends FragmentPagerAdapter {
+public class PregnancyFragmentCategoryAdapter extends FragmentPagerAdapter {
 
     private Context context;
-    public CategoryAdapter( Context mcontext, FragmentManager fm) {
+    public PregnancyFragmentCategoryAdapter(Context mcontext, FragmentManager fm) {
         super(fm);
         context = mcontext;
     }
@@ -35,7 +35,7 @@ public class CategoryAdapter extends FragmentPagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         if(position == 0){
-            return context.getString(R.string.Mypregnancy);
+            return context.getString(R.string.weekly_progress);
         }else if(position == 1){
             return context.getString(R.string.Mygallery);
         }else {return context.getString(R.string.pregJournal);}

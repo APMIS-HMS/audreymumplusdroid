@@ -58,8 +58,8 @@ public class MumplusNetworkDataSource {
 
     private final MutableLiveData<List<JournalModel>> mDownloadedDailyJournal;
     private final MutableLiveData<Person> personName;
-    SharedPreferencesManager sharedPreferencesManager;
-    RequestQueue queue;
+    private SharedPreferencesManager sharedPreferencesManager;
+    private RequestQueue queue;
     private static final String BASE_URL = "https://audrey-mum.herokuapp.com/";
 
     private static final String WEEK_DAY_SYNC_TAG = "week-day";
@@ -89,67 +89,7 @@ public class MumplusNetworkDataSource {
         return sInstance;
     }
 
-    /**
-     * Starts an intent service to fetch the weather.
-     */
-    public void startDailyJournalSync() {
-       /* Intent intentToFetch = new Intent(mContext, SunshineSyncIntentService.class);
-        mContext.startService(intentToFetch);
-        Log.d(LOG_TAG, "Service created");*/
-    }
-
-    /**
-     * Schedules a repeating job service which fetches the weather.
-     */
-   /* public void scheduleDailyDayWeekUpdate() {
-        Driver driver = new GooglePlayDriver(mContext);
-        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(driver);
-
-        // Create the Job to periodically sync Sunshine
-        Job syncSunshineJob = dispatcher.newJobBuilder()
-                *//* The Service that will be used to sync Sunshine's data *//*
-                .setService(SunshineFirebaseJobService.class)
-                *//* Set the UNIQUE tag used to identify this Job *//*
-                .setTag(SUNSHINE_SYNC_TAG)
-                *//*
-                 * Network constraints on which this Job should run. We choose to run on any
-                 * network, but you can also choose to run only on un-metered networks or when the
-                 * device is charging. It might be a good idea to include a preference for this,
-                 * as some users may not want to download any data on their mobile plan. ($$$)
-                 *//*
-                .setConstraints(Constraint.ON_ANY_NETWORK)
-                *//*
-                 * setLifetime sets how long this job should persist. The options are to keep the
-                 * Job "forever" or to have it die the next time the device boots up.
-                 *//*
-                .setLifetime(Lifetime.FOREVER)
-                *//*
-                 * We want Sunshine's weather data to stay up to date, so we tell this Job to recur.
-                 *//*
-                .setRecurring(true)
-                *//*
-                 * We want the weather data to be synced every 3 to 4 hours. The first argument for
-                 * Trigger's static executionWindow method is the start of the time frame when the
-                 * sync should be performed. The second argument is the latest point in time at
-                 * which the data should be synced. Please note that this end time is not
-                 * guaranteed, but is more of a guideline for FirebaseJobDispatcher to go off of.
-                 *//*
-                .setTrigger(Trigger.executionWindow(
-                        SYNC_INTERVAL_SECONDS,
-                        SYNC_INTERVAL_SECONDS + SYNC_FLEXTIME_SECONDS))
-                *//*
-                 * If a Job with the tag with provided already exists, this new job will replace
-                 * the old one.
-                 *//*
-                .setReplaceCurrent(true)
-                *//* Once the Job is ready, call the builder's build method to return the Job *//*
-                .build();
-
-        // Schedule the Job with the dispatcher
-        dispatcher.schedule(syncSunshineJob);
-        Log.d(LOG_TAG, "Job scheduled");
-    }*/
-    public void fetchSinglePeople(String personId) {
+    public void fetchPeopleAndSaveToDb(String personId) {
         Log.d(LOG_TAG, "Fetch weather started");
         mExecutors.networkIO().execute(() -> {
 
@@ -171,9 +111,7 @@ public class MumplusNetworkDataSource {
                 personFromPeople.setWeek(Week.Week1.week);
 
                 AudreyMumplus.getInstance().diskIO().execute(() -> {
-                    //deleting all user data locally
-                    InjectorUtils.provideRepository(mContext).deletePerson();
-                    //insert new gotten user
+                    //update user
                     InjectorUtils.provideRepository(mContext).savePerson(personFromPeople);
                 });
 
@@ -241,7 +179,7 @@ public class MumplusNetworkDataSource {
 
     }
 
-    public void updateProfileGetAudrey(String currentPersonId, JSONObject changeFields, FragmentActivity context, boolean getAudrey) {
+    public void updateProfileGetAudrey(String currentPersonId, JSONObject changeFields, FragmentActivity context) {
         ProgressDialog pd = new ProgressDialog(context);
         pd.setTitle("Updating Profile");
         pd.setMessage("Please wait...");
@@ -264,8 +202,7 @@ public class MumplusNetworkDataSource {
                         }
                         Person updatedPerson = new Gson().fromJson(job.toString(), Person.class);
                         AudreyMumplus.getInstance().diskIO().execute(() -> {
-                                InjectorUtils.provideRepository(mContext).deletePerson();
-                                InjectorUtils.provideRepository(mContext).savePerson(updatedPerson);
+                                InjectorUtils.provideRepository(mContext).updatePerson(updatedPerson);
                         });
                         pd.dismiss();
                         Toast.makeText(mContext, "Update update successful", Toast.LENGTH_SHORT).show();
@@ -322,8 +259,7 @@ public class MumplusNetworkDataSource {
                         }
                         Person updatedPerson = new Gson().fromJson(job.toString(), Person.class);
                         AudreyMumplus.getInstance().diskIO().execute(() -> {
-                                InjectorUtils.provideRepository(mContext).deletePerson();
-                                InjectorUtils.provideRepository(mContext).savePerson(updatedPerson);
+                                InjectorUtils.provideRepository(mContext).updatePerson(updatedPerson);
                         });
                         pd.dismiss();
                         Toast.makeText(mContext, "Update update successful", Toast.LENGTH_SHORT).show();

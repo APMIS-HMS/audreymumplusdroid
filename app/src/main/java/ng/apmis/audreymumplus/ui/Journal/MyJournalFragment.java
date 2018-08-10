@@ -37,8 +37,6 @@ import ng.apmis.audreymumplus.utils.Week;
 public class MyJournalFragment extends Fragment {
 
     JournalViewModel journalViewModel;
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
     AppCompatActivity activity;
 
     @BindView(R.id.week_option_spinner)
@@ -99,14 +97,6 @@ public class MyJournalFragment extends Fragment {
         });
 
         listView.setEmptyView(rootView.findViewById(R.id.empty_view));
-
-        fab.setOnClickListener((view) -> {
-            activity.getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, new AddJournalFragment())
-                    .addToBackStack("ADD_NEW")
-                    .commit();
-        });
-
 
         return rootView;
     }

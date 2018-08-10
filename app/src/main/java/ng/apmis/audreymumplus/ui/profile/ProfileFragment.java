@@ -137,7 +137,7 @@ public class ProfileFragment extends Fragment {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                InjectorUtils.provideJournalNetworkDataSource(activity).updateProfileGetAudrey(updateBiodataPersonId, changeFields, getActivity(), false);
+                InjectorUtils.provideJournalNetworkDataSource(activity).updateProfileGetAudrey(updateBiodataPersonId, changeFields, getActivity());
                 setFocusableEditable(false);
             }
         });

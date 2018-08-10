@@ -7,6 +7,7 @@ import com.github.nkzawa.socketio.client.Socket;
 
 import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.data.AudreyRepository;
+import ng.apmis.audreymumplus.data.database.JournalDao;
 import ng.apmis.audreymumplus.data.database.JournalDatabase;
 import ng.apmis.audreymumplus.data.network.MumplusNetworkDataSource;
 import ng.apmis.audreymumplus.data.network.SocketSingleton;
@@ -50,4 +51,5 @@ public class InjectorUtils {
         AudreyRepository audreyRepository = provideRepository(context.getApplicationContext());
         return new ChatFactory(audreyRepository, forumName);
     }
+
 }

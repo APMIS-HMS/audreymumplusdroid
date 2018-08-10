@@ -17,7 +17,7 @@ import ng.apmis.audreymumplus.ui.Journal.JournalModel;
  * Created by Thadeus-APMIS on 5/15/2018.
  */
 @TypeConverters({JournalConverters.class})
-@Database(entities = {JournalModel.class, Person.class, Appointment.class, ChatForumModel.class, ChatContextModel.class}, version = 1, exportSchema = false)
+@Database(entities = {JournalModel.class, Person.class, Appointment.class, ChatForumModel.class, ChatContextModel.class}, version = 2, exportSchema = false)
 public abstract class JournalDatabase extends RoomDatabase {
     public abstract JournalDao dailyJournalDao();
 
@@ -32,8 +32,8 @@ public abstract class JournalDatabase extends RoomDatabase {
             synchronized (LOCK) {
                 if (sInstance == null) {
                     sInstance = Room.databaseBuilder(context.getApplicationContext(),
-                            JournalDatabase.class, JournalDatabase.DATABASE_NAME)/*
-                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)*/
+                            JournalDatabase.class, JournalDatabase.DATABASE_NAME)
+                            .addMigrations(MIGRATION_1_2)
                             .build();
                 }
             }
@@ -76,19 +76,19 @@ public abstract class JournalDatabase extends RoomDatabase {
         }
     };
 
+    /*
+    * Drop Initial table
+    * */
     static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
+// Remove the old table
+            database.execSQL("DROP TABLE appointments");
+
             // Create the new table
             database.execSQL(
-                    "CREATE TABLE new_person ('id' INTEGER PRIMARY KEY NOT NULL, firstName TEXT, lastName TEXT, email TEXT, personId TEXT, dateOfBirth TEXT, motherMaidenName TEXT, primaryContactPhoneNo TEXT, expectedDateOfDelivery TEXT, profileImage TEXT)");
-// Copy the data
-            database.execSQL(
-                    "INSERT INTO new_person (id, firstName, lastName, email, personId, dateOfBirth, motherMaidenName, primaryContactPhoneNo, expectedDateOfDelivery, profileImage) SELECT id, firstName, lastName, email, personId, dateOfBirth, motherMaidenName, primaryContactPhoneNo, expectedDateOfDelivery, profileImage FROM person");
-// Remove the old table
-            database.execSQL("DROP TABLE person");
-// Change the table name to the correct one
-            database.execSQL("ALTER TABLE new_person RENAME TO person");
+                    "CREATE TABLE appointments ('_id' INTEGER PRIMARY KEY NOT NULL, title TEXT, appointmentAddress TEXT, appointmentDetails TEXT, appointmentTime INTEGER NOT NULL)");
+
         }
     };
 

@@ -122,8 +122,8 @@ public class GetAudreyFragment extends Fragment {
             if (checkFields()) {
                 AudreyMumplus.getInstance().diskIO().execute(() -> {
                     InjectorUtils.provideRepository(getActivity()).getPerson().observe(this, person -> {
-                        MumplusNetworkDataSource dataSource = InjectorUtils.provideJournalNetworkDataSource(getActivity());
-                        dataSource.updateProfileGetAudrey(person.getPersonId(), registrationData, getActivity(), true);
+                        InjectorUtils.provideJournalNetworkDataSource(getActivity()).updateProfileGetAudrey(person.getPersonId(), registrationData, getActivity());
+                        InjectorUtils.provideRepository(getActivity()).getDayWeek(person);
                     });
                 });
             }

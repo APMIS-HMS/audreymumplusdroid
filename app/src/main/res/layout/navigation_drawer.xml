@@ -49,7 +49,6 @@
             app:menu="@menu/nav_items" />
 
 
-
     </RelativeLayout>
 
     <!-- Container for contents of drawer - use NavigationView to make configuration easier -->

@@ -14,65 +14,55 @@ import org.jetbrains.annotations.NotNull;
 @Entity(tableName = "appointments")
 public class Appointment {
 
-    long ID;
     @PrimaryKey(autoGenerate = true)
     public long _id;
-    String title;
-    String startTime, dateMonth, dayOfWeek;
+    private String title, appointmentAddress, appointmentDetails;
+    private long appointmentTime;
 
-    public Appointment(long _id, long ID, String title, String startTime, String dateMonth, String dayOfWeek) {
+    public Appointment(long _id, String title, String appointmentAddress, String appointmentDetails, long appointmentTime) {
         this._id = _id;
-        this.ID = ID;
         this.title = title;
-        this.startTime = startTime;
-        this.dateMonth = dateMonth;
-        this.dayOfWeek = dayOfWeek;
+        this.appointmentAddress = appointmentAddress;
+        this.appointmentDetails = appointmentDetails;
+        this.appointmentTime = appointmentTime;
     }
 
     @Ignore
-    public Appointment(String title, String startTime, String dateMonth, String dayOfWeek) {
+    public Appointment(String title, String appointmentAddress, String appointmentDetails, long appointmentTime) {
         this.title = title;
-        this.startTime = startTime;
-        this.dateMonth = dateMonth;
-        this.dayOfWeek = dayOfWeek;
-    }
-    @Ignore
-    public Appointment(long ID, String title, String startTime, String dateMonth, String dayOfWeek) {
-        this.ID = ID;
-        this.title = title;
-        this.startTime = startTime;
-        this.dateMonth = dateMonth;
-        this.dayOfWeek = dayOfWeek;
+        this.appointmentAddress = appointmentAddress;
+        this.appointmentDetails = appointmentDetails;
+        this.appointmentTime = appointmentTime;
     }
 
-    public long getID() {
-        return ID;
+    public long get_id() {
+        return _id;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public String getStartTime() {
-        return startTime;
+    public String getAppointmentAddress() {
+        return appointmentAddress;
     }
 
-    public String getDateMonth() {
-        return dateMonth;
+    public String getAppointmentDetails() {
+        return appointmentDetails;
     }
 
-    public String getDayOfWeek() {
-        return dayOfWeek;
+    public long getAppointmentTime() {
+        return appointmentTime;
     }
 
     @Override
     public String toString() {
         return "Appointment{" +
-                "ID=" + ID +
+                "_id=" + _id +
                 ", title='" + title + '\'' +
-                ", startTime='" + startTime + '\'' +
-                ", dateMonth='" + dateMonth + '\'' +
-                ", dayOfWeek='" + dayOfWeek + '\'' +
+                ", appointmentAddress='" + appointmentAddress + '\'' +
+                ", appointmentDetails='" + appointmentDetails + '\'' +
+                ", appointmentTimeEdittext=" + appointmentTime +
                 '}';
     }
 }

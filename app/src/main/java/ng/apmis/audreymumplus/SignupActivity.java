@@ -167,7 +167,7 @@ public class SignupActivity extends AppCompatActivity implements SignupFragmentB
 
                     sharedPreferencesManager.storeUserToken(token);
 
-                    InjectorUtils.provideJournalNetworkDataSource(this).fetchSinglePeople(user.getPersonId());
+                    InjectorUtils.provideJournalNetworkDataSource(this).fetchPeopleAndSaveToDb(user.getPersonId());
 
                     Log.v("sharedPRef", String.valueOf(sharedPreferencesManager.getUserToken()));
                 } catch (JSONException e) {

@@ -6,6 +6,11 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
 
+import ng.apmis.audreymumplus.AudreyMumplus;
+import ng.apmis.audreymumplus.data.AudreyRepository;
+import ng.apmis.audreymumplus.data.database.Person;
+import ng.apmis.audreymumplus.ui.Appointments.Appointment;
+
 /**
  * Created by Thadeus-APMIS on 8/8/2018.
  */
@@ -14,7 +19,20 @@ public class AlarmBroadcast extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.v("alarm rang", String.valueOf("Alarm rang"));
-        Toast.makeText(context.getApplicationContext(), String.valueOf(intent.getExtras().getString("appointment")), Toast.LENGTH_SHORT).show();
+
+        if (intent.getAction().equals("update-week")) {
+
+            AudreyMumplus.getInstance().diskIO().execute(() -> {
+                Person person = InjectorUtils.provideRepository(context).getStaticPerson();
+                InjectorUtils.provideRepository(context).getDayWeek(person);
+            });
+        }
+        if (intent.getAction().equals("appointment")) {
+            long appointment_id = intent.getExtras().getLong("appointment");
+            AudreyMumplus.getInstance().diskIO().execute(() -> {
+                Appointment appointment = InjectorUtils.provideRepository(context).getStaticAppointment(appointment_id);
+                 NotificationUtils.buildAppointmentNotification(context, appointment);
+            });
+        }
     }
 }

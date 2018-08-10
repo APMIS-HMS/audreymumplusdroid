@@ -1,5 +1,7 @@
 package ng.apmis.audreymumplus;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,10 +27,14 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Calendar;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
+import ng.apmis.audreymumplus.utils.AlarmBroadcast;
+import ng.apmis.audreymumplus.utils.AlarmMangerSingleton;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
 
@@ -143,13 +149,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                     sharedPreferencesManager.storeUserToken(token);
 
-                    InjectorUtils.provideJournalNetworkDataSource(this).fetchSinglePeople(user.getPersonId());
-
+                    InjectorUtils.provideJournalNetworkDataSource(this).fetchPeopleAndSaveToDb(user.getPersonId());
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
+
+                sharedPreferencesManager.setJustLoggedIn(true);
                 progressDialog.dismiss();
                 startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
                 finish();

@@ -9,7 +9,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,13 +31,14 @@ public class PregnancyFragment extends Fragment {
     TextView weekIndicator;
     @BindView(R.id.datedelivery)
     TextView deliveryDate;
+
     AppCompatActivity activity;
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.activity_pregnancy_details, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_pregnancy, container, false);
         ButterKnife.bind(this, rootView);
 
         ((DashboardActivity)getActivity()).getPersonLive().observe(this, person -> {
@@ -65,7 +65,7 @@ public class PregnancyFragment extends Fragment {
         });
 
         ViewPager viewPager = rootView.findViewById(R.id.view_pager);
-        CategoryAdapter adapter = new CategoryAdapter(getActivity(), getChildFragmentManager());
+        PregnancyFragmentCategoryAdapter adapter = new PregnancyFragmentCategoryAdapter(getActivity(), getChildFragmentManager());
 
         TabLayout tabLayout = rootView.findViewById(R.id.tabview);
         tabLayout.setupWithViewPager(viewPager);
@@ -93,5 +93,6 @@ public class PregnancyFragment extends Fragment {
         super.onAttach(context);
         activity = (AppCompatActivity) context;
     }
+
 }
 

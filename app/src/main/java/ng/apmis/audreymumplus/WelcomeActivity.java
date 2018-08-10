@@ -43,6 +43,7 @@ public class WelcomeActivity extends AppCompatActivity {
                     startActivity(new Intent(this, LoginActivity.class));
                     finish();
                 } else {
+                    sharedPreferencesManager.setJustLoggedIn(false);
                     startActivity(new Intent(this, DashboardActivity.class));
                     finish();
                 }
