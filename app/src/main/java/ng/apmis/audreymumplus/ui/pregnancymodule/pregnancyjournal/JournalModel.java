@@ -1,6 +1,5 @@
-package ng.apmis.audreymumplus.ui.Journal;
+package ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal;
 
-import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;

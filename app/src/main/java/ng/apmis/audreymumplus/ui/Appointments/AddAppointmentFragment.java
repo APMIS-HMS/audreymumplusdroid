@@ -130,7 +130,7 @@ public class AddAppointmentFragment extends Fragment {
         appointmentTime.set(Calendar.HOUR_OF_DAY, parseInt(time[0]));
         appointmentTime.set(Calendar.MINUTE, parseInt(time[1]));
 
-        thisAppointment = new Appointment(appointmentTitle.getText().toString(),locationAddress.getText().toString(),appointmentDetails.getText().toString(),appointmentTime.getTimeInMillis());
+        thisAppointment = new Appointment(appointmentTitle.getText().toString(),locationAddress.getText().toString(),appointmentDetails.getText().toString(),appointmentTime.getTimeInMillis(), 0);
 
         AudreyMumplus.getInstance().diskIO().execute(() -> {
 
@@ -140,13 +140,10 @@ public class AddAppointmentFragment extends Fragment {
             alarmIntent.setAction("appointment");
             alarmIntent.putExtra("appointment", _id);
 
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), (int) _id, alarmIntent, PendingIntent.FLAG_ONE_SHOT);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), (int) _id, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
             AlarmManager alarmManager =  new AlarmMangerSingleton(getActivity()).getInstance().getAlarmManager();
             alarmManager.set(AlarmManager.RTC_WAKEUP, appointmentTime.getTimeInMillis(), pendingIntent);
-            getActivity().runOnUiThread(() -> {
-                Toast.makeText(getActivity(), String.valueOf(_id), Toast.LENGTH_SHORT).show();
-            });
 
             getActivity().getSupportFragmentManager().popBackStack("ADD_NEW", FragmentManager.POP_BACK_STACK_INCLUSIVE);
         });

@@ -101,6 +101,8 @@
     <string name="notification_body"><![CDATA[Details: %s<br/> Location: %s]]></string>
     <string name="delete_reminder">Delete</string>
     <string name="appointment_details">Details</string>
+    <string name="mute_alarm">Mute</string>
+    <string name="unmute_alarm">Unmute</string>
 
     <string-array name="select">
         <item>@string/title</item>

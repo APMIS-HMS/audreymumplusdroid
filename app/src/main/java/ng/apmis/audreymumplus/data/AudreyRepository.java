@@ -1,11 +1,6 @@
 package ng.apmis.audreymumplus.data;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.arch.lifecycle.LiveData;
-import android.content.Context;
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -13,7 +8,6 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -24,10 +18,7 @@ import ng.apmis.audreymumplus.data.network.MumplusNetworkDataSource;
 import ng.apmis.audreymumplus.ui.Appointments.Appointment;
 import ng.apmis.audreymumplus.ui.Chat.ChatContextModel;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumModel;
-import ng.apmis.audreymumplus.ui.Journal.JournalModel;
-import ng.apmis.audreymumplus.utils.AlarmBroadcast;
-import ng.apmis.audreymumplus.utils.AlarmMangerSingleton;
-import ng.apmis.audreymumplus.utils.InjectorUtils;
+import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.JournalModel;
 import ng.apmis.audreymumplus.utils.Week;
 
 /**
@@ -65,11 +56,6 @@ public class AudreyRepository {
 
     }
 
-    public LiveData<JournalModel> getWeatherByDate(Date date) {
-        //initializeData();
-        return mJournalDao.getJournalByDate(date);
-    }
-
     public LiveData<List<JournalModel>> getAllJournals () {
         return mJournalDao.getAllJournalEntries();
     }
@@ -104,6 +90,10 @@ public class AudreyRepository {
 
     public long saveAppointment (Appointment appointment) {
         return mJournalDao.insertAppointment(appointment);
+    }
+
+    public void updateAppointment (Appointment appointment) {
+        mJournalDao.updateAppointment(appointment);
     }
 
     public LiveData<List<Appointment>> getAllAppointments () {
@@ -169,7 +159,7 @@ public class AudreyRepository {
 
             AudreyMumplus.getInstance().diskIO().execute(() -> {
                     updatePersonWithPregWeekDay(person);
-                Log.v("week - day update", person.toString());
+                Log.v("FIFTEEN MINUTES", person.toString());
             });
 
         }

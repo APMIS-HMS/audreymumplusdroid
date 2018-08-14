@@ -4,12 +4,10 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -33,7 +31,6 @@ import com.bumptech.glide.Glide;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.util.Calendar;
-import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,19 +39,17 @@ import ng.apmis.audreymumplus.LoginActivity;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.data.network.ChatSocketService;
-import ng.apmis.audreymumplus.data.network.SocketSingleton;
 import ng.apmis.audreymumplus.ui.AboutFragment;
 import ng.apmis.audreymumplus.ui.Appointments.AppointmentFragment;
 import ng.apmis.audreymumplus.ui.Chat.ChatContextFragment;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumFragment;
 import ng.apmis.audreymumplus.ui.Faq.FaqFragment;
 import ng.apmis.audreymumplus.ui.HelpFragment;
-import ng.apmis.audreymumplus.ui.Journal.AddJournalFragment;
-import ng.apmis.audreymumplus.ui.PregnancyDetails.PregnancyFragment;
+import ng.apmis.audreymumplus.ui.pregnancymodule.PregnancyFragment;
 import ng.apmis.audreymumplus.ui.SettingFragment;
 import ng.apmis.audreymumplus.ui.getaudrey.GetAudreyFragment;
 import ng.apmis.audreymumplus.ui.Home.HomeFragment;
-import ng.apmis.audreymumplus.ui.Journal.MyJournalFragment;
+import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.MyJournalFragment;
 import ng.apmis.audreymumplus.ui.profile.ProfileFragment;
 import ng.apmis.audreymumplus.utils.AlarmBroadcast;
 import ng.apmis.audreymumplus.utils.AlarmMangerSingleton;
@@ -137,12 +132,14 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                     calendar.set(Calendar.MINUTE, 59);
                     calendar.set(Calendar.SECOND, 59);
 
-                    PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
-
                     AlarmManager alarmManager =  new AlarmMangerSingleton(this).getInstance().getAlarmManager();
-                    alarmManager.setRepeating(AlarmManager.RTC, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
 
-                    Log.v("Just logged in", "true");
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                    alarmManager.cancel(pendingIntent);
+
+                    alarmManager.setInexactRepeating(AlarmManager.RTC, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+
                     sharedPreferencesManager.setJustLoggedIn(false);
 
 /*Set repeat alarm for week update end*/

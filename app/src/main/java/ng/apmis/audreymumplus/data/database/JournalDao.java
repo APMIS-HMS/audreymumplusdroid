@@ -14,7 +14,7 @@ import java.util.List;
 import ng.apmis.audreymumplus.ui.Appointments.Appointment;
 import ng.apmis.audreymumplus.ui.Chat.ChatContextModel;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumModel;
-import ng.apmis.audreymumplus.ui.Journal.JournalModel;
+import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.JournalModel;
 
 /**
  * Created by Thadeus-APMIS on 5/15/2018.
@@ -45,6 +45,9 @@ public interface JournalDao {
 
     @Delete()
     void deleteAppointment(Appointment appointment);
+
+    @Update()
+    void updateAppointment(Appointment appointment);
 
     @Query("SELECT * FROM journal WHERE date = :date")
     LiveData<JournalModel> getJournalByDate(Date date);

@@ -1,4 +1,4 @@
-package ng.apmis.audreymumplus.ui.PregnancyDetails.pregnancyweeklyprogress;
+package ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyweeklyprogress;
 
 import android.os.Parcel;
 import android.os.Parcelable;

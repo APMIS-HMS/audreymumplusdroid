@@ -17,15 +17,31 @@
             android:layout_height="wrap_content"
             android:padding="16dp">
 
-
-            <TextView
-                android:id="@+id/appointment_text"
-                android:textSize="20sp"
+            <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_weight="3"
-                android:maxWidth="200dp"
-                android:layout_height="match_parent"
-                android:text="Antenatal sdkfjalsjk dflajs ldjflajsd lfjasldjfals jdfljas ldfj" />
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/appointment_text"
+                    android:textSize="20sp"
+                    android:layout_width="match_parent"
+                    android:maxWidth="200dp"
+                    android:layout_height="match_parent"
+                    android:text="Antenatal" />
+
+                <ImageView
+                    android:id="@+id/mute_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@android:drawable/stat_notify_call_mute"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"/>
+
+            </RelativeLayout>
+
+
+
 
             <RelativeLayout
                 android:layout_width="0dp"

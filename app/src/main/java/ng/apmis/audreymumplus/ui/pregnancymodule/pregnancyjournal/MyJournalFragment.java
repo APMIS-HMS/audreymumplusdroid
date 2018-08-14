@@ -1,10 +1,9 @@
-package ng.apmis.audreymumplus.ui.Journal;
+package ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal;
 
 import android.annotation.SuppressLint;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;

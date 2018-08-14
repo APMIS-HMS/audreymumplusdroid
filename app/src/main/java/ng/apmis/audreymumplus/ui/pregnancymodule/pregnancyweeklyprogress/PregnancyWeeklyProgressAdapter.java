@@ -1,6 +1,5 @@
-package ng.apmis.audreymumplus.ui.PregnancyDetails.pregnancyweeklyprogress;
+package ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyweeklyprogress;
 
-import android.app.DialogFragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -10,12 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import ng.apmis.audreymumplus.R;
-import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 
 /**
  * Created by Thadeus-APMIS on 6/27/2018.

@@ -88,6 +88,9 @@ public class AppointmentAdapter extends BaseAdapter {
         TextView appointmentDay = convertView.findViewById(R.id.day1);
         appointmentDay.setText(dayOfTheWeek);
 
+        ImageView muteImage = convertView.findViewById(R.id.mute_image);
+        muteImage.setImageDrawable(appointmentModel.getMuteAlarm() == 0 ? mCon.getResources().getDrawable(R.drawable.ic_unmute_24dp) : mCon.getResources().getDrawable(R.drawable.ic_mute_black_24dp));
+
         return convertView;
     }
 

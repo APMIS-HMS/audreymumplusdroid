@@ -1,4 +1,4 @@
-package ng.apmis.audreymumplus.ui.PregnancyDetails;
+package ng.apmis.audreymumplus.ui.pregnancymodule;
 
 import android.content.Context;
 import android.os.Bundle;

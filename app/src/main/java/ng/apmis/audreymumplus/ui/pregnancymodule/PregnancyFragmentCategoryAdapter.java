@@ -1,4 +1,4 @@
-package ng.apmis.audreymumplus.ui.PregnancyDetails;
+package ng.apmis.audreymumplus.ui.pregnancymodule;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
@@ -6,9 +6,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import ng.apmis.audreymumplus.R;
-import ng.apmis.audreymumplus.ui.Journal.MyJournalFragment;
-import ng.apmis.audreymumplus.ui.PregnancyDetails.pregnancyimagegallery.MyGalleryFragment;
-import ng.apmis.audreymumplus.ui.PregnancyDetails.pregnancyweeklyprogress.PregnancyWeeklyProgressFragment;
+import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.MyJournalFragment;
+import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyimagegallery.MyGalleryFragment;
+import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyweeklyprogress.PregnancyWeeklyProgressFragment;
 
 public class PregnancyFragmentCategoryAdapter extends FragmentPagerAdapter {
 

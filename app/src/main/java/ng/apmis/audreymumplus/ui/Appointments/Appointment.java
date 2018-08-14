@@ -15,24 +15,27 @@ import org.jetbrains.annotations.NotNull;
 public class Appointment {
 
     @PrimaryKey(autoGenerate = true)
-    public long _id;
+    private long _id;
     private String title, appointmentAddress, appointmentDetails;
     private long appointmentTime;
+    private int muteAlarm;
 
-    public Appointment(long _id, String title, String appointmentAddress, String appointmentDetails, long appointmentTime) {
+    public Appointment(long _id, String title, String appointmentAddress, String appointmentDetails, long appointmentTime, int muteAlarm) {
         this._id = _id;
         this.title = title;
         this.appointmentAddress = appointmentAddress;
         this.appointmentDetails = appointmentDetails;
         this.appointmentTime = appointmentTime;
+        this.muteAlarm = muteAlarm;
     }
 
     @Ignore
-    public Appointment(String title, String appointmentAddress, String appointmentDetails, long appointmentTime) {
+    public Appointment(String title, String appointmentAddress, String appointmentDetails, long appointmentTime, int muteAlarm) {
         this.title = title;
         this.appointmentAddress = appointmentAddress;
         this.appointmentDetails = appointmentDetails;
         this.appointmentTime = appointmentTime;
+        this.muteAlarm = muteAlarm;
     }
 
     public long get_id() {
@@ -55,6 +58,14 @@ public class Appointment {
         return appointmentTime;
     }
 
+    public int getMuteAlarm() {
+        return muteAlarm;
+    }
+
+    public void setMuteAlarm(int muteAlarm) {
+        this.muteAlarm = muteAlarm;
+    }
+
     @Override
     public String toString() {
         return "Appointment{" +
@@ -62,7 +73,8 @@ public class Appointment {
                 ", title='" + title + '\'' +
                 ", appointmentAddress='" + appointmentAddress + '\'' +
                 ", appointmentDetails='" + appointmentDetails + '\'' +
-                ", appointmentTimeEdittext=" + appointmentTime +
+                ", appointmentTime=" + appointmentTime +
+                ", muteAlarm=" + muteAlarm +
                 '}';
     }
 }

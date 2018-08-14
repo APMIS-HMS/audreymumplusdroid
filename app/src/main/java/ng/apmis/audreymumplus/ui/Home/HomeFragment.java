@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,7 +19,7 @@ import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.ui.Dashboard.ModuleAdapter;
 import ng.apmis.audreymumplus.ui.Dashboard.ModuleModel;
-import ng.apmis.audreymumplus.ui.Journal.AddJournalFragment;
+import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.AddJournalFragment;
 
 public class HomeFragment extends android.support.v4.app.Fragment implements View.OnClickListener {
 

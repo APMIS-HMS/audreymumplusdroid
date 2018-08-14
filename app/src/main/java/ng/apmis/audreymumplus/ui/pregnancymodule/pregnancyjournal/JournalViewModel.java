@@ -1,4 +1,4 @@
-package ng.apmis.audreymumplus.ui.Journal;
+package ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;

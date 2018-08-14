@@ -1,4 +1,4 @@
-package ng.apmis.audreymumplus.ui.PregnancyDetails.pregnancyweeklyprogress;
+package ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyweeklyprogress;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,17 +26,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.ui.getaudrey.GetAudreyFragment;
-import ng.apmis.audreymumplus.utils.Week;
 
 public class PregnancyWeeklyProgressFragment extends Fragment{
 
@@ -122,7 +117,7 @@ public class PregnancyWeeklyProgressFragment extends Fragment{
                         JSONArray remoteWeeksArray = response.getJSONArray("data");
 //                        Log.v("remoteweekarray", remoteWeeksArray.toString());
 
-                        JSONObject currentWeek = new JSONObject(remoteWeeksArray.get(checkWeekAndSelectWeekProgress()).toString());
+                        JSONObject currentWeek = new JSONObject(remoteWeeksArray.get(0).toString());
                         if (currentWeek.getJSONArray("data").length() < 1) {
                             currentWeek = new JSONObject(remoteWeeksArray.get(0).toString());
                         }

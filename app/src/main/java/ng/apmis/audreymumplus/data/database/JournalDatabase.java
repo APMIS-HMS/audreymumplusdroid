@@ -11,7 +11,7 @@ import android.content.Context;
 import ng.apmis.audreymumplus.ui.Appointments.Appointment;
 import ng.apmis.audreymumplus.ui.Chat.ChatContextModel;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumModel;
-import ng.apmis.audreymumplus.ui.Journal.JournalModel;
+import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.JournalModel;
 
 /**
  * Created by Thadeus-APMIS on 5/15/2018.
@@ -76,9 +76,7 @@ public abstract class JournalDatabase extends RoomDatabase {
         }
     };
 
-    /*
-    * Drop Initial table
-    * */
+
     static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
@@ -87,11 +85,11 @@ public abstract class JournalDatabase extends RoomDatabase {
 
             // Create the new table
             database.execSQL(
-                    "CREATE TABLE appointments ('_id' INTEGER PRIMARY KEY NOT NULL, title TEXT, appointmentAddress TEXT, appointmentDetails TEXT, appointmentTime INTEGER NOT NULL)");
+                    "CREATE TABLE appointments ('_id' INTEGER PRIMARY KEY NOT NULL, title TEXT, appointmentAddress TEXT, appointmentDetails TEXT, appointmentTime INTEGER NOT NULL, muteAlarm INTEGER NOT NULL default 1)");
 
         }
     };
-
+/*
     //DATA migration code for changing column fields
     static final Migration MIGRATION_2_3 = new Migration(2, 3) {
         @Override
@@ -121,6 +119,6 @@ public abstract class JournalDatabase extends RoomDatabase {
 // Change the table name to the correct one
             database.execSQL("ALTER TABLE new_journal RENAME TO journal");
         }
-    };
+    };*/
 
 }

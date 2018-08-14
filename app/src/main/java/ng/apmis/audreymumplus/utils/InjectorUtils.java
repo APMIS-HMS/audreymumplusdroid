@@ -1,19 +1,17 @@
 package ng.apmis.audreymumplus.utils;
 
 import android.content.Context;
-import android.support.v4.app.FragmentActivity;
 
 import com.github.nkzawa.socketio.client.Socket;
 
 import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.data.AudreyRepository;
-import ng.apmis.audreymumplus.data.database.JournalDao;
 import ng.apmis.audreymumplus.data.database.JournalDatabase;
 import ng.apmis.audreymumplus.data.network.MumplusNetworkDataSource;
 import ng.apmis.audreymumplus.data.network.SocketSingleton;
 import ng.apmis.audreymumplus.ui.Chat.ChatFactory;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ForumFactory;
-import ng.apmis.audreymumplus.ui.Journal.JournalFactory;
+import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.JournalFactory;
 
 /**
  * Created by Thadeus-APMIS on 5/15/2018.

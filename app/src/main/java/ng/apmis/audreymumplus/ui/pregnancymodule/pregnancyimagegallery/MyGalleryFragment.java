@@ -1,18 +1,15 @@
-package ng.apmis.audreymumplus.ui.PregnancyDetails.pregnancyimagegallery;
+package ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyimagegallery;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +17,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
-import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
-import ng.apmis.audreymumplus.ui.Journal.JournalFactory;
-import ng.apmis.audreymumplus.ui.Journal.JournalModel;
-import ng.apmis.audreymumplus.ui.Journal.JournalViewModel;
+import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.JournalFactory;
+import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.JournalModel;
+import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.JournalViewModel;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 
 public class MyGalleryFragment extends android.support.v4.app.Fragment {
