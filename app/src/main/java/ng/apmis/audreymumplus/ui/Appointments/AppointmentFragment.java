@@ -1,6 +1,7 @@
 package ng.apmis.audreymumplus.ui.Appointments;
 
 import android.Manifest;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -30,6 +31,8 @@ import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
+import ng.apmis.audreymumplus.utils.AlarmBroadcast;
+import ng.apmis.audreymumplus.utils.AlarmMangerSingleton;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 
 public class AppointmentFragment extends Fragment implements AppointmentAdapter.OptionPopupListener, PopupMenu.OnMenuItemClickListener{
@@ -106,6 +109,9 @@ public class AppointmentFragment extends Fragment implements AppointmentAdapter.
     @Override
     public boolean onMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
+            case R.id.mute:
+
+                return true;
             case R.id.details:
                 Toast.makeText(getActivity(), "Details", Toast.LENGTH_SHORT).show();
                 return true;
@@ -119,6 +125,18 @@ public class AppointmentFragment extends Fragment implements AppointmentAdapter.
 
     void deleteAppointment (Appointment appointment) {
         AudreyMumplus.getInstance().diskIO().execute(()-> {
+
+           //Build alarm intent same as was created
+            Intent alarmIntent = new Intent(getActivity(), AlarmBroadcast.class);
+            alarmIntent.setAction("appointment");
+            alarmIntent.putExtra("appointment", appointment.get_id());
+
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), (int) appointment.get_id(), alarmIntent, PendingIntent.FLAG_ONE_SHOT);
+
+            //Cancel pending intent
+            new AlarmMangerSingleton(getActivity()).getInstance().getAlarmManager().cancel(pendingIntent);
+
+            //Delete appointment from the list
             InjectorUtils.provideRepository(getActivity()).deleteAppointment(appointment);
         });
     }

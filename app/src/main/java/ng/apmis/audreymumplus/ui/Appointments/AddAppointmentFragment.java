@@ -121,6 +121,10 @@ public class AddAppointmentFragment extends Fragment {
         return true;
     }
 
+
+    /**
+    * Saves a scheduled appointment to database
+    */
     public void insertAppointment() {
         String time[] = TextUtils.split(appointmentTimeEdittext.getText().toString(), ":");
         appointmentTime.set(Calendar.HOUR_OF_DAY, parseInt(time[0]));
@@ -129,16 +133,17 @@ public class AddAppointmentFragment extends Fragment {
         thisAppointment = new Appointment(appointmentTitle.getText().toString(),locationAddress.getText().toString(),appointmentDetails.getText().toString(),appointmentTime.getTimeInMillis());
 
         AudreyMumplus.getInstance().diskIO().execute(() -> {
+
             long _id = InjectorUtils.provideRepository(getActivity()).saveAppointment(thisAppointment);
 
             Intent alarmIntent = new Intent(getActivity(), AlarmBroadcast.class);
             alarmIntent.setAction("appointment");
             alarmIntent.putExtra("appointment", _id);
 
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 0, alarmIntent, 0);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), (int) _id, alarmIntent, PendingIntent.FLAG_ONE_SHOT);
 
             AlarmManager alarmManager =  new AlarmMangerSingleton(getActivity()).getInstance().getAlarmManager();
-            alarmManager.set(AlarmManager.RTC, appointmentTime.getTimeInMillis(), pendingIntent);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, appointmentTime.getTimeInMillis(), pendingIntent);
             getActivity().runOnUiThread(() -> {
                 Toast.makeText(getActivity(), String.valueOf(_id), Toast.LENGTH_SHORT).show();
             });
