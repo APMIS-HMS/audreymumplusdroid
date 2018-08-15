@@ -1,8 +1,10 @@
-package ng.apmis.audreymumplus.ui;
+package ng.apmis.audreymumplus.ui.settings;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +14,7 @@ import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 
 
-public class SettingFragment extends PreferenceFragment {
+public class SettingPreferences extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener{
 
     public static final String KEY_PASSWORD = "password";
     public static final  String DELETE_KEY = "delete";
@@ -25,6 +27,10 @@ public class SettingFragment extends PreferenceFragment {
         getPreferenceManager().setSharedPreferencesMode(Context.MODE_PRIVATE);
 
         addPreferencesFromResource(R.xml.settings);
+
+        //TODO if firsttime launch
+        PreferenceManager.setDefaultValues(getActivity(), R.xml.settings, true);
+
 
 
     }
@@ -39,17 +45,19 @@ public class SettingFragment extends PreferenceFragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((DashboardActivity)getActivity()).setActionBarButton(true, "Settings");
-        ((DashboardActivity)getActivity()).bottomNavVisibility(false);
-
+        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
     }
 
-   @Override
-    public void onStop() {
-        super.onStop();
-        ((DashboardActivity)getActivity()).setActionBarButton(false, getString(R.string.app_name));
-        ((DashboardActivity)getActivity()).bottomNavVisibility(true);
+    @Override
+    public void onPause() {
+        getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+        super.onPause();
     }
 
-
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals("states_list")) {
+           // statePreference.setSummary(sharedPreferences.getString("states_list", ""));
+        }
+    }
 }

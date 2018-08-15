@@ -18,6 +18,7 @@ public class PregnancyFragmentCategoryAdapter extends FragmentPagerAdapter {
         context = mcontext;
     }
 
+
     @Override
     public Fragment getItem(int position) {
         if(position == 0){

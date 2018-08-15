@@ -156,7 +156,7 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
         myObj.setArguments(bundle);
 
         activity.getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_container, myObj)
+                .replace(R.id.fragment_container, myObj)
                 .addToBackStack(null)
                 .commit();
     }

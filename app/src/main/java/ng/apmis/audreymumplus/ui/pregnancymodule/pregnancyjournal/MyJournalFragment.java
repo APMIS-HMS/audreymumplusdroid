@@ -57,7 +57,7 @@ public class MyJournalFragment extends Fragment {
         ListView listView = rootView.findViewById(R.id.journal);
         ((DashboardActivity)getActivity()).getPersonLive().observe(this, person -> {
             edd = person != null ? person.getExpectedDateOfDelivery() : null;
-            getDayWeek(edd);
+            //getDayWeek(edd);
         });
 
         journalAdapter = new JournalAdapter(getActivity());
@@ -77,8 +77,6 @@ public class MyJournalFragment extends Fragment {
                 Toast.makeText(getActivity(), "No journals found", Toast.LENGTH_SHORT).show();
             }
         });
-
-
 
         listView.setOnItemClickListener((parent, view, position, id) -> {
             JournalModel clickedJournal = (JournalModel) parent.getItemAtPosition(position);

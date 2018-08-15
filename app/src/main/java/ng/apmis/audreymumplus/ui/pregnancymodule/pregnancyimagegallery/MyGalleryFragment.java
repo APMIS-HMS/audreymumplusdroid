@@ -17,6 +17,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
+import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.JournalFactory;
 import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.JournalModel;
 import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.JournalViewModel;
@@ -42,6 +43,7 @@ public class MyGalleryFragment extends android.support.v4.app.Fragment {
         View rootView = inflater.inflate(R.layout.fragment_my_gallery, container, false);
         ButterKnife.bind(this, rootView);
 
+        ((DashboardActivity)getActivity()).fabVisibility(false);
 
         GalleryAdapter galleryAdapter = new GalleryAdapter(getActivity());
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
@@ -109,4 +111,8 @@ public class MyGalleryFragment extends android.support.v4.app.Fragment {
         return rootView;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
 }

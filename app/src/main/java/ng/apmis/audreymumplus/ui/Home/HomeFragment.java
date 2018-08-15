@@ -97,21 +97,26 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.action_happy:
-                launchAddJournal("Happy");
+                launchAddJournalFromEmotes("Happy");
                 break;
             case R.id.action_okay:
-                launchAddJournal("Okay");
+                launchAddJournalFromEmotes("Okay");
                 break;
             case R.id.action_sick:
-                launchAddJournal("Sick");
+                launchAddJournalFromEmotes("Sick");
                 break;
             case R.id.action_sad:
-                launchAddJournal("Sad");
+                launchAddJournalFromEmotes("Sad");
                 break;
         }
     }
 
-    void launchAddJournal (String mood) {
+
+    /**
+     * Launches Add journal fragment when action is pressed from mood emotes on the home screen
+     * @param mood String
+     */
+    void launchAddJournalFromEmotes(String mood) {
         Toast.makeText(getActivity(), mood, Toast.LENGTH_SHORT).show();
         Bundle addBundle = new Bundle();
         addBundle.putString("MOOD", mood);
@@ -120,7 +125,7 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
         addJournalFragment.setArguments(addBundle);
 
         getActivity().getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_container, addJournalFragment)
+                .replace(R.id.fragment_container, addJournalFragment)
                 .addToBackStack("ADD_NEW")
                 .commit();
     }
@@ -136,5 +141,6 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
         super.onResume();
         ((DashboardActivity)getActivity()).setActionBarButton(false, getString(R.string.app_name));
         ((DashboardActivity)getActivity()).bottomNavVisibility(false);
+        Toast.makeText(getActivity(), "Resumes", Toast.LENGTH_SHORT).show();
     }
 }

@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -69,6 +70,24 @@ public class PregnancyFragment extends Fragment {
 
         TabLayout tabLayout = rootView.findViewById(R.id.tabview);
         tabLayout.setupWithViewPager(viewPager);
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (getString(R.string.pregJournal).equals(tab.getText()))
+                    ((DashboardActivity)getActivity()).fabVisibility(true);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                if (getString(R.string.pregJournal).equals(tab.getText()))
+                    ((DashboardActivity)getActivity()).fabVisibility(false);
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
         viewPager.setAdapter(adapter);
 
         return rootView;
@@ -81,12 +100,6 @@ public class PregnancyFragment extends Fragment {
         ((DashboardActivity) getActivity()).bottomNavVisibility(false);
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        ((DashboardActivity) getActivity()).setActionBarButton(false, getString(R.string.app_name));
-        ((DashboardActivity) getActivity()).bottomNavVisibility(true);
-    }
 
     @Override
     public void onAttach(Context context) {

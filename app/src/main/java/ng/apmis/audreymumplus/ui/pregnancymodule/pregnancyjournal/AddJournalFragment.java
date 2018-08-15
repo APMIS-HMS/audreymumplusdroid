@@ -170,13 +170,7 @@ public class AddJournalFragment extends Fragment {
         super.onResume();
         ((DashboardActivity) getActivity()).setActionBarButton(true, "Add Journal");
         ((DashboardActivity) getActivity()).bottomNavVisibility(false);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        ((DashboardActivity) getActivity()).setActionBarButton(false, "My Pregnancy");
-        ((DashboardActivity) getActivity()).bottomNavVisibility(false);
+        ((DashboardActivity) getActivity()).fabVisibility(false);
     }
 
 

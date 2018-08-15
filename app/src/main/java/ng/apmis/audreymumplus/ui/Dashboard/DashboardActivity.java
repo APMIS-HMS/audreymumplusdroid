@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -46,11 +47,12 @@ import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumFragment;
 import ng.apmis.audreymumplus.ui.Faq.FaqFragment;
 import ng.apmis.audreymumplus.ui.HelpFragment;
 import ng.apmis.audreymumplus.ui.pregnancymodule.PregnancyFragment;
-import ng.apmis.audreymumplus.ui.SettingFragment;
 import ng.apmis.audreymumplus.ui.getaudrey.GetAudreyFragment;
 import ng.apmis.audreymumplus.ui.Home.HomeFragment;
+import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.AddJournalFragment;
 import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.MyJournalFragment;
 import ng.apmis.audreymumplus.ui.profile.ProfileFragment;
+import ng.apmis.audreymumplus.ui.settings.SettingsFragment;
 import ng.apmis.audreymumplus.utils.AlarmBroadcast;
 import ng.apmis.audreymumplus.utils.AlarmMangerSingleton;
 import ng.apmis.audreymumplus.utils.BottomNavigationViewHelper;
@@ -62,8 +64,6 @@ import ng.apmis.audreymumplus.utils.Week;
 public class DashboardActivity extends AppCompatActivity implements HomeFragment.OnfragmentInteractionListener {
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottomNavigationView;
-/*    @BindView(R.id.title_toolbar)
-    TextView title_toolbar;*/
 
     @BindView(R.id.global_toolbar)
     Toolbar globalToolbar;
@@ -73,6 +73,9 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
+
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
 
     FragmentManager mFragmentManager;
     boolean goBackOrShowNavigationView = false;
@@ -170,21 +173,18 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView);
 
-
-        // placeFragment(new HomeFragment(), true, mFragmentManager);
-
         if (getIntent().getExtras() != null) {
 
             Log.v("forumName notification",getIntent().getExtras().getString("forumName"));
 
             mFragmentManager.beginTransaction()
-                    .add(R.id.fragment_container, new HomeFragment())
+                    .replace(R.id.fragment_container, new HomeFragment(), "HOME")
                     .setReorderingAllowed(true)
                     .commit();
 
             mFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, new ChatForumFragment())
-                    .addToBackStack(null)
+                    .replace(R.id.fragment_container, new ChatForumFragment(), "CHAT")
+                    .addToBackStack("current")
                     .setReorderingAllowed(true)
                     .commit();
 
@@ -200,10 +200,8 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                     .commit();
 
         } else {
-            mFragmentManager.beginTransaction()
-                    .add(R.id.fragment_container, new HomeFragment())
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                    .commit();
+
+            placeFragment(new HomeFragment(), true, mFragmentManager, "HOME");
         }
 
     }
@@ -232,9 +230,14 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
     @Override
     public void onBackPressed() {
-        if (getFragmentManager().findFragmentByTag("settings") instanceof SettingFragment) {
-            getFragmentManager().popBackStack("settings", android.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+        android.app.Fragment fragment = getFragmentManager().findFragmentByTag("settings");
+        if (fragment instanceof PreferenceFragment) {
+            //getSupportFragmentManager().popBackStack();
+            placeFragment(new HomeFragment(), true, mFragmentManager, "HOME");
+            return;
         }
+
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawers();
         } else {
@@ -245,26 +248,26 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
     boolean selectNavigationItem(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.home:
-                placeFragment(new HomeFragment(), true, mFragmentManager);
+                placeFragment(new HomeFragment(), true, mFragmentManager, "HOME");
                 drawerLayout.closeDrawers();
                 return true;
             case R.id.my_profile:
-                placeFragment(new ProfileFragment(), true, mFragmentManager);
+                placeFragment(new ProfileFragment(), true, mFragmentManager, "PROFILE");
                 drawerLayout.closeDrawers();
                 return true;
             case R.id.about_us:
-                placeFragment(new AboutFragment(), true, mFragmentManager);
+                placeFragment(new AboutFragment(), true, mFragmentManager, "ABOUT");
                 drawerLayout.closeDrawers();
                 return true;
             case R.id.help:
-                placeFragment(new HelpFragment(), true, mFragmentManager);
+                placeFragment(new HelpFragment(), true, mFragmentManager, "HELP");
                 drawerLayout.closeDrawers();
                 return true;
             case R.id.get_audrey:
                 getPersonLive().observe(this, person -> {
                     Log.v("perons", String.valueOf(person));
                     if (person != null && TextUtils.isEmpty(person.getExpectedDateOfDelivery())) {
-                        placeFragment(new GetAudreyFragment(), false, mFragmentManager);
+                        placeFragment(new GetAudreyFragment(), false, mFragmentManager, "AUDREY");
                     } else {
                         Toast.makeText(this, "You have a current Audrey session", Toast.LENGTH_SHORT).show();
                     }
@@ -272,7 +275,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                 drawerLayout.closeDrawers();
                 return true;
             case R.id.settings:
-                prefFrag(new SettingFragment());
+                placeFragment(new SettingsFragment(), true, mFragmentManager, "SETTINGS");
                 drawerLayout.closeDrawers();
                 return true;
         }
@@ -303,27 +306,41 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         bottomNavigationView.setVisibility(View.GONE);
     }
 
+    public void fabVisibility (boolean show) {
+        if (show) {
+            fab.setVisibility(View.VISIBLE);
+            fab.setOnClickListener((view -> {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new AddJournalFragment())
+                        .addToBackStack("ADD_NEW")
+                        .commit();
+            }));
+        } else {
+            fab.setVisibility(View.GONE);
+        }
+    }
+
 
     private void selectFragment(MenuItem item) {
 
         switch (item.getItemId()) {
             case R.id.view_menu:
-                placeFragment(new HomeFragment(), true, mFragmentManager);
+                placeFragment(new HomeFragment(), true, mFragmentManager, "HOME");
                 break;
             case R.id.journal_menu:
-                placeFragment(new MyJournalFragment(), true, mFragmentManager);
+                placeFragment(new MyJournalFragment(), true, mFragmentManager, "JOURNAL");
                 break;
             case R.id.chat_menu:
-                placeFragment(new ChatForumFragment(), true, mFragmentManager);
+                placeFragment(new ChatForumFragment(), true, mFragmentManager, "CHAT");
                 break;
             case R.id.pill_reminder:
-                placeFragment(new AppointmentFragment(), true, mFragmentManager);
+                placeFragment(new AppointmentFragment(), true, mFragmentManager, "PILL");
                 break;
         }
 
     }
 
-    private void placeFragment(Fragment fragment, boolean popBackStack, FragmentManager fm) {
+    private void placeFragment(Fragment fragment, boolean popBackStack, FragmentManager fm, String tag) {
 
         if (fragment instanceof HomeFragment) {
             fm.popBackStack("current", FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -337,24 +354,16 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
             fm.popBackStack("current", FragmentManager.POP_BACK_STACK_INCLUSIVE);
             fm.beginTransaction()
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .add(R.id.fragment_container, fragment)
+                    .replace(R.id.fragment_container, fragment, tag)
                     .addToBackStack("current")
                     .commit();
         } else {
             fm.beginTransaction()
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .replace(R.id.fragment_container, fragment)
-                    .addToBackStack("top-current")
+                    .add(R.id.fragment_container, fragment)
+                    .addToBackStack(null)
                     .commit();
         }
-    }
-
-    private void prefFrag(PreferenceFragment fragment) {
-        getFragmentManager().beginTransaction()
-                .setTransition(android.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .add(R.id.fragment_container, fragment)
-                .addToBackStack("settings")
-                .commit();
     }
 
 
@@ -362,16 +371,16 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
     public void onGridItemClick(String selectedText) {
         switch (selectedText) {
             case "My Pregnancy":
-                placeFragment(new PregnancyFragment(), true, mFragmentManager);
+                placeFragment(new PregnancyFragment(), true, mFragmentManager, "PREGNANCY");
                 break;
             case "My Appointments":
-                placeFragment(new AppointmentFragment(), true, mFragmentManager);
+                placeFragment(new AppointmentFragment(), true, mFragmentManager, "APPOINTMENT");
                 break;
             case "Chatrooms":
-                placeFragment(new ChatForumFragment(), true, mFragmentManager);
+                placeFragment(new ChatForumFragment(), true, mFragmentManager, "CHAT");
                 break;
             case "FAQs":
-                placeFragment(new FaqFragment(), true, mFragmentManager);
+                placeFragment(new FaqFragment(), true, mFragmentManager, "FAQ");
                 break;
 
         }
