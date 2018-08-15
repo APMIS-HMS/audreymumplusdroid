@@ -170,7 +170,7 @@ public class AddAppointmentFragment extends Fragment {
         @Override
         public void onTimeSet(android.widget.TimePicker timePicker, int i, int i1) {
             TextInputEditText et = getActivity().findViewById(R.id.appointment_time);
-            //TODO check if this 24 hour thing works
+
             String hour = i < 10 ? "0" + i : i+"";
             String minutes = i1 < 10 ? "0" + i1 : i1+"";
             et.setText(hour + ":" + minutes);

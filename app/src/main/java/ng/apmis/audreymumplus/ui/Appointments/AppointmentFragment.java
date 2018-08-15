@@ -123,8 +123,6 @@ public class AppointmentFragment extends Fragment implements AppointmentAdapter.
         }
     }
 
-    //TODO alarm cancelling not working when appointment is mute or when appointment deleted
-
     void muteUnmuteAppointment (Appointment selectedAppointment, String title) {
         //Build alarm intent same as was created
         Intent alarmIntent = new Intent(getActivity(), AlarmBroadcast.class);
