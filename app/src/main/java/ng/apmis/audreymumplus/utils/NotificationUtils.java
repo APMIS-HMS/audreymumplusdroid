@@ -22,6 +22,7 @@ import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.ui.Appointments.Appointment;
 import ng.apmis.audreymumplus.ui.Chat.ChatContextModel;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
+import ng.apmis.audreymumplus.ui.pills.PillModel;
 
 /**
  * Created by Thadeus-APMIS on 7/26/2018.
@@ -75,6 +76,33 @@ public class NotificationUtils {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext, CHANNEL_ID)
                 .setSmallIcon(R.mipmap.audrey_icon)
                 .setContentTitle(Html.fromHtml("<b>Reminder for </b> " +notificationTitle))
+                .setContentText(Html.fromHtml(notificationBody))
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(Html.fromHtml(notificationBody)))
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setSound(defaultSoundUri)
+                .setFullScreenIntent(pendingIntent, true)
+                .setAutoCancel(true)
+                .setWhen(new Date().getTime());
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(mContext);
+        notificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+    }
+
+    public static void buildPillReminderNotification (Context mContext, PillModel pillModel) {
+
+        String notificationTitle = pillModel.getPillName();
+        String notificationBody = mContext.getString(R.string.notification_body_pills, pillModel.getInstruction(), pillModel.getQtyPerTime());
+
+        Intent intent = new Intent(mContext.getApplicationContext(), DashboardActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext, CHANNEL_ID)
+                .setSmallIcon(R.mipmap.audrey_icon)
+                .setContentTitle(Html.fromHtml("<b>Take </b> " +notificationTitle))
                 .setContentText(Html.fromHtml(notificationBody))
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText(Html.fromHtml(notificationBody)))

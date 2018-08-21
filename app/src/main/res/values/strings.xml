@@ -98,6 +98,7 @@
     <string name="channel_name">Audrey chat channel</string>
     <string name="channel_description">Chats from Audrey Pack App</string>
     <string name="notification_body"><![CDATA[Details: %s<br/> Location: %s]]></string>
+    <string name="notification_body_pills"><![CDATA[Instructions: %s<br/> Tablets: %s]]></string>
     <string name="delete_reminder">Delete</string>
     <string name="appointment_details">Details</string>
     <string name="mute_alarm">Mute</string>
@@ -185,6 +186,11 @@
         <item>Week 40</item>
         <item>Week 41</item>
         <item>Week 42</item>
+    </string-array>
+
+    <string-array name="day_week">
+        <item>Day(s)</item>
+        <item>Week(s)</item>
     </string-array>
 
     <string-array name="states">

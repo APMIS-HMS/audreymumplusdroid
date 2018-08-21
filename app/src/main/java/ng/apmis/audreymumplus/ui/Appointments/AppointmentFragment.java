@@ -76,7 +76,7 @@ public class AppointmentFragment extends Fragment implements AppointmentAdapter.
 
         fab2.setOnClickListener((view) -> getActivity().getSupportFragmentManager().beginTransaction()
                 .add(R.id.fragment_container, new AddAppointmentFragment())
-                .addToBackStack("ADD_NEW")
+                .addToBackStack("ADD_APPOINTMENT")
                 .commit());
 
         return rootView;

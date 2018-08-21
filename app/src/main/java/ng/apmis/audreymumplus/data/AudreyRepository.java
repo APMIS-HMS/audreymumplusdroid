@@ -18,6 +18,7 @@ import ng.apmis.audreymumplus.data.network.MumplusNetworkDataSource;
 import ng.apmis.audreymumplus.ui.Appointments.Appointment;
 import ng.apmis.audreymumplus.ui.Chat.ChatContextModel;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumModel;
+import ng.apmis.audreymumplus.ui.pills.PillModel;
 import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.JournalModel;
 import ng.apmis.audreymumplus.utils.Week;
 
@@ -186,14 +187,26 @@ public class AudreyRepository {
         mJournalDao.insertChat(chatContextModel);
     }
 
-/*
-
-    public LiveData<List<DailyJournal>> getCurrentWeatherForecasts() {
-        //initializeData();
-        Date today = SunshineDateUtils.getNormalizedUtcDateForToday();
-        return mWeatherDao.getCurrentWeatherForecasts(today);
+    public long insertPillReminder (PillModel pillModel) {
+        return mJournalDao.insertPillReminder(pillModel);
     }
-*/
+
+    public void deletePillReminder (PillModel pillModel) {
+        mJournalDao.deletePillReminder(pillModel);
+    }
+
+    public void updatePillReminder (PillModel pillModel) {
+        mJournalDao.updatePillReminder(pillModel);
+    }
+
+    public PillModel getPillModel (long _id) {
+        return mJournalDao.getPillModel(_id);
+    }
+
+    public LiveData<List<PillModel>> getAllPills () {
+        return mJournalDao.getAllPills();
+    }
+
 
     public synchronized static AudreyRepository getInstance (JournalDao journalDao, MumplusNetworkDataSource mumplusNetworkDataSource, AudreyMumplus audreyMumplus) {
         Log.d(LOG_TAG, "Getting the repository");

@@ -12,6 +12,7 @@ import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +33,8 @@ public class PregnancyFragment extends Fragment {
     TextView weekIndicator;
     @BindView(R.id.datedelivery)
     TextView deliveryDate;
+    @BindView(R.id.progressbar)
+    ProgressBar pregnancyProgress;
 
     AppCompatActivity activity;
 
@@ -47,6 +50,8 @@ public class PregnancyFragment extends Fragment {
                 String[] week = String.valueOf(person.getWeek()).split(" ");
                 weekIndicator.setText(getString(R.string.week_indicator, week[1]));
                 dayIndicator.setText(getString(R.string.day_indicator, String.valueOf(person.getDay())));
+
+                pregnancyProgress.setProgress(person.getDay() * 100 / 280);
 
                 SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                 SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy");

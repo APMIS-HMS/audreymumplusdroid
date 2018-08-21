@@ -63,7 +63,8 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
         items.add(new ModuleModel("My Pregnancy",R.drawable.ic_my_pregnancy));
         items.add(new ModuleModel("My Appointments", R.drawable.ic_my_appointments));
         items.add(new ModuleModel("Chatrooms",R.drawable.ic_chat_tab_icon));
-        items.add(new ModuleModel("FAQs", R.drawable.ic_faq_icon));
+        //TODO change Pill icon
+        items.add(new ModuleModel("Pills", R.drawable.ic_faq_icon));
 
         ModuleAdapter moduleAdapter = new ModuleAdapter(getActivity(), items);
 
@@ -74,7 +75,6 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
 
         gridView.setOnItemClickListener((parent, view, position, id) -> {
             ModuleModel clicked = (ModuleModel) parent.getItemAtPosition(position);
-            Toast.makeText(getActivity(), clicked.getTitle() , Toast.LENGTH_SHORT).show();
             onFragmentInteractionListener.onGridItemClick(clicked.getTitle());
         });
 
@@ -141,6 +141,5 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
         super.onResume();
         ((DashboardActivity)getActivity()).setActionBarButton(false, getString(R.string.app_name));
         ((DashboardActivity)getActivity()).bottomNavVisibility(false);
-        Toast.makeText(getActivity(), "Resumes", Toast.LENGTH_SHORT).show();
     }
 }

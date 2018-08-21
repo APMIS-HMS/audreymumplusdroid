@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
+import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
 
 
 public class SettingPreferences extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener{
@@ -23,15 +24,13 @@ public class SettingPreferences extends PreferenceFragment implements SharedPref
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getPreferenceManager().setSharedPreferencesName("settingsPreference");
+        getPreferenceManager().setSharedPreferencesName(SharedPreferencesManager.PREF_NAME);
         getPreferenceManager().setSharedPreferencesMode(Context.MODE_PRIVATE);
 
         addPreferencesFromResource(R.xml.settings);
 
         //TODO if firsttime launch
         PreferenceManager.setDefaultValues(getActivity(), R.xml.settings, true);
-
-
 
     }
 

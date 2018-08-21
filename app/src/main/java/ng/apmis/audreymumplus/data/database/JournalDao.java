@@ -14,6 +14,7 @@ import java.util.List;
 import ng.apmis.audreymumplus.ui.Appointments.Appointment;
 import ng.apmis.audreymumplus.ui.Chat.ChatContextModel;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumModel;
+import ng.apmis.audreymumplus.ui.pills.PillModel;
 import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.JournalModel;
 
 /**
@@ -92,5 +93,18 @@ public interface JournalDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertChat(ChatContextModel chatContextModel);
 
+    @Insert()
+    long insertPillReminder(PillModel pillModel);
 
+    @Delete()
+    void deletePillReminder(PillModel pillModel);
+
+    @Update()
+    void updatePillReminder(PillModel pillModel);
+
+    @Query("SELECT * FROM pillreminder WHERE _id = :id")
+    PillModel getPillModel(long id);
+
+    @Query("SELECT * FROM pillreminder")
+    LiveData<List<PillModel>> getAllPills();
 }

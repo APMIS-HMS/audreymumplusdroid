@@ -6,7 +6,6 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -44,8 +43,9 @@ import ng.apmis.audreymumplus.ui.AboutFragment;
 import ng.apmis.audreymumplus.ui.Appointments.AppointmentFragment;
 import ng.apmis.audreymumplus.ui.Chat.ChatContextFragment;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumFragment;
-import ng.apmis.audreymumplus.ui.Faq.FaqFragment;
 import ng.apmis.audreymumplus.ui.HelpFragment;
+import ng.apmis.audreymumplus.ui.pills.AddPillReminder;
+import ng.apmis.audreymumplus.ui.pills.PillReminderFragment;
 import ng.apmis.audreymumplus.ui.pregnancymodule.PregnancyFragment;
 import ng.apmis.audreymumplus.ui.getaudrey.GetAudreyFragment;
 import ng.apmis.audreymumplus.ui.Home.HomeFragment;
@@ -141,7 +141,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
                     alarmManager.cancel(pendingIntent);
 
-                    alarmManager.setInexactRepeating(AlarmManager.RTC, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+                    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
 
                     sharedPreferencesManager.setJustLoggedIn(false);
 
@@ -230,13 +230,6 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
     @Override
     public void onBackPressed() {
-
-        android.app.Fragment fragment = getFragmentManager().findFragmentByTag("settings");
-        if (fragment instanceof PreferenceFragment) {
-            //getSupportFragmentManager().popBackStack();
-            placeFragment(new HomeFragment(), true, mFragmentManager, "HOME");
-            return;
-        }
 
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawers();
@@ -379,8 +372,8 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
             case "Chatrooms":
                 placeFragment(new ChatForumFragment(), true, mFragmentManager, "CHAT");
                 break;
-            case "FAQs":
-                placeFragment(new FaqFragment(), true, mFragmentManager, "FAQ");
+            case "Pills":
+                placeFragment(new PillReminderFragment(), true, mFragmentManager, "PILL");
                 break;
 
         }

@@ -145,7 +145,7 @@ public class AddAppointmentFragment extends Fragment {
             AlarmManager alarmManager =  new AlarmMangerSingleton(getActivity()).getInstance().getAlarmManager();
             alarmManager.set(AlarmManager.RTC_WAKEUP, appointmentTime.getTimeInMillis(), pendingIntent);
 
-            getActivity().getSupportFragmentManager().popBackStack("ADD_NEW", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            getActivity().getSupportFragmentManager().popBackStack("ADD_APPOINTMENT", FragmentManager.POP_BACK_STACK_INCLUSIVE);
         });
 
 

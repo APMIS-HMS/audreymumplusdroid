@@ -11,13 +11,15 @@ import android.content.Context;
 import ng.apmis.audreymumplus.ui.Appointments.Appointment;
 import ng.apmis.audreymumplus.ui.Chat.ChatContextModel;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumModel;
+import ng.apmis.audreymumplus.ui.pills.PillModel;
+import ng.apmis.audreymumplus.ui.pills.PillsTypeConverter;
 import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.JournalModel;
 
 /**
  * Created by Thadeus-APMIS on 5/15/2018.
  */
-@TypeConverters({JournalConverters.class})
-@Database(entities = {JournalModel.class, Person.class, Appointment.class, ChatForumModel.class, ChatContextModel.class}, version = 2, exportSchema = false)
+@Database(entities = {JournalModel.class, Person.class, Appointment.class, ChatForumModel.class, ChatContextModel.class, PillModel.class}, version = 2, exportSchema = false)
+@TypeConverters({JournalConverters.class, PillsTypeConverter.class})
 public abstract class JournalDatabase extends RoomDatabase {
     public abstract JournalDao dailyJournalDao();
 
@@ -86,6 +88,11 @@ public abstract class JournalDatabase extends RoomDatabase {
             // Create the new table
             database.execSQL(
                     "CREATE TABLE appointments ('_id' INTEGER PRIMARY KEY NOT NULL, title TEXT, appointmentAddress TEXT, appointmentDetails TEXT, appointmentTime INTEGER NOT NULL, muteAlarm INTEGER NOT NULL default 1)");
+
+
+            database.execSQL(
+                    "CREATE TABLE pillreminder ('_id' INTEGER PRIMARY KEY NOT NULL, pillName TEXT, qtyPerTime TEXT, frequency TEXT, unit TEXT, duration TEXT, instruction TEXT, pillTimes TEXT)"
+            );
 
         }
     };

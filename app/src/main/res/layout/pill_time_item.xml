@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:padding="4dp">
+
+    <TextView
+        android:id="@+id/pill_time_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        android:hint="12:23 AM"
+        android:layout_marginStart="8dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
+
+    <ImageButton
+        android:id="@+id/pill_time_delete"
+        android:layout_width="wrap_content"
+        android:padding="4dp"
+        android:background="@android:drawable/ic_menu_close_clear_cancel"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"/>
+
+    <View
+        android:layout_below="@id/pill_time_delete"
+        android:layout_marginTop="2dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
+
+</RelativeLayout>
