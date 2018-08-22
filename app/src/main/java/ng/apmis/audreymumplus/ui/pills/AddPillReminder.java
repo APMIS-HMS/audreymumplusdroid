@@ -108,7 +108,6 @@ public class AddPillReminder extends Fragment implements PillTimesAdapter.TimeRe
 
         numberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
             selectedUnit = String.valueOf(newVal);
-            Toast.makeText(getActivity(), selectedUnit, Toast.LENGTH_SHORT).show();
         });
 
 

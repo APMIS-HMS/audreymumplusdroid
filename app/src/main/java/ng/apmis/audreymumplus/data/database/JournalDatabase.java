@@ -19,7 +19,7 @@ import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.JournalModel;
 /**
  * Created by Thadeus-APMIS on 5/15/2018.
  */
-@Database(entities = {JournalModel.class, Person.class, Appointment.class, ChatForumModel.class, ChatContextModel.class, PillModel.class, KickCounterModel.class}, version = 3, exportSchema = false)
+@Database(entities = {JournalModel.class, Person.class, Appointment.class, ChatForumModel.class, ChatContextModel.class, PillModel.class, KickCounterModel.class}, version = 2, exportSchema = false)
 @TypeConverters({JournalConverters.class, PillsTypeConverter.class})
 public abstract class JournalDatabase extends RoomDatabase {
     public abstract JournalDao dailyJournalDao();
@@ -36,7 +36,7 @@ public abstract class JournalDatabase extends RoomDatabase {
                 if (sInstance == null) {
                     sInstance = Room.databaseBuilder(context.getApplicationContext(),
                             JournalDatabase.class, JournalDatabase.DATABASE_NAME)
-                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                            .addMigrations(MIGRATION_1_2)
                             .build();
                 }
             }
@@ -90,22 +90,12 @@ public abstract class JournalDatabase extends RoomDatabase {
             database.execSQL(
                     "CREATE TABLE appointments ('_id' INTEGER PRIMARY KEY NOT NULL, title TEXT, appointmentAddress TEXT, appointmentDetails TEXT, appointmentTime INTEGER NOT NULL, muteAlarm INTEGER NOT NULL default 1)");
 
-
             database.execSQL(
-                    "CREATE TABLE pillreminder ('_id' INTEGER PRIMARY KEY NOT NULL, pillName TEXT, qtyPerTime TEXT, frequency TEXT, unit TEXT, duration TEXT, instruction TEXT, pillTimes TEXT)"
+                    "CREATE TABLE pillreminder ('_id' INTEGER PRIMARY KEY NOT NULL, pillName TEXT, qtyPerTime TEXT, frequency TEXT, unit TEXT, duration TEXT, instruction TEXT, pillTimes TEXT, muteReminder INTEGER NOT NULL)"
             );
-
-        }
-    };
-
-    static final Migration MIGRATION_2_3 = new Migration(2, 3) {
-        @Override
-        public void migrate(SupportSQLiteDatabase database) {
-            // Create the new table
 
             database.execSQL(
                     "CREATE TABLE kickcounter ('_id' INTEGER PRIMARY KEY NOT NULL, kicks INTEGER NOT NULL, week TEXT, duration TEXT, date INTEGER NOT NULL)");
-
 
         }
     };

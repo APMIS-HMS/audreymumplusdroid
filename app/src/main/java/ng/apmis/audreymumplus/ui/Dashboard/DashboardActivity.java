@@ -342,7 +342,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                 placeFragment(new ChatForumFragment(), true, mFragmentManager, "CHAT");
                 break;
             case R.id.pill_reminder:
-                placeFragment(new AppointmentFragment(), true, mFragmentManager, "PILL");
+                placeFragment(new PillReminderFragment(), true, mFragmentManager, "PILL");
                 break;
         }
 

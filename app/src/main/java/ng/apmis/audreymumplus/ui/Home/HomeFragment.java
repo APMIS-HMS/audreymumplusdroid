@@ -6,28 +6,17 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
-import ng.apmis.audreymumplus.ui.Dashboard.ModuleAdapter;
-import ng.apmis.audreymumplus.ui.Dashboard.ModuleModel;
 import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.AddJournalFragment;
 
 public class HomeFragment extends android.support.v4.app.Fragment implements View.OnClickListener {
 
-    private static final String CLASSNAME = "HOME";
 
-    List<ModuleModel> items = new ArrayList<>();
-
-    GridView gridView;
     @BindView(R.id.hi_message)
     TextView hiMessage;
     OnfragmentInteractionListener onFragmentInteractionListener;
@@ -41,6 +30,15 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
     @BindView(R.id.action_sad)
     ViewGroup actionSad;
 
+    @BindView(R.id.chat_group)
+    ViewGroup chatGroup;
+    @BindView(R.id.pill_group)
+    ViewGroup pillGroup;
+    @BindView(R.id.pregnancy_group)
+    ViewGroup pregnancyGroup;
+    @BindView(R.id.appointment_group)
+    ViewGroup appointmentGroup;
+
 
     @Override
     public View onCreateView (LayoutInflater inflater, ViewGroup container,
@@ -53,29 +51,13 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
         actionOkay.setOnClickListener(this);
         actionSick.setOnClickListener(this);
         actionSad.setOnClickListener(this);
+        pregnancyGroup.setOnClickListener(this);
+        appointmentGroup.setOnClickListener(this);
+        chatGroup.setOnClickListener(this);
+        pillGroup.setOnClickListener(this);
 
         ((DashboardActivity)getActivity()).getPersonLive().observe(getActivity(), person -> {
             hiMessage.setText(getContext().getString(R.string.hi_message, person != null ? person.getFirstName() : null));
-        });
-
-        gridView = rootView.findViewById(R.id.grid);
-
-        items.add(new ModuleModel("My Pregnancy",R.drawable.ic_my_pregnancy));
-        items.add(new ModuleModel("My Appointments", R.drawable.ic_my_appointments));
-        items.add(new ModuleModel("Chatrooms",R.drawable.ic_chat_tab_icon));
-        //TODO change Pill icon
-        items.add(new ModuleModel("Pills", R.drawable.ic_faq_icon));
-
-        ModuleAdapter moduleAdapter = new ModuleAdapter(getActivity(), items);
-
-        gridView.setAdapter(moduleAdapter);
-//        gridView.setColumnWidth(1);
-
-        //gridItems.setDivider(null);
-
-        gridView.setOnItemClickListener((parent, view, position, id) -> {
-            ModuleModel clicked = (ModuleModel) parent.getItemAtPosition(position);
-            onFragmentInteractionListener.onGridItemClick(clicked.getTitle());
         });
 
         return rootView;
@@ -108,6 +90,18 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
             case R.id.action_sad:
                 launchAddJournalFromEmotes("Sad");
                 break;
+            case R.id.pregnancy_group:
+                onFragmentInteractionListener.onGridItemClick("My Pregnancy");
+                break;
+            case R.id.appointment_group:
+                onFragmentInteractionListener.onGridItemClick("My Appointments");
+                break;
+            case R.id.chat_group:
+                onFragmentInteractionListener.onGridItemClick("Chatrooms");
+                break;
+            case R.id.pill_group:
+                onFragmentInteractionListener.onGridItemClick("Pills");
+                break;
         }
     }
 
@@ -117,7 +111,6 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
      * @param mood String
      */
     void launchAddJournalFromEmotes(String mood) {
-        Toast.makeText(getActivity(), mood, Toast.LENGTH_SHORT).show();
         Bundle addBundle = new Bundle();
         addBundle.putString("MOOD", mood);
 

@@ -105,6 +105,11 @@ public class PregnancyFragment extends Fragment {
         ((DashboardActivity) getActivity()).bottomNavVisibility(false);
     }
 
+    @Override
+    public void onPause() {
+        ((DashboardActivity)getActivity()).fabVisibility(false);
+        super.onPause();
+    }
 
     @Override
     public void onAttach(Context context) {
