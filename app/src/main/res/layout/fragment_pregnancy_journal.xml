@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.pregnancymodule.PregnancyJournalFragment">
+
+    <TextView
+        android:id="@+id/textJ"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:textSize="16sp"
+        android:text="Your List of Journals"/>
+
+    <Spinner
+        android:layout_marginTop="10dp"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:spinnerMode="dropdown"
+        android:entries="@array/week"
+        android:layout_marginRight="12dp"
+        />
+
+
+
+    <ListView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_below="@id/textJ"
+        android:id="@+id/list_pregjournal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:drawSelectorOnTop="true"
+        />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_alignParentEnd="true"
+        app:srcCompat="@drawable/ic_add_black_24dp" />
+
+
+
+
+
+
+</RelativeLayout>

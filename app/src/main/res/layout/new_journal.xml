@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/background_light">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="8dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:paddingTop="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="What is your mood?"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                    android:paddingLeft="10dp"
+                    android:paddingBottom="4dp"
+                    />
+
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/mood"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@drawable/edittext_background"
+                    android:focusable="true"
+                    android:inputType="textCapSentences"
+                    android:imeOptions="actionNext"
+                    android:maxLines="3"
+                    android:padding="6dp"
+                    android:gravity="top"
+                    android:hint="eg. I feel sad"/>
+
+                <TextView
+                    android:paddingTop="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="What are your cravings?"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                    android:paddingLeft="10dp"
+                    android:paddingBottom="4dp"
+                    />
+
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/crave"
+                    android:layout_width="match_parent"
+                    android:layout_height="72dp"
+                    android:background="@drawable/edittext_background"
+                    android:focusable="true"
+                    android:inputType="textCapSentences"
+                    android:imeOptions="actionNext"
+                    android:maxLines="3"
+                    android:padding="6dp"
+                    android:gravity="top"
+                    android:hint="eg. I want to talk to someone"/>
+
+                <TextView
+                    android:paddingTop="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Weight"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                    android:paddingLeft="10dp"
+                    android:paddingBottom="4dp"
+                    />
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/weight"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/edittext_background"
+                    android:imeOptions="actionNext"
+                    android:maxLines="1"
+                    android:singleLine="false"
+                    android:hint="eg. 80kg"
+                    android:padding="6dp"
+                    />
+
+
+
+                <TextView
+                    android:paddingTop="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Symptoms"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                    android:paddingLeft="10dp"
+                    android:paddingBottom="4dp"
+                    />
+
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/symptoms"
+                    android:layout_width="match_parent"
+                    android:layout_height="72dp"
+                    android:background="@drawable/edittext_background"
+                    android:focusable="true"
+                    android:inputType="textCapSentences"
+                    android:imeOptions="actionNext"
+                    android:maxLines="3"
+                    android:padding="6dp"
+                    android:gravity="top"
+                    android:hint="eg. " />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
+
+                    <LinearLayout
+                        android:layout_marginRight="30dp"
+                        android:layout_gravity="center"
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+
+                <TextView
+                    android:paddingTop="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Upload Baby Scan"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                    android:paddingLeft="10dp"
+                    android:paddingBottom="4dp"
+                    />
+
+                        <RelativeLayout
+                            android:layout_width="120dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center">
+
+
+                            <ImageView
+                                android:id="@+id/user_babyscan"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:layout_marginTop="16dp" android:src="@drawable/face_of_audrey"
+                                 />
+
+                            <android.support.design.widget.FloatingActionButton
+                                android:id="@+id/baby_scan_fab"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                app:backgroundTint="@color/colorPrimaryDark"
+                                app:srcCompat="@drawable/ic_add_black_24dp"
+                                android:layout_alignParentEnd="true"
+                                android:layout_alignParentRight="true"
+                                android:layout_alignParentBottom="true" />
+
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_marginLeft="30dp"
+                        android:layout_gravity="center"
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+
+                        <TextView
+                            android:paddingTop="20dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Upload baby bump"
+                            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                            android:paddingLeft="10dp"
+                            android:paddingBottom="4dp"
+                            />
+
+
+
+                        <!--<LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <android.support.design.widget.TextInputEditText
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                android:background="@drawable/edittext_background"
+                                android:focusable="true"
+                                android:inputType="textCapSentences"
+                                android:imeOptions="actionNext"
+                                android:maxLines="1"
+                                android:paddingRight="24dp"
+                                android:singleLine="true" />
+
+                            <android.support.design.widget.TextInputEditText
+                                android:layout_width="108dp"
+                                android:layout_height="48dp"
+                                android:background="@drawable/edittext_background"
+                                android:focusable="true"
+                                android:inputType="textCapSentences"
+                                android:imeOptions="actionNext"
+                                android:maxLines="1"
+                                android:singleLine="true" />
+
+
+
+                        </LinearLayout>
+-->
+
+
+                        <RelativeLayout
+                            android:layout_width="120dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center">
+
+
+                            <ImageView
+                                android:id="@+id/pregBel"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:layout_marginTop="16dp" android:src="@drawable/face_of_audrey"
+                                />
+
+                            <android.support.design.widget.FloatingActionButton
+                                android:id="@+id/preg_belly_fab"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                app:backgroundTint="@color/colorPrimaryDark"
+                                app:srcCompat="@drawable/ic_add_black_24dp"
+                                android:layout_alignParentEnd="true"
+                                android:layout_alignParentRight="true"
+                                android:layout_alignParentBottom="true" />
+
+
+                        </RelativeLayout>
+
+
+
+
+                    </LinearLayout>
+
+
+
+
+
+                    </LinearLayout>
+
+                <TextView
+                    android:paddingTop="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Baby movement."
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                    android:paddingLeft="10dp"
+                    android:paddingBottom="4dp"
+                    />
+
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/baby_movement"
+                    android:layout_width="match_parent"
+                    android:layout_height="72dp"
+                    android:background="@drawable/edittext_background"
+                    android:focusable="true"
+                    android:inputType="textCapSentences"
+                    android:imeOptions="actionNext"
+                    android:maxLines="2"
+                    android:paddingLeft="24dp"
+                    android:paddingRight="24dp"
+                    android:singleLine="true" />
+
+
+
+
+
+                <Button
+                    android:id="@+id/save_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="@drawable/gradient"
+                    android:text="Save"
+                    android:textColor="#fff"
+                    android:textStyle="bold" />
+
+
+
+
+            </LinearLayout>
+
+
+
+
+
+
+</LinearLayout>
+</ScrollView>

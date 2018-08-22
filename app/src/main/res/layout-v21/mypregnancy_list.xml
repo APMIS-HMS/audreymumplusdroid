@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/user_transparent">
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="12dp"
+        android:indeterminate="true"
+        style="@android:style/Widget.Material.ProgressBar.Horizontal"
+        android:animationResolution="4000"
+        android:indeterminateBehavior="repeat" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/content_view"
+        android:visibility="gone">
+
+        <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+<!--
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/today_progress_group_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp">
+
+                        <TextView
+                            android:id="@+id/todays_baby_progress"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="YOUR BABY’S PROGRESS TODAY" />
+
+                        <TextView
+                            android:id="@+id/todays_day"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:text="(Day 4)" />
+
+                    </RelativeLayout>
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="12dp"
+                        android:background="@color/colorPrimary" />
+
+                    <TextView
+                        android:id="@+id/todays_progress_intro"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:maxWidth="200dp"
+                        android:text="Bigger baby, heavier baby !"
+                        android:textColor="@android:color/black" />
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+-->
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/some_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp">
+
+                    <TextView
+                        android:id="@+id/weekly_tip_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:text="@string/weekly_tips" />
+
+                    <TextView
+                        android:id="@+id/current_week_tv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_margin="8dp"
+                        android:text="(Week 15)" />
+
+                    <View
+                        android:id="@+id/divider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_below="@+id/weekly_tip_title"
+                        android:layout_marginTop="12dp"
+                        android:background="@color/colorPrimary" />
+
+                </RelativeLayout>
+
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/weekly_progress_recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/some_view"
+                    android:clipToPadding="false"
+                    android:paddingBottom="8dp" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <RelativeLayout
+        android:id="@+id/get_audrey_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+        <ImageView
+            android:id="@+id/empty_image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="20dp"
+            android:layout_centerHorizontal="true"
+            app:srcCompat="@drawable/ic_my_pregnancy_empty_state"/>
+
+        <TextView
+            android:id="@+id/empty_state_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/empty_state_preg_text"
+            style="@style/TextAppearance.AppCompat.Medium"
+            android:textAlignment="center"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="20dp"
+            android:layout_below="@+id/empty_image"/>
+
+        <Button
+            android:id="@+id/get_audrey_btn"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:text="GET AUDREY"
+            android:textColor="@color/colorPrimary"
+            android:background="@drawable/edittext_background"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/empty_state_text"/>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

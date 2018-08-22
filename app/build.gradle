@@ -2,14 +2,25 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
+    signingConfigs {
+        production_signing {
+            keyAlias 'audreypack'
+            keyPassword 'android2018'
+            storeFile file('C:/Users/ainoj/OneDrive - APMIS Health Management Systems Ltd/audreypackkeystore.jks')
+            storePassword 'android2018'
+        }
+    }
     compileSdkVersion 26
     defaultConfig {
         applicationId "ng.apmis.audreymumplus"
-        minSdkVersion 15
+        minSdkVersion 19
         targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        versionCode 4
+        versionName "1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
+        signingConfig signingConfigs.production_signing
     }
     buildTypes {
         release {
@@ -21,37 +32,61 @@ android {
         targetCompatibility 1.8
         sourceCompatibility 1.8
     }
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+    productFlavors {
+    }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:design:26.1.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.android.support:support-v4:26.1.0'
+    implementation 'com.android.support:cardview-v7:26.1.0'
     testImplementation 'junit:junit:4.12'
+    compile 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
+    compile 'com.android.volley:volley:1.1.0'
+    compile 'com.mikhaellopez:circularimageview:3.0.2'
+    compile 'com.github.bumptech.glide:glide:4.3.0'
+    compile 'ru.bullyboo.ecryption:encoder:1.0.3'
+    compile 'com.github.nkzawa:socket.io-client:0.3.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.android.support:multidex:1.0.3'
+    compile 'com.github.vipulasri:timelineview:1.0.6'
+    compile 'com.shawnlin:number-picker:2.4.6'
     def room_version = "1.1.0"
-
     implementation "android.arch.persistence.room:runtime:$room_version"
     annotationProcessor "android.arch.persistence.room:compiler:$room_version"
-
     // optional - RxJava support for Room
     implementation "android.arch.persistence.room:rxjava2:$room_version"
-
     // optional - Guava support for Room, including Optional and ListenableFuture
     implementation "android.arch.persistence.room:guava:$room_version"
-
     // Test helpers
     testImplementation "android.arch.persistence.room:testing:$room_version"
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-
     def lifecycle_version = "1.1.1"
     // ViewModel and LiveData
     implementation "android.arch.lifecycle:extensions:$lifecycle_version"
     // alternatively - just ViewModel
-    implementation "android.arch.lifecycle:viewmodel:$lifecycle_version" // use -ktx for Kotlin
+    implementation "android.arch.lifecycle:viewmodel:$lifecycle_version"
+    // use -ktx for Kotlin
     // alternatively - just LiveData
     implementation "android.arch.lifecycle:livedata:$lifecycle_version"
+    compile 'joda-time:joda-time:2.10'
+    compile "com.firebase:firebase-jobdispatcher:$firebase_jobdispatcher_version"
 }
 repositories {
     mavenCentral()

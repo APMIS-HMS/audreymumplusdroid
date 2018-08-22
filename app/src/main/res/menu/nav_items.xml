@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/view_menu"
+        android:title="@string/home"
+        app:showAsAction="always"
+        android:enabled="true"
+        android:icon="@drawable/ic_home" />
+
+    <item android:id="@+id/journal_menu"
+        android:title="@string/journal"
+        android:enabled="true"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_journal" />
+
+    <item android:id="@+id/chat_menu"
+        android:title="@string/chat"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_chat" />
+
+    <item android:id="@+id/pill_reminder"
+        android:title="@string/reminder"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_pill_reminder" />
+
+
+</menu>

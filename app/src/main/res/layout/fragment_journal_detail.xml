@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#fff"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp">
+
+            <TextView
+                android:id="@+id/journal_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/journal_date"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="@color/colorPrimaryDark"
+                tools:text="My journal on 13th July, 2018" />
+
+            <View
+                android:id="@+id/divider_one"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/journal_date"
+                android:layout_marginTop="8dp"
+                android:background="@color/colorPrimaryDark" />
+
+            <TextView
+                android:id="@+id/cravings_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/divider_one"
+                android:layout_marginTop="8dp"
+                android:text="@string/cravings_title"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:textColor="@color/colorPrimaryDark"
+                tools:text="Cravings" />
+
+            <TextView
+                android:id="@+id/cravings_body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/cravings_title"
+                android:layout_marginTop="8dp"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                android:textColor="@android:color/black"
+                tools:text="Cold smoothie, roasted corn, barbeque fish" />
+
+            <View
+                android:id="@+id/divider_two"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/cravings_body"
+                android:layout_marginTop="8dp"
+                android:background="@color/colorPrimaryDark" />
+
+            <TextView
+                android:id="@+id/symptoms_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/divider_two"
+                android:layout_marginTop="8dp"
+                android:text="@string/symptoms_title"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:textColor="@color/colorPrimaryDark"
+                tools:text="Symptoms" />
+
+            <TextView
+                android:id="@+id/symptoms_body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/symptoms_title"
+                android:layout_marginTop="8dp"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                android:textColor="@android:color/black"
+                tools:text="Fatigue, swollen feet" />
+
+            <View
+                android:id="@+id/divider_three"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/symptoms_body"
+                android:layout_marginTop="8dp"
+                android:background="@color/colorPrimaryDark" />
+
+            <TextView
+                android:id="@+id/weight_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/divider_three"
+                android:layout_marginTop="8dp"
+                android:text="@string/weight_title"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:textColor="@color/colorPrimaryDark"
+                tools:text="Weight" />
+
+            <TextView
+                android:id="@+id/weight_body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/weight_title"
+                android:layout_marginTop="8dp"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                android:textColor="@android:color/black"
+                tools:text="75kg" />
+
+            <View
+                android:id="@+id/divider_four"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/weight_body"
+                android:layout_marginTop="8dp"
+                android:background="@color/colorPrimaryDark" />
+
+            <TextView
+                android:id="@+id/my_baby_scan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/divider_four"
+                android:layout_marginTop="8dp"
+                android:text="@string/baby_scan_title"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:textColor="@color/colorPrimaryDark"
+                tools:text="My Baby Scan" />
+
+            <ImageView
+                android:id="@+id/scan_image"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_below="@+id/my_baby_scan"
+                android:layout_marginTop="8dp"
+                tools:src="@drawable/ic_profile_place_holder"
+                android:scaleType="centerCrop"/>
+
+            <View
+                android:id="@+id/divider_five"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/scan_image"
+                android:layout_marginTop="8dp"
+                android:background="@color/colorPrimaryDark" />
+
+            <TextView
+                android:id="@+id/pregnancy_belly"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/divider_five"
+                android:layout_marginTop="8dp"
+                android:text="@string/pregnancy_belly_title"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:textColor="@color/colorPrimaryDark"
+                tools:text="Pregnancy Belly/Photo" />
+
+            <ImageView
+                android:id="@+id/pregnancy_belly_image"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_below="@+id/pregnancy_belly"
+                android:layout_marginTop="8dp"
+                android:scaleType="centerCrop"
+                tools:src="@drawable/ic_profile_place_holder" />
+
+            <View
+                android:id="@+id/divider_six"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@+id/pregnancy_belly_image"
+                android:layout_marginTop="8dp"
+                android:background="@color/colorPrimaryDark" />
+
+            <TextView
+                android:id="@+id/personal_note"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/divider_six"
+                android:layout_marginTop="8dp"
+                android:text="@string/personal_note_text"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:textColor="@color/colorPrimaryDark"
+                tools:text="My Personal Note" />
+
+            <TextView
+                android:id="@+id/personal_note_body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/personal_note"
+                android:layout_marginTop="8dp"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                android:textColor="@android:color/black"
+                tools:text="As for me, I am quite busy these days on the Branscombe Systems Project. We are entering Phase Two now, and that is expected to run for three years, at least." />
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:padding="2dp">
+
+    <ImageView
+        android:id="@+id/gallery_image"
+        android:layout_width="match_parent"
+        android:layout_height="156dp"
+        android:layout_gravity="center"
+        android:contentDescription="@string/pregnancy"
+        android:maxHeight="156dp"
+        android:scaleType="centerCrop"
+        tools:src="@drawable/ic_my_pregnancy" />
+
+    <ImageView
+        android:id="@+id/share_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/gallery_image"
+        android:layout_marginRight="20dp"
+        android:foreground="?attr/selectableItemBackground"
+        android:src="@android:drawable/ic_menu_share" />
+
+
+</RelativeLayout>

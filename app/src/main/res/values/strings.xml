@@ -1,3 +1,240 @@
 <resources>
     <string name="app_name">Audrey Mumplus</string>
+    <string name="home">Home</string>
+    <string name="journal">My Journal</string>
+    <string name="chat">Chat</string>
+    <string name="reminder">Pill Reminder</string>
+    <string name="profile">Profile</string>
+
+
+    <string name="pregnancy">pregnancy</string>
+    <string name="craving_text">What are your cravings?</string>
+    <string name="mom_101">Mom_101</string>
+    <string name="hi_message">Hi %s</string>
+    <string name="user_firstname">%s</string>
+    <string name="text_content">Proin eget tortor risus. Proin eget tortor risus. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui.Proin eget tortor risus. Proin Proin eget tortor risus. Proin eget tortor risus. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui.</string>
+    <string name="todo">TODO</string>
+    <string name="type_something_to_contribute">type something to contribute</string>
+    <string name="general">General</string>
+    <string name="title">Title</string>
+    <string name="firstname">Firstname</string>
+    <string name="lastname">Lastname</string>
+    <string name="week">Week 15</string>
+    <string name="gender">Gender</string>
+    <string name="search_view_hint">enter search</string>
+    <string name="Select">select time</string>
+    <string name="PregnancyBelly">Pregnancy Belly</string>
+    <string name="weekly_progress">Weekly Progress</string>
+    <string name="Mygallery">My Gallery</string>
+    <string name="pregJournal">My Journal</string>
+    <string name="security">Security Questions</string>
+    <string name="Continue"><![CDATA[Continue]]></string>
+    <string name="input_error">Check field</string>
+    <string name="my_profile">My Profile</string>
+    <string name="about_us">About Us</string>
+    <string name="help">Help</string>
+    <string name="settings">Settings</string>
+    <string name="logout">Logout</string>
+    <string name="type_message">Enter message</string>
+    <string name="send_button">send button</string>
+    <string name="welcome_message">Glad to have you here, please fill\nin your details to continue</string>
+    <string name="user_email">%s</string>
+    <string name="week_title">(%s)</string>
+    <string name="todays_progress">%s %s</string>
+    <string name="todays_day_placeholder">(Day %s)</string>
+    <string name="journal_day"><b>Day %s</b></string>
+    <string name="All">All</string>
+    <string name="BabyScan">Baby Scan</string>
+    <string name="day_indicator">DAY %s</string>
+    <string name="week_indicator">%s Week(s) Pregnant</string>
+    <string name="detail_week_progress">Day %s\n%s\n%s\n%s</string>
+    <string name="surname">Surname</string>
+    <string name="other_name">Other Name</string>
+    <string name="address">Residential Address</string>
+    <string name="occupation">Occupation</string>
+    <string name="spouse_name">Full Name of Spouse (if Married)</string>
+    <string name="spouse_phone">Spouse Telephone Number</string>
+    <string name="hospital_name">Name of Hospital</string>
+    <string name="hospital_state">State (Hospital State)</string>
+    <string name="edd">Expected Date of Delivery (EDD)</string>
+    <string name="previous_children">No of Previous Children</string>
+    <string name="get_audrey">Get Audrey Pack</string>
+    <string name="submit">Submit</string>
+    <string name="telephone">Telephone Number</string>
+    <string name="age">Age</string>
+    <string name="email">Email Address</string>
+    <string name="state">state</string>
+    <string name="loading">Loading</string>
+    <string name="lga">lga</string>
+    <string name="forum_member_counter">%s Members</string>
+    <string name="user_image">user image</string>
+    <string name="mood">Mood: %s</string>
+    <string name="empty_state_preg_text">To get started on your\npregnancy journey</string>
+    <string name="get_audrey_text">Please fill the form below to get AudreyPack.</string>
+    <string name="user_lastname">%s</string>
+    <string name="user_phone">%s</string>
+    <string name="contact_us">Contact Us</string>
+    <string name="file_report">file a report</string>
+    <string name="help_message">Experiencing an issue on the app ? Let us know how we can help.</string>
+    <string name="message_us">Message Us</string>
+    <string name="message_us_msg">You can tweet at us on <![CDATA[<b><a>@Audreypack</a></b>]]> or you can send us an email: <![CDATA[<b><a>help@audreypack.com</a></b>]]></string>
+    <string name="our_mission">Our Mission</string>
+    <string name="mission_text"><![CDATA[Our main focus at  The Audrey Pack is the reduction of maternal and child mortality rate. For us, achieving the Millennium development Goals (MDG) 4 & 5, set by the United Nations is our driving force. At the same time helping brands build a strong product brand equity by using the Audrey Pack Platform. We distribute free packs to pregnant and new mums, giving mothers the opportunity to try before they buy the best of baby care and household products]]></string>
+    <string name="registered_mum_txt">20,000\nRegistered Mums.</string>
+    <string name="partner_text">4\nPartners.</string>
+    <string name="distributed_text">1,000,000\nDistributed Packs.</string>
+    <string name="journal_date">My journal on %s</string>
+    <string name="cravings_title">Cravings</string>
+    <string name="symptoms_title">Symptoms</string>
+    <string name="weight_title">Weight</string>
+    <string name="baby_scan_title">My Baby Scan</string>
+    <string name="pregnancy_belly_title">Pregnancy Belly/Photo</string>
+    <string name="personal_note_text">My Personal Note</string>
+    <string name="audrey_signup_guide">Please fill the form below to SignUp for Audrey pack.</string>
+    <string name="expectedDateOfDelivery">Expected Date Of Delivery: %s</string>
+    <string name="user_name">%s %s</string>
+    <string name="no_forum_found">No Forum Found</string>
+    <string name="weekly_tips">WEEKLY TIPS</string>
+    <string name="channel_name">Audrey chat channel</string>
+    <string name="channel_description">Chats from Audrey Pack App</string>
+    <string name="notification_body"><![CDATA[Details: %s<br/> Location: %s]]></string>
+    <string name="notification_body_pills"><![CDATA[Instructions: %s<br/> Tablets: %s]]></string>
+    <string name="delete_reminder">Delete</string>
+    <string name="appointment_details">Details</string>
+    <string name="mute_alarm">Mute</string>
+    <string name="unmute_alarm">Unmute</string>
+
+    <string-array name="select">
+        <item>@string/title</item>
+    </string-array>
+
+    <string-array name="title">
+        <item>Mrs</item>
+        <item>Miss</item>
+        <item>Ms</item>
+    </string-array>
+
+    <string-array name="Gender">
+        <item>Female</item>
+    </string-array>
+
+    <string-array name="Security">
+        <item>@string/security</item>
+    </string-array>
+
+
+    <string-array name="Select">
+        <item>@string/Select</item>
+    </string-array>
+
+    <string-array name="week">
+        <item>@string/week</item>
+    </string-array>
+
+    <string-array name="gallery_options">
+        <item>@string/All</item>
+        <item>@string/PregnancyBelly</item>
+        <item>@string/BabyScan</item>
+    </string-array>
+
+    <string-array name="chat_groups">
+        <item>General</item>
+        <item>Pregnant Mums</item>
+    </string-array>
+
+    <string-array name="week_history">
+        <item>All</item>
+        <item>Week 1</item>
+        <item>Week 2</item>
+        <item>Week 3</item>
+        <item>Week 4</item>
+        <item>Week 5</item>
+        <item>Week 6</item>
+        <item>Week 7</item>
+        <item>Week 8</item>
+        <item>Week 9</item>
+        <item>Week 10</item>
+        <item>Week 11</item>
+        <item>Week 12</item>
+        <item>Week 13</item>
+        <item>Week 14</item>
+        <item>Week 15</item>
+        <item>Week 16</item>
+        <item>Week 17</item>
+        <item>Week 18</item>
+        <item>Week 19</item>
+        <item>Week 20</item>
+        <item>Week 21</item>
+        <item>Week 22</item>
+        <item>Week 23</item>
+        <item>Week 24</item>
+        <item>Week 25</item>
+        <item>Week 26</item>
+        <item>Week 27</item>
+        <item>Week 28</item>
+        <item>Week 29</item>
+        <item>Week 30</item>
+        <item>Week 31</item>
+        <item>Week 32</item>
+        <item>Week 33</item>
+        <item>Week 34</item>
+        <item>Week 35</item>
+        <item>Week 36</item>
+        <item>Week 37</item>
+        <item>Week 38</item>
+        <item>Week 39</item>
+        <item>Week 40</item>
+        <item>Week 41</item>
+        <item>Week 42</item>
+    </string-array>
+
+    <string-array name="day_week">
+        <item>Day(s)</item>
+        <item>Week(s)</item>
+    </string-array>
+
+    <string-array name="states">
+        <item>Abia</item>
+        <item>Adamawa</item>
+        <item>Akwa Ibom</item>
+        <item>Anambra</item>
+        <item>Bauchi</item>
+        <item>Bayelsa</item>
+        <item>Benue</item>
+        <item>Borno</item>
+        <item>Cross River</item>
+        <item>Delta</item>
+        <item>Ebonyi</item>
+        <item>Enugu</item>
+        <item>Edo</item>
+        <item>Ekiti</item>
+        <item>Gombe</item>
+        <item>Imo</item>
+        <item>Jigawa</item>
+        <item>Kaduna</item>
+        <item>Kano</item>
+        <item>Katsina</item>
+        <item>Kebbi</item>
+        <item>Kogi</item>
+        <item>Kwara</item>
+        <item>Lagos</item>
+        <item>Nasarawa</item>
+        <item>Niger</item>
+        <item>Ogun</item>
+        <item>Ondo</item>
+        <item>Osun</item>
+        <item>Oyo</item>
+        <item>Plateau</item>
+        <item>Rivers</item>
+        <item>Sokoto</item>
+        <item>Taraba</item>
+        <item>Yobe</item>
+        <item>Zamfara</item>
+        <item>FCT</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
 </resources>
