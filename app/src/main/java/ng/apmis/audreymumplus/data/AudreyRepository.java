@@ -18,6 +18,7 @@ import ng.apmis.audreymumplus.data.network.MumplusNetworkDataSource;
 import ng.apmis.audreymumplus.ui.Appointments.Appointment;
 import ng.apmis.audreymumplus.ui.Chat.ChatContextModel;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumModel;
+import ng.apmis.audreymumplus.ui.kickcounter.KickCounterModel;
 import ng.apmis.audreymumplus.ui.pills.PillModel;
 import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.JournalModel;
 import ng.apmis.audreymumplus.utils.Week;
@@ -205,6 +206,14 @@ public class AudreyRepository {
 
     public LiveData<List<PillModel>> getAllPills () {
         return mJournalDao.getAllPills();
+    }
+
+    public LiveData<List<KickCounterModel>> getAllKickCount () {
+        return mJournalDao.getAllKickData();
+    }
+
+    public long insertKickCount (KickCounterModel kickCounterModel) {
+        return mJournalDao.insertKickCounter(kickCounterModel);
     }
 
 

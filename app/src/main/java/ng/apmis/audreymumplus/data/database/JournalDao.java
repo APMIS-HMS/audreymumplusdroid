@@ -14,6 +14,7 @@ import java.util.List;
 import ng.apmis.audreymumplus.ui.Appointments.Appointment;
 import ng.apmis.audreymumplus.ui.Chat.ChatContextModel;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumModel;
+import ng.apmis.audreymumplus.ui.kickcounter.KickCounterModel;
 import ng.apmis.audreymumplus.ui.pills.PillModel;
 import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.JournalModel;
 
@@ -107,4 +108,10 @@ public interface JournalDao {
 
     @Query("SELECT * FROM pillreminder")
     LiveData<List<PillModel>> getAllPills();
+
+    @Query("SELECT * FROM kickcounter")
+    LiveData<List<KickCounterModel>> getAllKickData ();
+
+    @Insert()
+    long insertKickCounter(KickCounterModel kickCounterModel);
 }

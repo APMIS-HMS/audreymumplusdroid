@@ -44,6 +44,7 @@ import ng.apmis.audreymumplus.ui.Appointments.AppointmentFragment;
 import ng.apmis.audreymumplus.ui.Chat.ChatContextFragment;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumFragment;
 import ng.apmis.audreymumplus.ui.HelpFragment;
+import ng.apmis.audreymumplus.ui.kickcounter.KickCounterFragment;
 import ng.apmis.audreymumplus.ui.pills.AddPillReminder;
 import ng.apmis.audreymumplus.ui.pills.PillReminderFragment;
 import ng.apmis.audreymumplus.ui.pregnancymodule.PregnancyFragment;
@@ -76,6 +77,9 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
     @BindView(R.id.fab)
     FloatingActionButton fab;
+
+    @BindView(R.id.launch_kick_counter)
+    FloatingActionButton launchKickCounter;
 
     FragmentManager mFragmentManager;
     boolean goBackOrShowNavigationView = false;
@@ -113,6 +117,13 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
                 })
         );
+
+        launchKickCounter.setOnClickListener((view) -> {
+            mFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, new KickCounterFragment())
+                    .addToBackStack("Kick-Counter")
+                    .commit();
+        });
 
         getPersonLive().observe(this, theUser -> {
             if (theUser != null) {
@@ -313,6 +324,10 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         }
     }
 
+    public void kickCounterFabVisibility (boolean show) {
+        launchKickCounter.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
 
     private void selectFragment(MenuItem item) {
 
@@ -339,7 +354,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
             fm.popBackStack("current", FragmentManager.POP_BACK_STACK_INCLUSIVE);
             fm.beginTransaction()
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .replace(R.id.fragment_container, fragment)
+                    .add(R.id.fragment_container, fragment)
                     .commit();
             return;
         }

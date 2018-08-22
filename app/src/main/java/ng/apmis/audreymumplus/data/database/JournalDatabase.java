@@ -11,6 +11,7 @@ import android.content.Context;
 import ng.apmis.audreymumplus.ui.Appointments.Appointment;
 import ng.apmis.audreymumplus.ui.Chat.ChatContextModel;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumModel;
+import ng.apmis.audreymumplus.ui.kickcounter.KickCounterModel;
 import ng.apmis.audreymumplus.ui.pills.PillModel;
 import ng.apmis.audreymumplus.ui.pills.PillsTypeConverter;
 import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.JournalModel;
@@ -18,7 +19,7 @@ import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.JournalModel;
 /**
  * Created by Thadeus-APMIS on 5/15/2018.
  */
-@Database(entities = {JournalModel.class, Person.class, Appointment.class, ChatForumModel.class, ChatContextModel.class, PillModel.class}, version = 2, exportSchema = false)
+@Database(entities = {JournalModel.class, Person.class, Appointment.class, ChatForumModel.class, ChatContextModel.class, PillModel.class, KickCounterModel.class}, version = 3, exportSchema = false)
 @TypeConverters({JournalConverters.class, PillsTypeConverter.class})
 public abstract class JournalDatabase extends RoomDatabase {
     public abstract JournalDao dailyJournalDao();
@@ -35,7 +36,7 @@ public abstract class JournalDatabase extends RoomDatabase {
                 if (sInstance == null) {
                     sInstance = Room.databaseBuilder(context.getApplicationContext(),
                             JournalDatabase.class, JournalDatabase.DATABASE_NAME)
-                            .addMigrations(MIGRATION_1_2)
+                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                             .build();
                 }
             }
@@ -96,6 +97,19 @@ public abstract class JournalDatabase extends RoomDatabase {
 
         }
     };
+
+    static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            // Create the new table
+
+            database.execSQL(
+                    "CREATE TABLE kickcounter ('_id' INTEGER PRIMARY KEY NOT NULL, kicks INTEGER NOT NULL, week TEXT, duration TEXT, date INTEGER NOT NULL)");
+
+
+        }
+    };
+
 /*
     //DATA migration code for changing column fields
     static final Migration MIGRATION_2_3 = new Migration(2, 3) {

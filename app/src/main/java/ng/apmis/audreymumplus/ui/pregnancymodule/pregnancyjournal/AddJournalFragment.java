@@ -82,7 +82,7 @@ public class AddJournalFragment extends Fragment {
     Uri uri;
 
     ImageView imageViewToUpdate;
-    String uriToSet, pregScan, pregBelly = "";
+    String uriToSet, pregScan, babyBump = "";
     String imageFilePath;
 
     String day;
@@ -100,7 +100,6 @@ public class AddJournalFragment extends Fragment {
         ((DashboardActivity) getActivity()).getPersonLive().observe(activity, person -> {
             week = String.valueOf(person.getWeek());
             day = String.valueOf(person.getDay());
-            Log.v("day",String.valueOf(day));
         });
 
 
@@ -115,7 +114,7 @@ public class AddJournalFragment extends Fragment {
                 String symtom = symtoms.getText().toString();
                 String baby = babyMovement.getText().toString();
 
-                JournalModel newJournal = new JournalModel(mood, crav, heavy, symtom, pregScan, pregBelly, baby, date, day, Week.valueOf(week.replace(" ","")).getWeek());
+                JournalModel newJournal = new JournalModel(mood, crav, heavy, symtom, pregScan, babyBump, baby, date, day, Week.valueOf(week.replace(" ","")).getWeek());
 
                 AudreyMumplus.getInstance().diskIO().execute(() ->
                         InjectorUtils.provideRepository(getActivity()).saveJournal(newJournal));
@@ -305,7 +304,7 @@ public class AddJournalFragment extends Fragment {
                     pregScan = uri.toString();
                 } else {
                     Toast.makeText(getActivity(), "Belly scan " + uri.toString(), Toast.LENGTH_SHORT).show();
-                    pregBelly = uri.toString();
+                    babyBump = uri.toString();
                 }
                 imageViewToUpdate.setImageBitmap(bitmap);
 

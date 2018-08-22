@@ -179,7 +179,7 @@
                             android:paddingTop="20dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Upload pregnancy belly"
+                            android:text="Upload baby bump"
                             android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
                             android:paddingLeft="10dp"
                             android:paddingBottom="4dp"
