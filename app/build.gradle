@@ -2,16 +2,25 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
+    signingConfigs {
+        production_signing {
+            keyAlias 'audreypack'
+            keyPassword 'android2018'
+            storeFile file('C:/Users/ainoj/OneDrive - APMIS Health Management Systems Ltd/audreypackkeystore.jks')
+            storePassword 'android2018'
+        }
+    }
     compileSdkVersion 26
     defaultConfig {
         applicationId "ng.apmis.audreymumplus"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 3
+        versionCode 4
         versionName "1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
+        signingConfig signingConfigs.production_signing
     }
     buildTypes {
         release {
@@ -23,18 +32,17 @@ android {
         targetCompatibility 1.8
         sourceCompatibility 1.8
     }
-
     lintOptions {
         checkReleaseBuilds false
         // Or, if you prefer, you can continue to check for errors in release builds,
         // but continue the build even when errors are found:
         abortOnError false
     }
-
     testOptions {
         unitTests.returnDefaultValues = true
     }
-
+    productFlavors {
+    }
 }
 
 dependencies {
@@ -59,7 +67,6 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
     compile 'com.github.vipulasri:timelineview:1.0.6'
     compile 'com.shawnlin:number-picker:2.4.6'
-
     def room_version = "1.1.0"
     implementation "android.arch.persistence.room:runtime:$room_version"
     annotationProcessor "android.arch.persistence.room:compiler:$room_version"

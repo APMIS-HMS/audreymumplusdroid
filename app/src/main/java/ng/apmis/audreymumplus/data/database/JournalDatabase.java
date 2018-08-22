@@ -88,7 +88,7 @@ public abstract class JournalDatabase extends RoomDatabase {
 
             // Create the new table
             database.execSQL(
-                    "CREATE TABLE appointments ('_id' INTEGER PRIMARY KEY NOT NULL, title TEXT, appointmentAddress TEXT, appointmentDetails TEXT, appointmentTime INTEGER NOT NULL, muteAlarm INTEGER NOT NULL default 1)");
+                    "CREATE TABLE appointments ('_id' INTEGER PRIMARY KEY NOT NULL, title TEXT, appointmentAddress TEXT, appointmentDetails TEXT, appointmentTime INTEGER NOT NULL, muteAlarm INTEGER NOT NULL)");
 
             database.execSQL(
                     "CREATE TABLE pillreminder ('_id' INTEGER PRIMARY KEY NOT NULL, pillName TEXT, qtyPerTime TEXT, frequency TEXT, unit TEXT, duration TEXT, instruction TEXT, pillTimes TEXT, muteReminder INTEGER NOT NULL)"

@@ -13,6 +13,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -39,6 +40,8 @@ import static java.lang.Integer.parseInt;
  */
 
 public class AddAppointmentFragment extends Fragment {
+
+    private static final String TAG = AddAppointmentFragment.class.getSimpleName();
 
     @BindView(R.id.calendar_view)
     CalendarView calendarView;
@@ -83,7 +86,11 @@ public class AddAppointmentFragment extends Fragment {
 
         saveAppointment.setOnClickListener((view) -> {
             if (checkFields()) {
-                insertAppointment();
+                try {
+                    insertAppointment();
+                } catch (NullPointerException e) {
+                    Log.e(TAG, e.getMessage());
+                }
             }
         });
 
