@@ -52,7 +52,7 @@ public class AudreyMumplus {
         private Handler mainThreadHandler = new Handler(Looper.getMainLooper());
 
         @Override
-        public void execute(@NonNull Runnable command) {
+        public void execute(@NonNull Runnable command) { 
             mainThreadHandler.post(command);
         }
     }
