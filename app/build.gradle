@@ -6,7 +6,7 @@ android {
         production_signing {
             keyAlias 'audreypack'
             keyPassword 'android2018'
-            storeFile file('C:/Users/ainoj/OneDrive - APMIS Health Management Systems Ltd/audreypackkeystore.jks')
+            storeFile file('usr/audreypackkeystore.jks')
             storePassword 'android2018'
         }
     }
