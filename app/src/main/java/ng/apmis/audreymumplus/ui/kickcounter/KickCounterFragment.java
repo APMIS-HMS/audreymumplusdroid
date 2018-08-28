@@ -52,6 +52,8 @@ public class KickCounterFragment extends Fragment {
 
     long startTime;
 
+    private int mShortAnimationDuration;
+
     public KickCounterFragment() {
         // Required empty public constructor
     }
@@ -62,6 +64,18 @@ public class KickCounterFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_kick_counter, container, false);
         ButterKnife.bind(this, rootView);
+
+
+        mShortAnimationDuration = getResources().getInteger(
+                android.R.integer.config_shortAnimTime);
+
+        addKick.setAlpha(0f);
+        addKick.setVisibility(View.VISIBLE);
+
+        addKick.animate()
+                .alpha(1f)
+                .setDuration(mShortAnimationDuration)
+                .setListener(null);
 
 
 

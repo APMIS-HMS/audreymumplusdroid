@@ -91,7 +91,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
     CircularImageView profileCircularImageView;
 
     public Person globalPerson;
-
+    private int mShortAnimationDuration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +104,9 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
         setActionBarButton(false, getString(R.string.app_name));
         queue = Volley.newRequestQueue(this);
+
+        mShortAnimationDuration = getResources().getInteger(
+                android.R.integer.config_shortAnimTime);
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         View headerLayout = navigationView.getHeaderView(0);
@@ -141,10 +144,8 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                     alarmIntent.setAction("update-week");
 
                     Calendar calendar = Calendar.getInstance();
-
-                    calendar.set(Calendar.HOUR_OF_DAY, 23);
-                    calendar.set(Calendar.MINUTE, 59);
-                    calendar.set(Calendar.SECOND, 59);
+                    calendar.setTimeInMillis(System.currentTimeMillis());
+                    calendar.set(Calendar.HOUR_OF_DAY, 0);
 
                     AlarmManager alarmManager =  new AlarmMangerSingleton(this).getInstance().getAlarmManager();
 
@@ -152,7 +153,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
                     alarmManager.cancel(pendingIntent);
 
-                    alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+                    alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
 
                     sharedPreferencesManager.setJustLoggedIn(false);
 
@@ -312,7 +313,14 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
     public void fabVisibility (boolean show) {
         if (show) {
+            fab.setAlpha(0f);
             fab.setVisibility(View.VISIBLE);
+
+            fab.animate()
+                    .alpha(1f)
+                    .setDuration(mShortAnimationDuration)
+                    .setListener(null);
+
             fab.setOnClickListener((view -> {
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, new AddJournalFragment())

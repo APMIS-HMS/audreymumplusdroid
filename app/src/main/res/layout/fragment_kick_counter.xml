@@ -46,7 +46,8 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:layout_margin="20dp"
-            android:src="@drawable/ic_baby_foot"/>
+            android:src="@drawable/ic_baby_foot"
+            android:visibility="gone"/>
 
     </RelativeLayout>
 
