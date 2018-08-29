@@ -60,14 +60,15 @@ public interface JournalDao {
     @Insert()
     void insertJournal (JournalModel journalModel);
 
-    @Update()
+    //@Update(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void updatePerson (Person person);
 
     @Insert()
     void insertPerson (Person person);
 
     @Query("DELETE FROM person")
-    void deletePerson ();
+    void deletePerson();
 
     @Query("SELECT * FROM person")
     LiveData<Person> getPerson();
