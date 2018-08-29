@@ -200,7 +200,9 @@ public class MumplusNetworkDataSource {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+//                        Log.e("TAGGED", job.toString());
                         Person updatedPerson = new Gson().fromJson(job.toString(), Person.class);
+//                        Log.e("TAGGED", "Updated person "+updatedPerson.getFirstName() +" "+updatedPerson.getId());
                         AudreyMumplus.getInstance().diskIO().execute(() -> {
                                 InjectorUtils.provideRepository(mContext).updatePerson(updatedPerson);
                         });
@@ -265,7 +267,10 @@ public class MumplusNetworkDataSource {
                         Toast.makeText(mContext, "Update update successful", Toast.LENGTH_SHORT).show();
                     },
                     error -> {
-                        Log.v("profile update err", error.toString());
+                        if (error.getMessage() != null){
+                            Log.e("profile update err", "message: " +error.getMessage());
+                        }
+                        Log.e("profile update err", "message: " +error.toString());
                         Toast.makeText(mContext, "There was an error updating profile", Toast.LENGTH_SHORT).show();
                         pd.dismiss();
                     }) {
