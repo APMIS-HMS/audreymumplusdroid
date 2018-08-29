@@ -6,6 +6,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -114,7 +115,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         AudreyMumplus.getInstance().diskIO().execute(() -> InjectorUtils.provideRepository(this)
                 .getPerson().observe(this, person -> {
                     this.person.postValue(person == null ? new Person("", "", "", "", Week.Week0.week, "", "", "", "", "", "", 0) : person);
-
+                    //Log.e("TAGGED", "Called FOR "+ person.getFirstName());
                 })
         );
 
@@ -159,6 +160,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 /*Set repeat alarm for week update end*/
                 }
 
+                Log.e("TAGGED", "Called as " + theUser.getFirstName() +" "+theUser.getId());
                 Glide.with(DashboardActivity.this)
                         .load(theUser.getProfileImage() != null ? theUser.getProfileImage() : R.drawable.ic_profile_place_holder)
                         .into(profileCircularImageView);
