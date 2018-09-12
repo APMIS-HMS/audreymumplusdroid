@@ -3,9 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/audreymumplus.iml" filepath="$PROJECT_DIR$/audreymumplus.iml" />
       <module fileurl="file://$PROJECT_DIR$/audreymumplusdroid.iml" filepath="$PROJECT_DIR$/audreymumplusdroid.iml" />
-      <module fileurl="file://C:/Users/ainoj/Documents/Apmis/audreymumplus/audreymumplusdroid.iml" filepath="C:/Users/ainoj/Documents/Apmis/audreymumplus/audreymumplusdroid.iml" />
     </modules>
   </component>
 </project>

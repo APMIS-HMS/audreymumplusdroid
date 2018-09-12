@@ -235,6 +235,13 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="audrey_email">help@audreypack.com</string>
+    <string name="audrey_facebook">theaudreypack</string>
+    <string name="audrey_twitter">\@theaudreypack</string>
+    <string name="audrey_instagram">\@theaudreypack2</string>
+    <string name="audrey_facebook_uri">https://www.facebook.com/theaudreypack/</string>
+    <string name="audrey_twitter_uri">https://twitter.com/theaudreypack</string>
+    <string name="audrey_instagram_uri">https://www.instagram.com/theaudreypack2/</string>
 
 
 </resources>

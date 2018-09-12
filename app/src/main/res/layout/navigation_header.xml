@@ -4,11 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="30dp"
-    android:layout_marginTop="16dp"
+    android:layout_marginBottom="10dp"
+    android:background="@drawable/slant_background"
     android:gravity="bottom"
     android:orientation="vertical"
-    android:padding="20dp"
+    android:paddingTop="50dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:paddingBottom="50dp"
     android:theme="@style/AppTheme">
 
     <com.mikhaellopez.circularimageview.CircularImageView

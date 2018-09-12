@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 
@@ -30,8 +31,28 @@ public class HelpFragment extends Fragment {
     Button reportButton;
     AppCompatActivity activity;
 
-    @BindView(R.id.tweet_email)
-    TextView emailTweet;
+    @OnClick(R.id.contact_facebook)
+    void facebookContact(){
+        Intent openFacebook = new Intent(Intent.ACTION_VIEW);
+        openFacebook.setData(Uri.parse(getString(R.string.audrey_facebook_uri)));
+        startActivity(openFacebook);
+    }
+
+    @OnClick(R.id.contact_twitter)
+    void twitterContact(){
+        Intent openTwitter = new Intent(Intent.ACTION_VIEW);
+        openTwitter.setData(Uri.parse(getString(R.string.audrey_twitter_uri)));
+        startActivity(openTwitter);
+    }
+
+    @OnClick(R.id.contact_instagram)
+    void instagramContact(){
+        Intent openInstagram = new Intent(Intent.ACTION_VIEW);
+        openInstagram.setData(Uri.parse(getString(R.string.audrey_instagram_uri)));
+        startActivity(openInstagram);
+    }
+
+
 
     @Nullable
     @Override
@@ -39,7 +60,7 @@ public class HelpFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_help, container, false);
         ButterKnife.bind(this, rootView);
 
-        emailTweet.setText(Html.fromHtml(getString(R.string.message_us_msg)));
+
 
         reportButton.setOnClickListener((view) -> {
 

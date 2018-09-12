@@ -1,28 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item>
-        <shape android:shape="rectangle" >
-            <solid android:color="#fff"/>
-        </shape>
-    </item>
- <!--   <item>
-        <rotate
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:fromDegrees="45"
-            android:pivotX="85%"
-            android:pivotY="135%">
-            <shape>
-                <solid android:color="@color/colorPrimary" />
 
-            </shape>
-        </rotate>
-    </item>-->
-    <item>
+
+    <!--<item android:right="-15dp"-->
+        <!--android:left="-15dp">-->
+        <!--<rotate-->
+            <!--android:fromDegrees="25.65"-->
+            <!--android:pivotX="124%"-->
+            <!--android:pivotY="98%" >-->
+            <!--<shape-->
+                <!--android:shape="rectangle">-->
+                <!--<solid-->
+                    <!--android:color="@color/colorPrimaryDark"/>-->
+            <!--</shape>-->
+        <!--</rotate>-->
+    <!--</item>-->
+    <item android:right="-1000dp">
         <rotate
             xmlns:android="http://schemas.android.com/apk/res/android"
-            android:fromDegrees="85"
-            android:pivotX="75%"
-            android:pivotY="20%">
+            android:fromDegrees="-6"
+            android:pivotX="-5%"
+            android:pivotY="100%">
             <shape android:shape="rectangle">
                 <solid android:color="@color/colorPrimaryDark" />
 

@@ -160,7 +160,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 /*Set repeat alarm for week update end*/
                 }
 
-                Log.e("TAGGED", "Called as " + theUser.getFirstName() +" "+theUser.getId());
+                Log.e("TAGGED", "Called in dash observe as " + theUser.getFirstName() +" "+theUser.getId());
                 Glide.with(DashboardActivity.this)
                         .load(theUser.getProfileImage() != null ? theUser.getProfileImage() : R.drawable.ic_profile_place_holder)
                         .into(profileCircularImageView);
@@ -201,13 +201,13 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                     .setReorderingAllowed(true)
                     .commit();
 
-            Fragment chatFragement =  new ChatContextFragment();
+            Fragment chatFragment =  new ChatContextFragment();
             Bundle chatBundle = new Bundle();
             chatBundle.putString("forumName", getIntent().getExtras().getString("forumName"));
-            chatFragement.setArguments(chatBundle);
+            chatFragment.setArguments(chatBundle);
 
             mFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, chatFragement)
+                    .replace(R.id.fragment_container, chatFragment)
                     .addToBackStack(null)
                     .setReorderingAllowed(true)
                     .commit();
