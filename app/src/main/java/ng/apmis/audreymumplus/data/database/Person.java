@@ -2,6 +2,7 @@ package ng.apmis.audreymumplus.data.database;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
 import ng.apmis.audreymumplus.utils.Week;
@@ -10,7 +11,7 @@ import ng.apmis.audreymumplus.utils.Week;
  * Created by Thadeus on 6/21/2018.
  */
 
-@Entity(tableName = "person")
+@Entity(tableName = "person", indices = {@Index(value = {"_id"}, unique = true)})
 public class Person {
     @PrimaryKey(autoGenerate = true)
     private int id;

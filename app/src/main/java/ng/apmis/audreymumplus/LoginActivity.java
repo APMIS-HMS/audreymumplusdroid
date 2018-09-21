@@ -133,6 +133,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         AudreyMumplus.getInstance().networkIO().execute(() -> {
 
+            //Put parameters in JSON Object
             JSONObject job = new JSONObject();
             try {
                 job.put("email", email);

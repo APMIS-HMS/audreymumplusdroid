@@ -79,13 +79,10 @@
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:background="@drawable/slant_background"
         android:layout_gravity="start"
-        android:paddingLeft="10dp"
         android:fitsSystemWindows="true"
         app:menu="@menu/drawer_view"
-        app:headerLayout="@layout/navigation_header"
-        android:paddingStart="10dp">
+        app:headerLayout="@layout/navigation_header">
 
         <!--FOR CUSTOM NAVIGATION ITEMS PASS HERE AND REMOVE MENU AND HEADER UP FROM NAVIGATIONVIEW-->
 
@@ -95,7 +92,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:clickable="true"
-            android:focusable="true">
+            android:focusable="true"
+            android:background="@android:color/white">
 
             <View
                 android:layout_width="match_parent"
@@ -120,6 +118,7 @@
                 android:layout_height="48dp"
                 android:gravity="center"
                 android:textColor="@color/colorPrimary" />
+
         </RelativeLayout>
 
     </android.support.design.widget.NavigationView>

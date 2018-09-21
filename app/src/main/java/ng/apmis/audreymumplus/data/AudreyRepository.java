@@ -75,6 +75,7 @@ public class AudreyRepository {
     }
 
     public void updatePerson (Person person) {
+        Log.e("TAGGED", "Updated person DAO "+person.getFirstName()  +" "+person.getId());
         mJournalDao.updatePerson(person);
     }
 

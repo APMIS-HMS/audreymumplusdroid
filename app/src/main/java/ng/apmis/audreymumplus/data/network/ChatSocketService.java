@@ -68,6 +68,7 @@ public class ChatSocketService extends IntentService {
                 try {
                     newChat = new JSONObject(cht);
                     mSocket.emit("chat", newChat);
+                    Log.d("socket", newChat + " was emitted");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -78,11 +79,11 @@ public class ChatSocketService extends IntentService {
                 try {
                     JSONObject getChats = new JSONObject().put("forumName", forumName);
                     mSocket.emit("getChats", getChats);
+                    Log.d("socket", getChats+" chats were emitted");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-
         }
 
         if (intent.getAction().equals("get-forums")) {
@@ -93,6 +94,7 @@ public class ChatSocketService extends IntentService {
 
     Emitter.Listener onCreated() {
         return args -> {
+            Log.d("Socket", "Notification should be here");
             JSONObject jsonObject = (JSONObject) args[0];
             try {
                 ChatContextModel oneChat = new Gson().fromJson(jsonObject.getJSONObject("message").toString(), ChatContextModel.class);
@@ -143,6 +145,8 @@ public class ChatSocketService extends IntentService {
 
     Emitter.Listener getChats() {
         return args -> {
+
+            Log.d("Socket", "All chats should be received here");
 
             ArrayList<ChatContextModel> allchats = new ArrayList<>();
             try {

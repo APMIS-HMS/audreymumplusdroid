@@ -2,11 +2,13 @@ package ng.apmis.audreymumplus.ui.profile;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.arch.lifecycle.Observer;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -32,6 +34,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.mikhaellopez.circularimageview.CircularImageView;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,6 +50,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.R;
+import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 
@@ -99,22 +103,26 @@ public class ProfileFragment extends Fragment {
 
         ButterKnife.bind(this, rootView);
 
-
         AudreyMumplus.getInstance().diskIO().execute(() -> {
 
-            ((DashboardActivity) getActivity()).getPersonLive().observe(this, userDetails -> {
-                if (userDetails != null) {
-                    Log.v("User Details", userDetails.toString());
-                    firstNameEdittext.setText(getContext().getString(R.string.user_firstname, userDetails.getFirstName()));
-                    lastNameEdittext.setText(getContext().getString(R.string.user_lastname, userDetails.getLastName()));
-                    userEmail.setText(getContext().getString(R.string.user_email, userDetails.getEmail()));
-                    phoneEdittext.setText(getContext().getString(R.string.user_phone, userDetails.getPrimaryContactPhoneNo()));
-                    updateBiodataPersonId = userDetails.getPersonId();
-                    updateProfileDbId = userDetails.get_id();
+            ((DashboardActivity) getActivity()).getPersonLive().observe(this, new Observer<Person>() {
+                @Override
+                public void onChanged(@Nullable Person userDetails) {
+                    if (userDetails != null) {
+                        Log.v("User Details", userDetails.toString());
+                        firstNameEdittext.setText(ProfileFragment.this.getContext().getString(R.string.user_firstname, userDetails.getFirstName()));
+                        lastNameEdittext.setText(ProfileFragment.this.getContext().getString(R.string.user_lastname, userDetails.getLastName()));
+                        userEmail.setText(ProfileFragment.this.getContext().getString(R.string.user_email, userDetails.getEmail()));
+                        phoneEdittext.setText(ProfileFragment.this.getContext().getString(R.string.user_phone, userDetails.getPrimaryContactPhoneNo()));
+                        updateBiodataPersonId = userDetails.getPersonId();
+                        updateProfileDbId = userDetails.get_id();
+                        Log.e("TAGGED", "Called frag as " + userDetails.getFirstName() +" "+userDetails.getId());
 
-                    Glide.with(getContext())
-                            .load(userDetails.getProfileImage() != null ? userDetails.getProfileImage() : R.drawable.ic_profile_place_holder)
-                            .into(userImage);
+
+                        Glide.with(ProfileFragment.this.getContext())
+                                .load(userDetails.getProfileImage() != null ? userDetails.getProfileImage() : R.drawable.ic_profile_place_holder)
+                                .into(userImage);
+                    }
                 }
             });
         });
@@ -234,11 +242,6 @@ public class ProfileFragment extends Fragment {
             Toast.makeText(getActivity(), "There's a problem with camera", Toast.LENGTH_SHORT).show();
         }
 
-
-
-
-
-
     }
 
     private void galleryAddPic() {
@@ -292,73 +295,54 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
-            ImageCropFunction();
+            cropImage();
 
         } else if (requestCode == GALLERY_REQUEST_CODE) {
 
             if (data != null) {
                 uri = data.getData();
-                ImageCropFunction();
-
+                cropImage();
             }
-        } else if (requestCode == CROP_REQUEST_CODE) {
+
+        } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
 
             if (data != null) {
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                Uri resultUri = result.getUri();
 
-                Bundle bundle = data.getExtras();
+                File auxFile = new File(resultUri.getPath());
 
-                Bitmap bitmap = bundle.getParcelable("data");
+                Bitmap bitmap = BitmapFactory.decodeFile(auxFile.getAbsolutePath());
+                userImage.setImageBitmap(bitmap);
 
+                //compressed bitmap quality to 25%
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 25, stream);
 
                 byte[] byteArray = stream.toByteArray();
 
                 size = byteArray.length / 1024;
 
-               // Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                // Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
 
-                String imageBase64String = Base64.encodeToString(byteArray, Base64.DEFAULT);
+                String imageBase64String = Base64.encodeToString(byteArray, Base64.NO_WRAP);
 
-               // Log.v("Base 64 string", imageBase64String);
+                Log.v("TAGGED", imageBase64String);
 
-               uploadImage(imageBase64String);
-
+                uploadImage(imageBase64String);
 
             }
+
         }
 
     }
 
-    public void ImageCropFunction() {
-
-
-        // Image Crop Code
-        try {
-            cropIntent = new Intent("com.android.camera.action.CROP");
-
-            cropIntent.setDataAndType(uri, "image/*");
-
-            cropIntent.putExtra("crop", "true");
-            cropIntent.putExtra("outputX", 440);
-            cropIntent.putExtra("outputY", 440);
-            cropIntent.putExtra("aspectX", 4);
-            cropIntent.putExtra("aspectY", 4);
-            cropIntent.putExtra("scaleUpIfNeeded", true);
-            cropIntent.putExtra("return-data", true);
-
-
-            cropIntent.setFlags(FLAG_GRANT_WRITE_URI_PERMISSION);
-            cropIntent.setFlags(FLAG_GRANT_READ_URI_PERMISSION);
-
-
-            startActivityForResult(cropIntent, CROP_REQUEST_CODE);
-
-
-        } catch (ActivityNotFoundException ignored) {
-
-        }
+    public void cropImage(){
+        // start cropping activity for pre-acquired image saved on the device
+        CropImage.activity(uri).setFixAspectRatio(true)
+                .start(getContext(), this);
     }
 
     private File createImageFile() throws IOException {
