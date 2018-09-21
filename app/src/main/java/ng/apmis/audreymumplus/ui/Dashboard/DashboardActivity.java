@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
@@ -98,7 +99,9 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.navigation_drawer);
         ButterKnife.bind(this);
-        NotificationUtils.createNotificationChannel(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationUtils.createNotificationChannel(this);
+        }
         sharedPreferencesManager = new SharedPreferencesManager(getApplicationContext());
         mFragmentManager = getSupportFragmentManager();
 
@@ -140,24 +143,10 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                     InjectorUtils.provideRepository(this).getDayWeek(theUser);
 
                     /*Set repeat alarm for week update start*/
-                    Intent alarmIntent = new Intent(this, AlarmBroadcast.class);
-                    alarmIntent.setAction("update-week");
-
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTimeInMillis(System.currentTimeMillis());
-                    calendar.set(Calendar.HOUR_OF_DAY, 0);
-
-                    AlarmManager alarmManager =  new AlarmMangerSingleton(this).getInstance().getAlarmManager();
-
-                    PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                    alarmManager.cancel(pendingIntent);
-
-                    alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+                    AlarmMangerSingleton.setDailyWeekDayProgress(this);
 
                     sharedPreferencesManager.setJustLoggedIn(false);
 
-/*Set repeat alarm for week update end*/
                 }
 
                 Glide.with(DashboardActivity.this)
@@ -187,7 +176,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
         if (getIntent().getExtras() != null) {
 
-            Log.v("forumName notification",getIntent().getExtras().getString("forumName"));
+            Log.v("forumName notification", getIntent().getExtras().getString("forumName"));
 
             mFragmentManager.beginTransaction()
                     .replace(R.id.fragment_container, new HomeFragment(), "HOME")
@@ -200,7 +189,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                     .setReorderingAllowed(true)
                     .commit();
 
-            Fragment chatFragement =  new ChatContextFragment();
+            Fragment chatFragement = new ChatContextFragment();
             Bundle chatBundle = new Bundle();
             chatBundle.putString("forumName", getIntent().getExtras().getString("forumName"));
             chatFragement.setArguments(chatBundle);
@@ -311,7 +300,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         bottomNavigationView.setVisibility(View.GONE);
     }
 
-    public void fabVisibility (boolean show) {
+    public void fabVisibility(boolean show) {
         if (show) {
             fab.setAlpha(0f);
             fab.setVisibility(View.VISIBLE);
@@ -332,7 +321,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         }
     }
 
-    public void kickCounterFabVisibility (boolean show) {
+    public void kickCounterFabVisibility(boolean show) {
         launchKickCounter.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 

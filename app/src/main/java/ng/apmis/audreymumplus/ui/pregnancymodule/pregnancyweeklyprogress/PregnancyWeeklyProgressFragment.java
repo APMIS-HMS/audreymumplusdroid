@@ -117,7 +117,7 @@ public class PregnancyWeeklyProgressFragment extends Fragment{
                         JSONArray remoteWeeksArray = response.getJSONArray("data");
 //                        Log.v("remoteweekarray", remoteWeeksArray.toString());
 
-                        JSONObject currentWeek = new JSONObject(remoteWeeksArray.get(0).toString());
+                        JSONObject currentWeek = new JSONObject(remoteWeeksArray.get(1).toString());
                         if (currentWeek.getJSONArray("data").length() < 1) {
                             currentWeek = new JSONObject(remoteWeeksArray.get(0).toString());
                         }

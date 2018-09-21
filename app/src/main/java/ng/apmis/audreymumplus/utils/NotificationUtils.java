@@ -12,6 +12,7 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.text.Html;
@@ -131,15 +132,16 @@ public class NotificationUtils {
         }
         if (thePlayer.isPlaying()) {
             thePlayer.stop();
+            thePlayer.release();
         }
         thePlayer.start();
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public static void createNotificationChannel(Context mContext) {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = mContext.getString(R.string.channel_name);
             String description = mContext.getString(R.string.channel_description);
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
@@ -149,7 +151,7 @@ public class NotificationUtils {
             // or other notification behaviors after this
             NotificationManager notificationManager = mContext.getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
-        }
+
     }
 
 }

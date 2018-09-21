@@ -16,6 +16,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mikhaellopez.circularimageview.CircularImageView;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -36,6 +38,9 @@ public class PregnancyFragment extends Fragment {
     @BindView(R.id.progressbar)
     ProgressBar pregnancyProgress;
 
+    @BindView(R.id.pregnant_icon)
+    CircularImageView pregnancyIcon;
+
     AppCompatActivity activity;
 
 
@@ -44,6 +49,8 @@ public class PregnancyFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_pregnancy, container, false);
         ButterKnife.bind(this, rootView);
+
+        pregnancyIcon.setImageResource(R.drawable.ic_my_pregnancy);
 
         ((DashboardActivity)getActivity()).getPersonLive().observe(this, person -> {
             if (person != null) {

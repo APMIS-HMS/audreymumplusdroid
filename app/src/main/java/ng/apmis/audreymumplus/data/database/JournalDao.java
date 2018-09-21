@@ -42,6 +42,9 @@ public interface JournalDao {
     @Query("SELECT * FROM appointments WHERE _id = :appointment_id")
     Appointment getStaticAppointment(long appointment_id);
 
+    @Query("SELECT * FROM appointments")
+    List<Appointment> getStaticAppointmentList();
+
     @Insert()
     long insertAppointment(Appointment appointment);
 
@@ -114,4 +117,6 @@ public interface JournalDao {
 
     @Insert()
     long insertKickCounter(KickCounterModel kickCounterModel);
+
+
 }

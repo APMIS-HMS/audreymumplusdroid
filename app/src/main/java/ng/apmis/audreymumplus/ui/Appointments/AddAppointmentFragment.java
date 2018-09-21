@@ -6,12 +6,14 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -106,7 +108,7 @@ public class AddAppointmentFragment extends Fragment {
         return rootView;
     }
 
-    boolean checkFields () {
+    boolean checkFields() {
         if (appointmentTime.get(Calendar.MONTH) <= 0) {
             Toast.makeText(getActivity(), "Select date from calendar", Toast.LENGTH_SHORT).show();
             return false;
@@ -130,29 +132,41 @@ public class AddAppointmentFragment extends Fragment {
 
 
     /**
-    * Saves a scheduled appointment to database
-    */
+     * Saves a scheduled appointment to database
+     */
     public void insertAppointment() {
         String time[] = TextUtils.split(appointmentTimeEdittext.getText().toString(), ":");
         appointmentTime.set(Calendar.HOUR_OF_DAY, parseInt(time[0]));
         appointmentTime.set(Calendar.MINUTE, parseInt(time[1]));
 
-        thisAppointment = new Appointment(appointmentTitle.getText().toString(),locationAddress.getText().toString(),appointmentDetails.getText().toString(),appointmentTime.getTimeInMillis(), 0);
+        thisAppointment = new Appointment(appointmentTitle.getText().toString(), locationAddress.getText().toString(), appointmentDetails.getText().toString(), appointmentTime.getTimeInMillis(), 0);
 
         AudreyMumplus.getInstance().diskIO().execute(() -> {
 
             long _id = InjectorUtils.provideRepository(getActivity()).saveAppointment(thisAppointment);
+            thisAppointment.set_id(_id);
 
-            Intent alarmIntent = new Intent(getActivity(), AlarmBroadcast.class);
+            Log.v("Appointment set", thisAppointment.toString());
+
+          /*  Intent alarmIntent = new Intent(getActivity(), AlarmBroadcast.class);
             alarmIntent.setAction("appointment");
-            alarmIntent.putExtra("appointment", _id);
+            alarmIntent.putExtra("appointment", thisAppointment.get_id());
 
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), (int) _id, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), (int) thisAppointment.get_id(), alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
             AlarmManager alarmManager =  new AlarmMangerSingleton(getActivity()).getInstance().getAlarmManager();
-            alarmManager.set(AlarmManager.RTC_WAKEUP, appointmentTime.getTimeInMillis(), pendingIntent);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, thisAppointment.getAppointmentTime(), pendingIntent);
+*/
+            AlarmMangerSingleton.setSingleAppointmentAlarm(getActivity(), thisAppointment);
 
-            getActivity().getSupportFragmentManager().popBackStack("ADD_APPOINTMENT", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            getActivity().runOnUiThread(() -> {
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Success")
+                        .setMessage("Appointment set successfully")
+                        .setPositiveButton("Ok", (dialogInterface, i) -> getActivity().getSupportFragmentManager().popBackStack("ADD_APPOINTMENT", FragmentManager.POP_BACK_STACK_INCLUSIVE)).show();
+
+            });
+
         });
 
 
@@ -161,15 +175,15 @@ public class AddAppointmentFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((DashboardActivity)getActivity()).setActionBarButton(true, "Add Appointment");
-        ((DashboardActivity)getActivity()).bottomNavVisibility(false);
+        ((DashboardActivity) getActivity()).setActionBarButton(true, "Add Appointment");
+        ((DashboardActivity) getActivity()).bottomNavVisibility(false);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        ((DashboardActivity)getActivity()).setActionBarButton(false, "Appointments");
-        ((DashboardActivity)getActivity()).bottomNavVisibility(false);
+        ((DashboardActivity) getActivity()).setActionBarButton(false, "Appointments");
+        ((DashboardActivity) getActivity()).bottomNavVisibility(false);
     }
 
     public static class DialogTime extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
@@ -178,8 +192,8 @@ public class AddAppointmentFragment extends Fragment {
         public void onTimeSet(android.widget.TimePicker timePicker, int i, int i1) {
             TextInputEditText et = getActivity().findViewById(R.id.appointment_time);
 
-            String hour = i < 10 ? "0" + i : i+"";
-            String minutes = i1 < 10 ? "0" + i1 : i1+"";
+            String hour = i < 10 ? "0" + i : i + "";
+            String minutes = i1 < 10 ? "0" + i1 : i1 + "";
             et.setText(hour + ":" + minutes);
         }
 

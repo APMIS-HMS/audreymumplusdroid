@@ -21,9 +21,14 @@ public class AlarmBroadcast extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
+        if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
+            AlarmIntentService.startAlarmReset(context);
+        }
+
         if (intent.getAction().equals("update-week")) {
 
             AudreyMumplus.getInstance().diskIO().execute(() -> {
+                Log.v("update", "Started");
                 Person person = InjectorUtils.provideRepository(context).getStaticPerson();
                 InjectorUtils.provideRepository(context).getDayWeek(person);
             });

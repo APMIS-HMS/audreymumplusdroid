@@ -17,12 +17,13 @@
 
     <uses-feature android:name="android.hardware.camera" />
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <supports-screens
-        android:smallScreens="true"
-        android:normalScreens="true"
         android:largeScreens="true"
+        android:normalScreens="true"
         android:resizeable="true"
-        />
+        android:smallScreens="true" />
 
     <application
         android:name="android.support.multidex.MultiDexApplication"
@@ -32,28 +33,33 @@
         android:roundIcon="@mipmap/audrey_icon_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SignupActivity"
-            android:theme="@style/SignupTheme"
+        <activity
+            android:name=".SignupActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/SignupTheme" />
+        <activity
+            android:name=".ui.Dashboard.DashboardActivity"
             android:configChanges="orientation|screenSize" />
-        <activity android:name=".ui.Dashboard.DashboardActivity"
-            android:configChanges="orientation|screenSize" />
-        <activity android:name=".ForgotPasswordActivity"
-            android:theme="@style/SignupTheme"
-            android:configChanges="orientation|screenSize"/>
-        <activity android:name=".LoginActivity"
-            android:theme="@style/SignupTheme"
-            android:configChanges="orientation|screenSize">
-        </activity>
-        <activity android:name=".WelcomeActivity"
+        <activity
+            android:name=".ForgotPasswordActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/SignupTheme" />
+        <activity
+            android:name=".LoginActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/SignupTheme" />
+        <activity
+            android:name=".WelcomeActivity"
             android:configChanges="orientation|screenSize">
             <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
-        <activity android:name=".ui.onboarding.OnboardingActivity"
-            android:configChanges="orientation|screenSize"/>
+        <activity
+            android:name=".ui.onboarding.OnboardingActivity"
+            android:configChanges="orientation|screenSize" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -62,17 +68,29 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths" />
         </provider>
+
         <service
             android:name=".data.DatabaseFirebaseJobService"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE"/>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
             </intent-filter>
         </service>
         <service android:name=".data.network.ChatSocketService" />
-        <receiver android:name=".utils.AlarmBroadcast"/>
+
+        <receiver
+            android:name=".utils.AlarmBroadcast"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".utils.AlarmIntentService"
+            android:exported="false"></service>
     </application>
 
 </manifest>

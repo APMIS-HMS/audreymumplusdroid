@@ -47,7 +47,7 @@
     <string name="BabyScan">Baby Scan</string>
     <string name="day_indicator">DAY %s</string>
     <string name="week_indicator">%s Week(s) Pregnant</string>
-    <string name="detail_week_progress">Day %s\n%s\n%s\n%s</string>
+    <string name="detail_week_progress"><![CDATA[<h3>Day %s</h3>]]>\n%s\n%s\n%s</string>
     <string name="surname">Surname</string>
     <string name="other_name">Other Name</string>
     <string name="address">Residential Address</string>

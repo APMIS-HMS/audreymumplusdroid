@@ -42,6 +42,10 @@ public class Appointment {
         return _id;
     }
 
+    public void set_id(long _id) {
+        this._id = _id;
+    }
+
     public String getTitle() {
         return title;
     }

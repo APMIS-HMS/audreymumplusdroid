@@ -102,6 +102,10 @@ public class AudreyRepository {
         return mJournalDao.getSavedAppointments();
     }
 
+    public List<Appointment> getStaticAppointmentList () {
+        return mJournalDao.getStaticAppointmentList();
+    }
+
     public Appointment getStaticAppointment (long appointment_id) {
         return mJournalDao.getStaticAppointment(appointment_id);
     }
