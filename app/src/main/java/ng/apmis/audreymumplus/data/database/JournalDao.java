@@ -67,7 +67,7 @@ public interface JournalDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void updatePerson (Person person);
 
-    @Insert()
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertPerson (Person person);
 
     @Query("DELETE FROM person")
