@@ -16,7 +16,7 @@ import ng.apmis.audreymumplus.ui.Chat.ChatContextModel;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumModel;
 import ng.apmis.audreymumplus.ui.kickcounter.KickCounterModel;
 import ng.apmis.audreymumplus.ui.pills.PillModel;
-import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.JournalModel;
+import ng.apmis.audreymumplus.ui.pregnancymodule.journal.JournalModel;
 
 /**
  * Created by Thadeus-APMIS on 5/15/2018.
@@ -30,11 +30,12 @@ public interface JournalDao {
 
     @Query("SELECT * FROM journal WHERE week = :week")
     LiveData<List<JournalModel>> getJournalByWeek(String week);
-/*
 
-    @Query("SELECT COUNT(id) FROM journal WHERE date <= :date")
-    int countAllPastJournal(Date date);
-*/
+    @Query("SELECT COUNT(*) FROM journal WHERE week = :week")
+    int countAllJournalOnWeek (String week);
+
+    @Query("SELECT * FROM journal WHERE day = :day")
+    LiveData<JournalModel> getTodaysJournal(String day);
 
     @Query("SELECT * FROM appointments")
     LiveData<List<Appointment>> getSavedAppointments();
@@ -114,10 +115,15 @@ public interface JournalDao {
     LiveData<List<PillModel>> getAllPills();
 
     @Query("SELECT * FROM kickcounter")
-    LiveData<List<KickCounterModel>> getAllKickData ();
+    LiveData<List<KickCounterModel>> getAllKickData();
 
     @Insert()
     long insertKickCounter(KickCounterModel kickCounterModel);
 
+    @Query("SELECT SUM(kicks) FROM kickcounter WHERE week = :week")
+    int totalKicksInWeek (String week);
+
+    @Query("SELECT SUM(kicks) FROM kickcounter WHERE day = :day")
+    LiveData<Integer> getKickCountPerDay(int day);
 
 }

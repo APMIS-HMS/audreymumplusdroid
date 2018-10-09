@@ -1,110 +1,174 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ng.apmis.audreymumplus.ui.kickcounter.KickCounterFragment"
-    android:orientation="vertical">
+    android:background="#fff"
+    android:orientation="vertical"
+    tools:context="ng.apmis.audreymumplus.ui.kickcounter.KickCounterFragment">
 
-    <RelativeLayout
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.5">
+
+
+            <ProgressBar
+                android:id="@+id/kick_progress"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:layout_centerInParent="true"
+                android:indeterminate="false"
+                android:max="60"
+                android:progress="0"
+                android:progressDrawable="@drawable/custom_progress"
+                android:backgroundTint="#E0E0E0"/>
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                android:layout_centerInParent="true" />
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sep,26"
+                android:layout_alignTop="@id/kick_progress"
+                android:layout_marginTop="40dp"
+                android:layout_centerHorizontal="true"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
+<!--
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/kick_progress"
+                android:layout_marginTop="30dp"
+                android:layout_alignEnd="@id/date"
+                android:text="9:22am"
+                android:layout_toEndOf="@id/divider"
+                android:layout_alignBaseline="@id/date"/>-->
+
+            <TextView
+                android:id="@+id/kick_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="0"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:textSize="80sp"
+                android:layout_toLeftOf="@id/divider"
+                android:textColor="#292929"/>
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/divider"
+                android:text="KICKS"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                android:layout_alignBaseline="@id/kick_count"
+                android:layout_marginBottom="10dp"/>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/add_kick"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="20dp"
+                android:src="@drawable/ic_babyfoot"
+                app:srcCompat="@drawable/ic_babyfoot"
+                android:visibility="gone"
+                app:elevation="5dp"
+                app:backgroundTint="@android:color/white"/>
+
+        </RelativeLayout>
+
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <ProgressBar
-            android:id="@+id/kick_progress"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_centerInParent="true"
-            android:indeterminate="false"
-            android:max="60"
-            android:progress="0"
-            android:progressDrawable="@drawable/custom_progress"/>
-
-        <TextView
-            android:id="@+id/kick_count"
-            android:layout_width="wrap_content"
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
-            android:text="0"
-            android:layout_centerInParent="true"
-            android:textSize="80sp"
-            android:textStyle="bold"/>
+            android:layout_marginEnd="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            app:cardElevation="5dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="KICKS"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-            android:layout_below="@id/kick_count"
-            android:layout_centerHorizontal="true"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingBottom="20dp"
+                android:paddingEnd="40dp"
+                android:paddingStart="40dp"
+                android:paddingTop="20dp">
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/add_kick"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_margin="20dp"
-            android:src="@drawable/ic_baby_foot"
-            android:visibility="gone"/>
+                <TextView
+                    android:id="@+id/kick_date_val"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="Sep,26"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                    android:textSize="16sp"
+                    android:textColor="#292929" />
 
-    </RelativeLayout>
+                <TextView
+                    android:id="@+id/kick_week_val"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center"
+                    android:text="11"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                    android:textColor="#292929" />
 
+                <TextView
+                    android:id="@+id/kick_count_val"
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:gravity="center"
+                    android:text="20"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
+                    android:textColor="#292929" />
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="horizontal" android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp">
+                <TextView
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/kick_date_val"
+                    android:gravity="center"
+                    android:text="Date" />
 
-        <TextView
-            android:id="@+id/date_header"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:text="Date"
-            android:gravity="center"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
+                <TextView
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/kick_week_val"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center"
+                    android:text="Week" />
 
-        <TextView
-            android:id="@+id/week_header"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:text="Week"
-            android:gravity="center"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
+                <TextView
+                    android:layout_width="60dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@+id/kick_count_val"
+                    android:gravity="center"
+                    android:text="Kicks" />
 
-        <TextView
-            android:id="@+id/duration_header"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:text="Duration"
-            android:gravity="center"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
+            </RelativeLayout>
 
-        <TextView
-            android:id="@+id/kick_header"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:text="Kicks"
-            android:gravity="center"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"/>
-
+        </android.support.v7.widget.CardView>
     </LinearLayout>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/colorPrimaryDark"/>
-
-    <ListView
-        android:id="@+id/kick_count_list"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        tools:listitem="@layout/kick_list_item"/>
-
 
 </LinearLayout>

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -25,6 +27,8 @@ import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 
+import static ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity.globalPerson;
+
 public class KickCounterFragment extends Fragment {
 
     @BindView(R.id.kick_count)
@@ -35,24 +39,36 @@ public class KickCounterFragment extends Fragment {
 
     @BindView(R.id.add_kick)
     FloatingActionButton addKick;
+/*
 
     @BindView(R.id.kick_count_list)
     ListView kickCountList;
+*/
 
-    KickCounterListAdapter kickCounterListAdapter;
+    //KickCounterListAdapter kickCounterListAdapter;
 
     Handler handler;
     int durationSecondsTracker = 0;
 
     int kickCounter;
 
-    Person person;
-
     Runnable runnable;
 
     long startTime;
 
     private int mShortAnimationDuration;
+
+    @BindView(R.id.kick_count_val)
+    TextView kickCountVal;
+
+    @BindView(R.id.kick_week_val)
+    TextView kickWeekVal;
+
+    @BindView(R.id.kick_date_val)
+    TextView kickDateVal;
+
+    @BindView(R.id.date)
+    TextView date;
 
     public KickCounterFragment() {
         // Required empty public constructor
@@ -76,22 +92,13 @@ public class KickCounterFragment extends Fragment {
                 .alpha(1f)
                 .setDuration(mShortAnimationDuration)
                 .setListener(null);
+        date.setText(DateUtils.getRelativeDateTimeString(getActivity(), Calendar.getInstance().getTimeInMillis(), 0, 0, DateUtils.FORMAT_ABBREV_MONTH));
 
+        kickWeekVal.setText(globalPerson.getWeek().split(" ")[1]);
 
+        kickDateVal.setText(DateUtils.getRelativeDateTimeString(getActivity(), Calendar.getInstance().getTimeInMillis(), 0, 0, DateUtils.FORMAT_NO_MONTH_DAY).toString().split(",")[0]);
 
-        ((DashboardActivity) getActivity()).getPersonLive().observe(this, person -> this.person = person);
-
-        kickCounterListAdapter = new KickCounterListAdapter(getActivity());
-        kickCountList.setAdapter(kickCounterListAdapter);
-
-        AudreyMumplus.getInstance().diskIO().execute(() -> {
-            InjectorUtils.provideRepository(getActivity()).getAllKickCount().observe(this, allKicks -> {
-                if (allKicks != null) {
-                    Collections.reverse(allKicks);
-                    kickCounterListAdapter.addKicks(allKicks);
-                }
-            });
-        });
+        AudreyMumplus.getInstance().diskIO().execute(() -> InjectorUtils.provideRepository(getActivity()).getKickCountPerDay(globalPerson.getDay()).observe(this, kickCounter -> kickCountVal.setText(kickCounter != null ? String.valueOf(kickCounter) : "0")));
 
         runnable = runnable();
 
@@ -102,6 +109,8 @@ public class KickCounterFragment extends Fragment {
             }
 
             kickCountTv.setText(String.valueOf(++kickCounter));
+            int incrementCount = Integer.parseInt(kickCountVal.getText().toString()) + 1;
+            kickCountVal.setText(String.valueOf(incrementCount));
 
         }));
 
@@ -134,7 +143,7 @@ public class KickCounterFragment extends Fragment {
 
     void persistKickCounter() {
         if (handler != null) {
-            KickCounterModel kickCounterModel = new KickCounterModel(kickCounter, person.getWeek(), formatDurationTracker(durationSecondsTracker), startTime);
+            KickCounterModel kickCounterModel = new KickCounterModel(kickCounter, globalPerson.getWeek(), formatDurationTracker(durationSecondsTracker), startTime, globalPerson.getDay());
             durationSecondsTracker = 0;
             kickCountTv.setText("0");
             kickProgress.setProgress(0);

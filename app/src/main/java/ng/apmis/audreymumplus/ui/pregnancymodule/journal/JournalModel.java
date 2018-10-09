@@ -1,4 +1,4 @@
-package ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal;
+package ng.apmis.audreymumplus.ui.pregnancymodule.journal;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;

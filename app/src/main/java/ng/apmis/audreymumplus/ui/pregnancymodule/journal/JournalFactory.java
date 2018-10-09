@@ -1,4 +1,4 @@
-package ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal;
+package ng.apmis.audreymumplus.ui.pregnancymodule.journal;
 
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
@@ -13,14 +13,16 @@ import ng.apmis.audreymumplus.data.AudreyRepository;
 public class JournalFactory extends ViewModelProvider.NewInstanceFactory {
 
     AudreyRepository mRepository;
+    String week;
 
-    public JournalFactory(AudreyRepository audreyRepository) {
+    public JournalFactory(AudreyRepository audreyRepository, String week) {
         this.mRepository = audreyRepository;
+        this.week = week;
     }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(Class<T> modelClass) {
-        return (T) new JournalViewModel(mRepository);
+        return (T) new JournalViewModel(mRepository, week);
     }
 }

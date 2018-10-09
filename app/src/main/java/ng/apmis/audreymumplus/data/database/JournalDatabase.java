@@ -14,7 +14,7 @@ import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumModel;
 import ng.apmis.audreymumplus.ui.kickcounter.KickCounterModel;
 import ng.apmis.audreymumplus.ui.pills.PillModel;
 import ng.apmis.audreymumplus.ui.pills.PillsTypeConverter;
-import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.JournalModel;
+import ng.apmis.audreymumplus.ui.pregnancymodule.journal.JournalModel;
 
 /**
  * Created by Thadeus-APMIS on 5/15/2018.
@@ -105,7 +105,7 @@ public abstract class JournalDatabase extends RoomDatabase {
         public void migrate(SupportSQLiteDatabase database) {
             // Create the new table
             database.execSQL(
-                    "CREATE TABLE black_person ('id' INTEGER PRIMARY KEY NOT NULL, _id TEXT UNIQUE INDEX, firstName TEXT, lastName TEXT, email TEXT, personId TEXT, dateOfBirth TEXT, motherMaidenName TEXT, primaryContactPhoneNo TEXT, expectedDateOfDelivery TEXT, profileImage TEXT, week TEXT, day INTEGER)");
+                    "CREATE TABLE black_person ('id' INTEGER PRIMARY KEY NOT NULL, _id TEXT UNIQUE, firstName TEXT, lastName TEXT, email TEXT, personId TEXT, dateOfBirth TEXT, motherMaidenName TEXT, primaryContactPhoneNo TEXT, expectedDateOfDelivery TEXT, profileImage TEXT, week TEXT, day INTEGER)");
 // Copy the data
             database.execSQL(
                     "INSERT INTO black_person (id, firstName, lastName, email, personId, dateOfBirth, motherMaidenName, primaryContactPhoneNo, expectedDateOfDelivery, profileImage) SELECT id, firstName, lastName, email, personId, dateOfBirth, motherMaidenName, primaryContactPhoneNo, expectedDateOfDelivery, profileImage FROM person");
@@ -114,6 +114,11 @@ public abstract class JournalDatabase extends RoomDatabase {
             database.execSQL("DROP TABLE person");
 
             database.execSQL("ALTER TABLE black_person RENAME TO person");
+
+            database.execSQL("DROP TABLE kickcounter");
+
+            database.execSQL(
+                    "CREATE TABLE kickcounter ('_id' INTEGER PRIMARY KEY NOT NULL, kicks INTEGER NOT NULL, week TEXT, duration TEXT, date INTEGER NOT NULL, day INTEGER NOT NULL)");
 
         }
     };

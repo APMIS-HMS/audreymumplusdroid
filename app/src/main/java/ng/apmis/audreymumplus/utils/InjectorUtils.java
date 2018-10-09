@@ -11,7 +11,8 @@ import ng.apmis.audreymumplus.data.network.MumplusNetworkDataSource;
 import ng.apmis.audreymumplus.data.network.SocketSingleton;
 import ng.apmis.audreymumplus.ui.Chat.ChatFactory;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ForumFactory;
-import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.JournalFactory;
+import ng.apmis.audreymumplus.ui.pregnancymodule.journal.JournalFactory;
+import ng.apmis.audreymumplus.ui.pregnancymodule.journalweekgroup.JournalWeekGroupFactory;
 
 /**
  * Created by Thadeus-APMIS on 5/15/2018.
@@ -27,9 +28,9 @@ public class InjectorUtils {
         return AudreyRepository.getInstance(database.dailyJournalDao(), networkDataSource, executors);
     }
 
-    public static JournalFactory provideJournalFactory (Context context) {
+    public static JournalFactory provideJournalFactory (Context context, String week) {
         AudreyRepository audreyRepository = provideRepository(context.getApplicationContext());
-        return new JournalFactory(audreyRepository);
+        return new JournalFactory(audreyRepository, week);
     }
 
     public static ForumFactory provideForumFactory (Context context) {
@@ -48,6 +49,11 @@ public class InjectorUtils {
     public static ChatFactory provideChatFactory(Context context, String forumName) {
         AudreyRepository audreyRepository = provideRepository(context.getApplicationContext());
         return new ChatFactory(audreyRepository, forumName);
+    }
+
+    public static JournalWeekGroupFactory providePregnancyJournalGroupFactory (Context context, String week) {
+        AudreyRepository audreyRepository = provideRepository(context.getApplicationContext());
+        return new JournalWeekGroupFactory(audreyRepository, week);
     }
 
 }

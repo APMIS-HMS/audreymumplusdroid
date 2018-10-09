@@ -1,7 +1,5 @@
 package ng.apmis.audreymumplus.ui.Dashboard;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Intent;
@@ -31,8 +29,6 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
-import java.util.Calendar;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.AudreyMumplus;
@@ -46,16 +42,14 @@ import ng.apmis.audreymumplus.ui.Chat.ChatContextFragment;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumFragment;
 import ng.apmis.audreymumplus.ui.HelpFragment;
 import ng.apmis.audreymumplus.ui.kickcounter.KickCounterFragment;
-import ng.apmis.audreymumplus.ui.pills.AddPillReminder;
 import ng.apmis.audreymumplus.ui.pills.PillReminderFragment;
 import ng.apmis.audreymumplus.ui.pregnancymodule.PregnancyFragment;
 import ng.apmis.audreymumplus.ui.getaudrey.GetAudreyFragment;
 import ng.apmis.audreymumplus.ui.Home.HomeFragment;
-import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.AddJournalFragment;
-import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.MyJournalFragment;
+import ng.apmis.audreymumplus.ui.pregnancymodule.journal.JournalAddFragment;
+import ng.apmis.audreymumplus.ui.pregnancymodule.journal.JournalFragment;
 import ng.apmis.audreymumplus.ui.profile.ProfileFragment;
 import ng.apmis.audreymumplus.ui.settings.SettingsFragment;
-import ng.apmis.audreymumplus.utils.AlarmBroadcast;
 import ng.apmis.audreymumplus.utils.AlarmMangerSingleton;
 import ng.apmis.audreymumplus.utils.BottomNavigationViewHelper;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
@@ -91,7 +85,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
     CircularImageView profileCircularImageView;
 
-    public Person globalPerson;
+    public static Person globalPerson;
     private int mShortAnimationDuration;
 
     @Override
@@ -310,12 +304,19 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                     .setDuration(mShortAnimationDuration)
                     .setListener(null);
 
-            fab.setOnClickListener((view -> {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new AddJournalFragment())
-                        .addToBackStack("ADD_NEW")
-                        .commit();
-            }));
+            fab.setOnClickListener((view ->
+                /*AudreyMumplus.getInstance().diskIO().execute(() ->
+                    InjectorUtils.provideRepository(this).getDaysJournal(String.valueOf(globalPerson.getDay())).observe(this, journalModel -> {
+                        if (journalModel != null) {
+                            Toast.makeText(this, "You have inputed a journal today", Toast.LENGTH_SHORT).show();
+                        }*/
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment_container, new JournalAddFragment())
+                                .addToBackStack(null)
+                                .commit()
+               /*     })
+                )*/
+            ));
         } else {
             fab.setVisibility(View.GONE);
         }
@@ -333,7 +334,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                 placeFragment(new HomeFragment(), true, mFragmentManager, "HOME");
                 break;
             case R.id.journal_menu:
-                placeFragment(new MyJournalFragment(), true, mFragmentManager, "JOURNAL");
+                placeFragment(new JournalFragment(), true, mFragmentManager, "JOURNAL");
                 break;
             case R.id.chat_menu:
                 placeFragment(new ChatForumFragment(), true, mFragmentManager, "CHAT");

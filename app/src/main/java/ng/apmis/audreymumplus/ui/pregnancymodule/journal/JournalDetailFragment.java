@@ -1,7 +1,8 @@
-package ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal;
+package ng.apmis.audreymumplus.ui.pregnancymodule.journal;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -44,7 +45,7 @@ public class JournalDetailFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_journal_detail, container, false);
         ButterKnife.bind(this, rootView);
         if (getArguments().getParcelable("journal") != null) {

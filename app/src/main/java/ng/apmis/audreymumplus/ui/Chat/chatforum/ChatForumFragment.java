@@ -13,11 +13,15 @@ import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
@@ -56,6 +60,9 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
     View emptyView;
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
+    @BindView(R.id.search_bar)
+    EditText searchBar;
+
 
     @Nullable
     @Override
@@ -70,6 +77,23 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
         forumRecycler.setAdapter(forumAdapter);
         forumRecycler.addItemDecoration(new DividerItemDecoration(getContext(),
                 DividerItemDecoration.VERTICAL));
+
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                forumAdapter.getFilter().filter(s);
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Log.v("changed text", String.valueOf(s));
+                forumAdapter.getFilter().filter(s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
 
 
         ForumFactory forumFactory = InjectorUtils.provideForumFactory(activity);
@@ -94,7 +118,7 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
                 dbForums = (ArrayList<ChatForumModel>) forumModelList;
                 progressBar.setVisibility(View.GONE);
                 emptyView.setVisibility(View.GONE);
-                forumAdapter.setForums(forumModelList);
+                forumAdapter.setForums(dbForums);
             } else {
                 //check internet connectivity if true setLoading and emit  get forums
                 progressBar.setVisibility(View.VISIBLE);

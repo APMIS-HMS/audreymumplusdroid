@@ -1,9 +1,8 @@
 package ng.apmis.audreymumplus;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -23,18 +22,23 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
+import com.koushikdutta.async.http.AsyncHttpClient;
+import com.koushikdutta.async.http.socketio.Acknowledge;
+import com.koushikdutta.async.http.socketio.ConnectCallback;
+import com.koushikdutta.async.http.socketio.EventCallback;
+import com.koushikdutta.async.http.socketio.JSONCallback;
+import com.koushikdutta.async.http.socketio.SocketIOClient;
+import com.koushikdutta.async.http.socketio.StringCallback;
+import com.koushikdutta.async.http.socketio.transport.SocketIOTransport;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
-import ng.apmis.audreymumplus.utils.AlarmBroadcast;
-import ng.apmis.audreymumplus.utils.AlarmMangerSingleton;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
 
@@ -62,6 +66,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     TextView forgotPassword;
     @BindView(R.id.remember_me)
     CheckBox rememberMe;
+    JSONArray jar;
 
 
     @Override
@@ -69,6 +74,62 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signin);
         ButterKnife.bind(this);
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("email", "YK-34680");
+            jsonObject.put("password", "admin@01");
+            jsonObject.put("strategy", "local");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        jar = new JSONArray();
+
+        jar.put(jsonObject);
+
+        Uri uri = Uri.parse("https://audrey-mum.herokuapp.com");
+
+        Log.v("URi string", uri.toString());
+
+        SocketIOClient.connect(AsyncHttpClient.getDefaultInstance(), uri.toString(), new ConnectCallback() {
+            @Override
+            public void onConnectCompleted(Exception ex, SocketIOClient client) {
+                if (ex != null) {
+                    ex.printStackTrace();
+                    Log.v("exception", ex.toString());
+                    return;
+                }
+
+                client.setStringCallback(new StringCallback() {
+                    @Override
+                    public void onString(String string, Acknowledge acknowledge) {
+                        Log.v("String callback", string);
+                    }
+
+                });
+                client.on("someEvent", new EventCallback() {
+                    @Override
+                    public void onEvent(JSONArray argument, Acknowledge acknowledge) {
+                        Log.v("someEvent", argument.toString());
+                    }
+                });
+                client.setJSONCallback(new JSONCallback() {
+                    @Override
+                    public void onJSON(JSONObject json, Acknowledge acknowledge) {
+                        Log.v("JSONCallback", json.toString());
+                    }
+
+                });
+               /* client.emit("authenticate", jar, new Acknowledge() {
+                    @Override
+                    public void acknowledge(JSONArray arguments) {
+                        Log.v("Authenticate", arguments.toString());
+                    }
+                });*/
+            }
+        });
+
 
         queue = Volley.newRequestQueue(this.getApplicationContext());
 

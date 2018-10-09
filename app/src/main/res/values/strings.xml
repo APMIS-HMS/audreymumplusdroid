@@ -242,6 +242,8 @@
     <string name="audrey_facebook_uri">https://www.facebook.com/theaudreypack/</string>
     <string name="audrey_twitter_uri">https://twitter.com/theaudreypack</string>
     <string name="audrey_instagram_uri">https://www.instagram.com/theaudreypack2/</string>
+    <string name="add_picture">Add picture</string>
+    <string name="search_for_forums">Search for forums</string>
 
 
 </resources>

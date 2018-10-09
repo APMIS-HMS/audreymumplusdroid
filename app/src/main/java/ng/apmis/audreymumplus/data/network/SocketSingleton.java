@@ -23,6 +23,7 @@ public class SocketSingleton {
     private SocketSingleton() {
         try {
             mSocket = IO.socket("https://audrey-mum.herokuapp.com/");
+           // mSocket = IO.socket("https://silly-zebra-80.localtunnel.me");
         } catch (URISyntaxException e) {
             Log.v("socket error", e.getMessage());
         }

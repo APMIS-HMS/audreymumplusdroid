@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="#fff"
-    tools:context=".ui.pregnancymodule.pregnancyjournal.MyJournalFragment">
+    tools:context=".ui.pregnancymodule.journal.JournalFragment">
 
     <LinearLayout
         android:id="@+id/header"
@@ -52,17 +52,8 @@
         android:id="@+id/journal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/view_divider"/>
-<!--
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_alignParentEnd="true"
-        app:srcCompat="@drawable/ic_add_black_24dp" />-->
+        android:layout_below="@id/view_divider"
+        tools:listitem="@layout/my_journal"/>
 
     <RelativeLayout
         android:id="@+id/empty_view"

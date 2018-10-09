@@ -33,8 +33,9 @@ import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.ui.getaudrey.GetAudreyFragment;
+import ng.apmis.audreymumplus.ui.pregnancymodule.FragmentLifecycle;
 
-public class PregnancyWeeklyProgressFragment extends Fragment{
+public class PregnancyWeeklyProgressFragment extends Fragment {
 
     PregnancyWeeklyProgressAdapter weeklyProgressAdapter;
     ArrayList<PregnancyWeeklyProgressModel> weeklyProgressModelArrayList;
@@ -199,4 +200,5 @@ public class PregnancyWeeklyProgressFragment extends Fragment{
         Log.v("Week integer", String.valueOf(wk));
         return wk - 1;
     }
+
 }

@@ -12,7 +12,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
-import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.AddJournalFragment;
+import ng.apmis.audreymumplus.ui.pregnancymodule.journal.JournalAddFragment;
 
 public class HomeFragment extends android.support.v4.app.Fragment implements View.OnClickListener {
 
@@ -114,7 +114,7 @@ public class HomeFragment extends android.support.v4.app.Fragment implements Vie
         Bundle addBundle = new Bundle();
         addBundle.putString("MOOD", mood);
 
-        Fragment addJournalFragment = new AddJournalFragment();
+        Fragment addJournalFragment = new JournalAddFragment();
         addJournalFragment.setArguments(addBundle);
 
         getActivity().getSupportFragmentManager().beginTransaction()

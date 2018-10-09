@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -18,20 +20,23 @@ import java.util.List;
 
 import ng.apmis.audreymumplus.R;
 
-public class ForumAdapter extends RecyclerView.Adapter<ForumAdapter.ForumViewHolder> {
+public class ForumAdapter extends RecyclerView.Adapter<ForumAdapter.ForumViewHolder> implements Filterable {
 
     List<ChatForumModel> chatForums;
+    List<ChatForumModel> filteredForums;
     Context mContext;
     public ClickForumListener clickForumListener;
 
     public ForumAdapter(Context context, ClickForumListener listener) {
         mContext = context;
         chatForums = new ArrayList<>();
+        filteredForums = new ArrayList<>();
         clickForumListener = listener;
     }
 
     public void setForums(List<ChatForumModel> forums) {
         chatForums = forums;
+        filteredForums = chatForums;
         notifyDataSetChanged();
     }
 
@@ -85,7 +90,7 @@ public class ForumAdapter extends RecyclerView.Adapter<ForumAdapter.ForumViewHol
     @Override
     public void onBindViewHolder(ForumViewHolder holder, int position) {
 
-        ChatForumModel modelOne = chatForums.get(position);
+        ChatForumModel modelOne = filteredForums.get(position);
 
         holder.forumName.setText(CaseFormat.UPPER_CAMEL.to(CaseFormat.UPPER_CAMEL, modelOne.getName()));
         holder.forumNewMessageCounter.setText(modelOne.getForumNewChatsCount());
@@ -95,7 +100,44 @@ public class ForumAdapter extends RecyclerView.Adapter<ForumAdapter.ForumViewHol
 
     @Override
     public int getItemCount() {
-        return chatForums.size();
+        return filteredForums.size();
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                String charString = constraint.toString();
+                if (charString.isEmpty()) {
+                    Log.e("empty", charString);
+                    filteredForums = chatForums;
+                } else {
+                    Log.e("e", charString);
+                    List<ChatForumModel> filteredList = new ArrayList<>();
+                    for (ChatForumModel row : chatForums) {
+
+                        // name match condition. this might differ depending on your requirement
+                        // here we are looking for name or phone number match
+                        if (row.getName().toLowerCase().contains(charString.toLowerCase())) {
+                            filteredList.add(row);
+                        }
+                    }
+
+                    filteredForums = filteredList;
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = filteredForums;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                filteredForums = (List<ChatForumModel>) results.values;
+                notifyDataSetChanged();
+            }
+        };
     }
 
     public class ForumViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

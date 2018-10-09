@@ -20,7 +20,7 @@ import ng.apmis.audreymumplus.ui.Chat.ChatContextModel;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumModel;
 import ng.apmis.audreymumplus.ui.kickcounter.KickCounterModel;
 import ng.apmis.audreymumplus.ui.pills.PillModel;
-import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.JournalModel;
+import ng.apmis.audreymumplus.ui.pregnancymodule.journal.JournalModel;
 import ng.apmis.audreymumplus.utils.Week;
 
 /**
@@ -58,7 +58,7 @@ public class AudreyRepository {
 
     }
 
-    public LiveData<List<JournalModel>> getAllJournals () {
+    public LiveData<List<JournalModel>> getAllJournals() {
         return mJournalDao.getAllJournalEntries();
     }
 
@@ -117,6 +117,14 @@ public class AudreyRepository {
 
     public void updatePersonWithPregWeekDay (Person person) {
         mJournalDao.updatePerson(person);
+    }
+
+    public int getJournalCountOnWeek(String week) {
+        return mJournalDao.countAllJournalOnWeek(week);
+    }
+
+    public int getTotalWeekKickCount(String week) {
+        return mJournalDao.totalKicksInWeek(week);
     }
 
     public void getDayWeek (Person person) {
@@ -220,6 +228,9 @@ public class AudreyRepository {
     public long insertKickCount (KickCounterModel kickCounterModel) {
         return mJournalDao.insertKickCounter(kickCounterModel);
     }
+    public LiveData<Integer> getKickCountPerDay (int day) {
+        return mJournalDao.getKickCountPerDay(day);
+    }
 
 
     public synchronized static AudreyRepository getInstance (JournalDao journalDao, MumplusNetworkDataSource mumplusNetworkDataSource, AudreyMumplus audreyMumplus) {
@@ -234,4 +245,7 @@ public class AudreyRepository {
         return sInstance;
     }
 
+    public LiveData<JournalModel> getDaysJournal(String day) {
+        return mJournalDao.getTodaysJournal(day);
+    }
 }

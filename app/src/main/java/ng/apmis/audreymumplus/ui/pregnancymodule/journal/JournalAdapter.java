@@ -1,6 +1,7 @@
-package ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal;
+package ng.apmis.audreymumplus.ui.pregnancymodule.journal;
 
 import android.content.Context;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,10 +68,14 @@ public class JournalAdapter extends BaseAdapter {
 
         TextView moodTextView = convertView.findViewById(R.id.mood);
 
+        TextView timeTakenTextView = convertView.findViewById(R.id.time_taken);
+
         //sets the text for item name and item description from the current item object
         textViewItemDescription.setText(mCon.getString(R.string.journal_day, journalModel.getDay()));
 
         moodTextView.setText(mCon.getString(R.string.mood, journalModel.getMood()));
+
+        timeTakenTextView.setText(DateUtils.getRelativeDateTimeString(mCon, journalModel.getDate(), 0, 0, DateUtils.FORMAT_SHOW_TIME));
 
         // returns the view for the current row
         return convertView;

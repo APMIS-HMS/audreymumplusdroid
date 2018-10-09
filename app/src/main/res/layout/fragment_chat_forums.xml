@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="#fff">
 
     <ProgressBar
@@ -12,12 +14,32 @@
         android:animationResolution="4000"
         android:indeterminateBehavior="repeat" />
 
+    <RelativeLayout
+        android:id="@+id/search_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark">
+
+        <EditText
+            android:id="@+id/search_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@android:drawable/ic_menu_search"
+            android:layout_margin="20dp"
+            android:padding="4dp"
+            android:background="@android:color/white"
+            android:hint="@string/search_for_forums"
+            android:gravity="center_vertical"/>
+
+    </RelativeLayout>
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/forums_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        />
+        tools:listitem="@layout/chat_forum_item"
+        android:layout_below="@+id/search_bar_layout"/>
 
     <RelativeLayout
         android:id="@+id/empty_view"

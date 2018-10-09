@@ -1,10 +1,12 @@
-package ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal;
+package ng.apmis.audreymumplus.ui.pregnancymodule.journal;
 
 import android.Manifest;
+import android.app.DialogFragment;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteCantOpenDatabaseException;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -14,19 +16,20 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.FileProvider;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -46,12 +49,13 @@ import ng.apmis.audreymumplus.utils.Week;
 import static android.app.Activity.RESULT_OK;
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
+import static ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity.globalPerson;
 
 /**
  * Created by Thadeus-APMIS on 5/21/2018.
  */
 
-public class AddJournalFragment extends Fragment {
+public class JournalAddFragment extends Fragment {
 
     @BindView(R.id.crave)
     TextInputEditText cravings;
@@ -62,15 +66,25 @@ public class AddJournalFragment extends Fragment {
     @BindView(R.id.mood)
     TextInputEditText moodEdittext;
 
-    @BindView(R.id.user_babyscan)
+   /* @BindView(R.id.user_babyscan)
     ImageView babyscan;
     @BindView(R.id.baby_scan_fab)
-    FloatingActionButton babyScanFab;
+    FloatingActionButton babyScanFab;*/
 
+    @BindView(R.id.baby_scan)
+    ViewGroup babyScanViewGroup;
+    @BindView(R.id.baby_scan_tv)
+    TextView babyScanTv;
+/*
     @BindView(R.id.pregBel)
     ImageView pregbel;
     @BindView(R.id.preg_belly_fab)
-    FloatingActionButton pregBellyFab;
+    FloatingActionButton pregBellyFab;*/
+
+    @BindView(R.id.baby_bump)
+    ViewGroup babyBumpViewGroup;
+    @BindView(R.id.baby_bump_tv)
+    TextView babyBumpTv;
 
     @BindView(R.id.baby_movement)
     TextInputEditText babyMovement;
@@ -81,12 +95,9 @@ public class AddJournalFragment extends Fragment {
     Intent camIntent, GalIntent, cropIntent;
     Uri uri;
 
-    ImageView imageViewToUpdate;
     String uriToSet, pregScan, babyBump = "";
     String imageFilePath;
-
-    String day;
-    String week;
+    TextView setImageUri;
 
     AppCompatActivity activity;
 
@@ -96,13 +107,6 @@ public class AddJournalFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.new_journal, container, false);
         ButterKnife.bind(this, rootView);
-
-        ((DashboardActivity) getActivity()).getPersonLive().observe(activity, person -> {
-            week = String.valueOf(person.getWeek());
-            day = String.valueOf(person.getDay());
-        });
-
-
 
         saveJournal.setOnClickListener((view) -> {
             if (checkFields()) {
@@ -114,29 +118,50 @@ public class AddJournalFragment extends Fragment {
                 String symtom = symtoms.getText().toString();
                 String baby = babyMovement.getText().toString();
 
-                JournalModel newJournal = new JournalModel(mood, crav, heavy, symtom, pregScan, babyBump, baby, date, day, Week.valueOf(week.replace(" ","")).getWeek());
+                JournalModel newJournal = new JournalModel(mood, crav, heavy, symtom, pregScan, babyBump, baby, date, String.valueOf(globalPerson.getDay()), Week.valueOf(globalPerson.getWeek().replace(" ", "")).getWeek());
 
-                AudreyMumplus.getInstance().diskIO().execute(() ->
-                        InjectorUtils.provideRepository(getActivity()).saveJournal(newJournal));
+                AudreyMumplus.getInstance().diskIO().execute(() -> {
+                    try {
+                        InjectorUtils.provideRepository(getActivity()).saveJournal(newJournal);
+                        activity.runOnUiThread(() ->
+                                new AlertDialog.Builder(activity, R.style.DialogTheme)
+                                        .setTitle("Alert")
+                                        .setMessage("Journal saved successfully")
+                                        .setPositiveButton("OK", ((dialogInterface, i) -> {
+                                            getActivity().getSupportFragmentManager().popBackStack();
+                                            dialogInterface.dismiss();
+                                        }
+                                        ))
+                                        .show());
+                    } catch (SQLiteCantOpenDatabaseException ex) {
+                        activity.runOnUiThread(() ->
+                                new AlertDialog.Builder(activity, R.style.DialogTheme)
+                                        .setTitle("Alert")
+                                        .setMessage("Journal failed to save")
+                                        .setPositiveButton("BACK", ((dialogInterface, i) -> {
+                                            getActivity().getSupportFragmentManager().popBackStack();
+                                            dialogInterface.dismiss();
+                                        }
+                                        ))
+                                        .show());
+                    }
+                });
 
-                Toast.makeText(getActivity(), "Journal Saved successfully", Toast.LENGTH_SHORT).show();
-                getActivity().onBackPressed();
+
             }
         });
 
-        babyScanFab.setOnClickListener((view) -> {
-            imageViewToUpdate = babyscan;
+        babyScanViewGroup.setOnClickListener((view) -> {
+            setImageUri = babyScanTv;
             uriToSet = "baby-scan";
             selectImageOption();
         });
 
-        pregBellyFab.setOnClickListener((view) -> {
-            imageViewToUpdate = pregbel;
+        babyBumpViewGroup.setOnClickListener((view) -> {
+            setImageUri = babyBumpTv;
             uriToSet = "preg-scan";
             selectImageOption();
         });
-
-
         return rootView;
     }
 
@@ -167,7 +192,7 @@ public class AddJournalFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((DashboardActivity) getActivity()).setActionBarButton(true, "Add Journal");
+        ((DashboardActivity) getActivity()).setActionBarButton(true, "New Journal");
         ((DashboardActivity) getActivity()).bottomNavVisibility(false);
         ((DashboardActivity) getActivity()).fabVisibility(false);
     }
@@ -306,14 +331,7 @@ public class AddJournalFragment extends Fragment {
                     Toast.makeText(getActivity(), "Belly scan " + uri.toString(), Toast.LENGTH_SHORT).show();
                     babyBump = uri.toString();
                 }
-                imageViewToUpdate.setImageBitmap(bitmap);
-
-                try {
-                    // upload(bitmap);
-                } catch (Exception ignored) {
-
-                }
-
+                setImageUri.setText("image/" + uri.getLastPathSegment());
             }
         }
 

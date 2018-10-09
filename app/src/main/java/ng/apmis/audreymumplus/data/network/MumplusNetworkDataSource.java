@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit;
 import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.data.DatabaseFirebaseJobService;
 import ng.apmis.audreymumplus.data.database.Person;
-import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.JournalModel;
+import ng.apmis.audreymumplus.ui.pregnancymodule.journal.JournalModel;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
 import ng.apmis.audreymumplus.utils.Week;

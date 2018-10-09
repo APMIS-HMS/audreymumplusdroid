@@ -6,8 +6,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import ng.apmis.audreymumplus.R;
-import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.MyJournalFragment;
-import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyimagegallery.MyGalleryFragment;
+import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyimagegallery.GalleryFragment;
+import ng.apmis.audreymumplus.ui.pregnancymodule.journalweekgroup.JournalWeekGroup;
 import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyweeklyprogress.PregnancyWeeklyProgressFragment;
 
 public class PregnancyFragmentCategoryAdapter extends FragmentPagerAdapter {
@@ -24,8 +24,8 @@ public class PregnancyFragmentCategoryAdapter extends FragmentPagerAdapter {
         if(position == 0){
             return new PregnancyWeeklyProgressFragment();
         }else if(position == 1){
-            return new MyGalleryFragment();
-        }else {return new MyJournalFragment();}
+            return new GalleryFragment();
+        }else {return new JournalWeekGroup();}
     }
 
     @Override

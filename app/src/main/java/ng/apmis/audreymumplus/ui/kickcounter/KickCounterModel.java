@@ -18,21 +18,25 @@ public class KickCounterModel {
     private String week;
     private String duration;
     private long date;
+    private int day;
 
-    public KickCounterModel(int kicks, String week, String duration, long date) {
-        this.kicks = kicks;
-        this.week = week;
-        this.duration = duration;
-        this.date = date;
-    }
-
-    @Ignore()
-    public KickCounterModel(int _id, int kicks, String week, String duration, long date) {
+    public KickCounterModel(int kicks, String week, String duration, long date, int day) {
         this._id = _id;
         this.kicks = kicks;
         this.week = week;
         this.duration = duration;
         this.date = date;
+        this.day = day;
+    }
+
+    @Ignore()
+    public KickCounterModel(int _id, int kicks, String week, String duration, long date, int day) {
+        this._id = _id;
+        this.kicks = kicks;
+        this.week = week;
+        this.duration = duration;
+        this.date = date;
+        this.day = day;
     }
 
     public int get_id() {
@@ -75,6 +79,15 @@ public class KickCounterModel {
         this.date = date;
     }
 
+    public int getDay() {
+        return day;
+    }
+
+    public void setDay(int day) {
+        this.day = day;
+    }
+
+
     @Override
     public String toString() {
         return "KickCounterModel{" +
@@ -83,6 +96,7 @@ public class KickCounterModel {
                 ", week='" + week + '\'' +
                 ", duration='" + duration + '\'' +
                 ", date=" + date +
+                ", day=" + day +
                 '}';
     }
 }

@@ -18,14 +18,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
-import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.JournalFactory;
-import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.JournalModel;
-import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.JournalViewModel;
+import ng.apmis.audreymumplus.ui.pregnancymodule.FragmentLifecycle;
+import ng.apmis.audreymumplus.ui.pregnancymodule.journal.JournalFactory;
+import ng.apmis.audreymumplus.ui.pregnancymodule.journal.JournalModel;
+import ng.apmis.audreymumplus.ui.pregnancymodule.journal.JournalViewModel;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 
-public class MyGalleryFragment extends android.support.v4.app.Fragment {
+public class GalleryFragment extends android.support.v4.app.Fragment {
 
-    JournalViewModel journalViewModel;
     List<GalleryModel> galleryList;
     List<GalleryModel> pregnancyBelly, babyScan;
     @BindView(R.id.gallery_option_spinner)
@@ -50,10 +50,11 @@ public class MyGalleryFragment extends android.support.v4.app.Fragment {
 
         recyclerView.setAdapter(galleryAdapter);
 
-        JournalFactory journalFactory = InjectorUtils.provideJournalFactory(getActivity());
-        journalViewModel = ViewModelProviders.of(getActivity(), journalFactory).get(JournalViewModel.class);
+        JournalFactory journalFactory = InjectorUtils.provideJournalFactory(getActivity(), "");
 
-        journalViewModel.getmJournalEntry().observe(getActivity(), journalModels -> {
+        JournalViewModel journalViewModel = ViewModelProviders.of(this, journalFactory).get(JournalViewModel.class);
+
+        journalViewModel.getSortedJournalEntries().observe(getActivity(), journalModels -> {
 
             galleryList = new ArrayList<>();
             pregnancyBelly = new ArrayList<>();
@@ -115,4 +116,5 @@ public class MyGalleryFragment extends android.support.v4.app.Fragment {
     public void onResume() {
         super.onResume();
     }
+
 }

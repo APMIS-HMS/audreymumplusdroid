@@ -2,6 +2,7 @@ package ng.apmis.audreymumplus.ui.kickcounter;
 
 import android.content.Context;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,6 @@ import java.util.Date;
 import java.util.List;
 
 import ng.apmis.audreymumplus.R;
-import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyjournal.JournalModel;
 
 /**
  * Created by Thadeus-APMIS on 8/22/2018.
@@ -67,7 +67,8 @@ public class KickCounterListAdapter extends BaseAdapter {
         dateTv.setText(time);
         weekTv.setText(kickCount.getWeek().split(" ")[1]);
         durationTv.setText(kickCount.getDuration());
-        kicksTv.setText(String.valueOf(kickCount.getKicks()));
+        Log.v("kicks count", String.valueOf(kickCount.getKicks()));
+        kicksTv.setText(kickCount.getKicks() != 0 ? String.valueOf(kickCount.getKicks()) : "0");
 
         return view;
     }

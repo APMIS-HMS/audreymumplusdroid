@@ -67,8 +67,7 @@ public class ChatSocketService extends IntentService {
                 JSONObject newChat;
                 try {
                     newChat = new JSONObject(cht);
-                    mSocket.emit("chat", newChat);
-                    Log.d("socket", newChat + " was emitted");
+                    mSocket.emit("create","chat", newChat);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -131,6 +130,7 @@ public class ChatSocketService extends IntentService {
                     JSONObject forumObj = (JSONObject) jar.get(i);
                     ChatForumModel eachForum = new Gson().fromJson(forumObj.toString(), ChatForumModel.class);
                     allForums.add(eachForum);
+                    Log.v("forum obj", forumObj.toString());
                 }
 
                 AudreyMumplus.getInstance().diskIO().execute(() -> {
