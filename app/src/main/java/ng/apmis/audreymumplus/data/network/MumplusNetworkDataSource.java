@@ -37,8 +37,10 @@ import java.util.concurrent.TimeUnit;
 import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.data.DatabaseFirebaseJobService;
 import ng.apmis.audreymumplus.data.database.Person;
+import ng.apmis.audreymumplus.ui.Chat.ChatContextModel;
 import ng.apmis.audreymumplus.ui.pregnancymodule.journal.JournalModel;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
+import ng.apmis.audreymumplus.utils.NotificationUtils;
 import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
 import ng.apmis.audreymumplus.utils.Week;
 
@@ -139,6 +141,36 @@ public class MumplusNetworkDataSource {
         return personName;
     }
 
+    public void postChat(Object chat) {
+        AudreyMumplus.getInstance().networkIO().execute(() -> {
+            JsonObjectRequest job = new JsonObjectRequest(Request.Method.POST, BASE_URL + "chat", (JSONObject) chat,
+                    response -> {
+                        try {
+                            InjectorUtils.provideSocketInstance().emit("chat", ((JSONObject) chat).get("forum"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    , error -> {
+            });
+            queue.add(job);
+        });
+
+    }
+
+    public void getChat (Context context, String forum) {
+        AudreyMumplus.getInstance().networkIO().execute(() -> {
+            JsonObjectRequest job = new JsonObjectRequest(Request.Method.GET, BASE_URL + "chat?forum=" + forum, null,
+                    response -> {
+                        ChatContextModel chatContextModel = new Gson().fromJson(response.toString(), ChatContextModel.class);
+                        NotificationUtils.buildBackgroundChatNotification(context, chatContextModel);
+                    },
+                    error -> {});
+
+            queue.add(job);
+        });
+    }
+
     public void fetchUserName(String email) {
         Log.d(LOG_TAG, "Fetch weather started");
         mExecutors.networkIO().execute(() -> {
@@ -204,7 +236,7 @@ public class MumplusNetworkDataSource {
                         Person updatedPerson = new Gson().fromJson(job.toString(), Person.class);
 //                        Log.e("TAGGED", "Updated person "+updatedPerson.getFirstName() +" "+updatedPerson.getId());
                         AudreyMumplus.getInstance().diskIO().execute(() -> {
-                                InjectorUtils.provideRepository(mContext).updatePerson(updatedPerson);
+                            InjectorUtils.provideRepository(mContext).updatePerson(updatedPerson);
                         });
                         pd.dismiss();
                         Toast.makeText(mContext, "Update update successful", Toast.LENGTH_SHORT).show();
@@ -261,16 +293,16 @@ public class MumplusNetworkDataSource {
                         }
                         Person updatedPerson = new Gson().fromJson(job.toString(), Person.class);
                         AudreyMumplus.getInstance().diskIO().execute(() -> {
-                                InjectorUtils.provideRepository(mContext).updatePerson(updatedPerson);
+                            InjectorUtils.provideRepository(mContext).updatePerson(updatedPerson);
                         });
                         pd.dismiss();
                         Toast.makeText(mContext, "Update update successful", Toast.LENGTH_SHORT).show();
                     },
                     error -> {
-                        if (error.getMessage() != null){
-                            Log.e("profile update err", "message: " +error.getMessage());
+                        if (error.getMessage() != null) {
+                            Log.e("profile update err", "message: " + error.getMessage());
                         }
-                        Log.e("profile update err", "message: " +error.toString());
+                        Log.e("profile update err", "message: " + error.toString());
                         Toast.makeText(mContext, "There was an error updating profile", Toast.LENGTH_SHORT).show();
                         pd.dismiss();
                     }) {
@@ -293,10 +325,10 @@ public class MumplusNetworkDataSource {
     /**
      * Schedules a repeating job service which fetches the weather.
      */
-    public void scheduleDailyDayWeekUpdate () {
+    public void scheduleDailyDayWeekUpdate() {
 
         final int periodicity = (int) TimeUnit.HOURS.toSeconds(12); // Every 12 hours periodicity expressed as seconds
-        final int toleranceInterval = (int)TimeUnit.HOURS.toSeconds(1); // a small(ish) window of time when triggering is OK
+        final int toleranceInterval = (int) TimeUnit.HOURS.toSeconds(1); // a small(ish) window of time when triggering is OK
 
         Driver driver = new GooglePlayDriver(mContext);
         FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(driver);
