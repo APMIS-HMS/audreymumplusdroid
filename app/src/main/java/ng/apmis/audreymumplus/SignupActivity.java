@@ -32,6 +32,8 @@ import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
 
+import static ng.apmis.audreymumplus.utils.Constants.BASE_URL;
+
 /**
  * Created by Thadeus-APMIS on 5/31/2018.
  */
@@ -41,7 +43,6 @@ public class SignupActivity extends AppCompatActivity implements SignupFragmentB
     static JSONObject audreyMum;
     ProgressDialog progressDialog;
     RequestQueue queue;
-    private static final String BASE_URL = "https://audrey-mum.herokuapp.com/";
 
     SharedPreferencesManager sharedPreferencesManager;
 

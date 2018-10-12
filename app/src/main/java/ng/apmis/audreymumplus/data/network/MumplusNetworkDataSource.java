@@ -51,6 +51,8 @@ import ng.apmis.audreymumplus.utils.NotificationUtils;
 import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
 import ng.apmis.audreymumplus.utils.Week;
 
+import static ng.apmis.audreymumplus.utils.Constants.BASE_URL;
+
 /**
  * Created by Thadeus-APMIS on 5/15/2018.
  */
@@ -69,8 +71,6 @@ public class MumplusNetworkDataSource {
     private final MutableLiveData<Person> personName;
     private SharedPreferencesManager sharedPreferencesManager;
     private RequestQueue queue;
-    //private static final String BASE_URL = "https://audrey-mum.herokuapp.com/";
-    private static final String BASE_URL = "https://slimy-rattlesnake-30.localtunnel.me/";
 
     private static final String WEEK_DAY_SYNC_TAG = "week-day";
 
