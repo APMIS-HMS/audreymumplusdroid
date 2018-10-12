@@ -21,6 +21,10 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.socketio.client.Ack;
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
 import com.koushikdutta.async.http.AsyncHttpClient;
 import com.koushikdutta.async.http.socketio.Acknowledge;
@@ -35,6 +39,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URISyntaxException;
+import java.util.HashMap;
+import java.util.Map;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.data.database.Person;
@@ -42,13 +50,14 @@ import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
 
+import static ng.apmis.audreymumplus.utils.Constants.BASE_URL;
+
 /**
  * Created by Thadeus on 6/15/2018.
  */
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String BASE_URL = "https://audrey-mum.herokuapp.com/";
     RequestQueue queue;
 
     SharedPreferencesManager sharedPreferencesManager;
@@ -66,71 +75,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     TextView forgotPassword;
     @BindView(R.id.remember_me)
     CheckBox rememberMe;
-    JSONArray jar;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signin);
         ButterKnife.bind(this);
-
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("email", "YK-34680");
-            jsonObject.put("password", "admin@01");
-            jsonObject.put("strategy", "local");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        jar = new JSONArray();
-
-        jar.put(jsonObject);
-
-        Uri uri = Uri.parse("https://audrey-mum.herokuapp.com");
-
-        Log.v("URi string", uri.toString());
-
-        SocketIOClient.connect(AsyncHttpClient.getDefaultInstance(), uri.toString(), new ConnectCallback() {
-            @Override
-            public void onConnectCompleted(Exception ex, SocketIOClient client) {
-                if (ex != null) {
-                    ex.printStackTrace();
-                    Log.v("exception", ex.toString());
-                    return;
-                }
-
-                client.setStringCallback(new StringCallback() {
-                    @Override
-                    public void onString(String string, Acknowledge acknowledge) {
-                        Log.v("String callback", string);
-                    }
-
-                });
-                client.on("someEvent", new EventCallback() {
-                    @Override
-                    public void onEvent(JSONArray argument, Acknowledge acknowledge) {
-                        Log.v("someEvent", argument.toString());
-                    }
-                });
-                client.setJSONCallback(new JSONCallback() {
-                    @Override
-                    public void onJSON(JSONObject json, Acknowledge acknowledge) {
-                        Log.v("JSONCallback", json.toString());
-                    }
-
-                });
-               /* client.emit("authenticate", jar, new Acknowledge() {
-                    @Override
-                    public void acknowledge(JSONArray arguments) {
-                        Log.v("Authenticate", arguments.toString());
-                    }
-                });*/
-            }
-        });
-
-
+       
         queue = Volley.newRequestQueue(this.getApplicationContext());
 
         sharedPreferencesManager = new SharedPreferencesManager(this.getApplicationContext());
@@ -223,7 +174,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
                 finish();
             }, error -> {
-                Log.d("error", String.valueOf(error.getMessage()) + "Error");
+                Log.e("error", String.valueOf(error) + "Error");
                 progressDialog.dismiss();
                 new AlertDialog.Builder(LoginActivity.this)
                         .setTitle("Login Failed")

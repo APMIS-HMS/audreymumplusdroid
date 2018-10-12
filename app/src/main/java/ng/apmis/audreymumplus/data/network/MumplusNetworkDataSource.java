@@ -29,6 +29,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,11 +39,14 @@ import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.data.DatabaseFirebaseJobService;
 import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.ui.Chat.ChatContextModel;
+import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumModel;
 import ng.apmis.audreymumplus.ui.pregnancymodule.journal.JournalModel;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 import ng.apmis.audreymumplus.utils.NotificationUtils;
 import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
 import ng.apmis.audreymumplus.utils.Week;
+
+import static ng.apmis.audreymumplus.utils.Constants.BASE_URL;
 
 /**
  * Created by Thadeus-APMIS on 5/15/2018.
@@ -62,7 +66,6 @@ public class MumplusNetworkDataSource {
     private final MutableLiveData<Person> personName;
     private SharedPreferencesManager sharedPreferencesManager;
     private RequestQueue queue;
-    private static final String BASE_URL = "https://audrey-mum.herokuapp.com/";
 
     private static final String WEEK_DAY_SYNC_TAG = "week-day";
 
@@ -322,6 +325,56 @@ public class MumplusNetworkDataSource {
     }
 
 
+    public void getForums() {
+        JsonObjectRequest updateProfileImageRequest = new JsonObjectRequest(Request.Method.GET, BASE_URL + "forum", null,
+                response -> {
+                    Log.v("get forums", response.toString());
+                    ArrayList<ChatForumModel> allForums = new ArrayList<>();
+
+                    try {
+                        JSONObject job = new JSONObject(response.toString());
+                        JSONArray jar = job.getJSONArray("data");
+
+                        for (int i = 0; i < jar.length(); i++) {
+                            JSONObject forumObj = (JSONObject) jar.get(i);
+                            ChatForumModel eachForum = new Gson().fromJson(forumObj.toString(), ChatForumModel.class);
+                            allForums.add(eachForum);
+                            Log.v("forum obj", forumObj.toString());
+                        }
+
+                        AudreyMumplus.getInstance().diskIO().execute(() -> {
+                            InjectorUtils.provideRepository(mContext).insertAllForums(allForums);
+                        });
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    Toast.makeText(mContext, "get forums successful", Toast.LENGTH_SHORT).show();
+                },
+                error -> {
+                    if (error.getMessage() != null) {
+                        Log.e("get forums err", "message: " + error.getMessage());
+                    }
+                    Log.e("get forums err", "message: " + error.toString());
+                    Toast.makeText(mContext, "There was an error getting forums", Toast.LENGTH_SHORT).show();
+                    //pd.dismiss();
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Authorization", "Bearer " + sharedPreferencesManager.getUserToken());
+                return params;
+            }
+        };
+
+        updateProfileImageRequest.setRetryPolicy(new DefaultRetryPolicy(30000, 1, 1));
+
+        queue.add(updateProfileImageRequest);
+    }
+
+
     /**
      * Schedules a repeating job service which fetches the weather.
      */
@@ -364,5 +417,4 @@ public class MumplusNetworkDataSource {
         dispatcher.schedule(databaseSyncJob);
         Log.d(LOG_TAG, "Job scheduled");
     }
-
 }

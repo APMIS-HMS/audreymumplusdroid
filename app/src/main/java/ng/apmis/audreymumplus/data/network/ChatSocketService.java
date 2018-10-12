@@ -44,6 +44,7 @@ public class ChatSocketService extends IntentService {
     protected void onHandleIntent(@Nullable Intent intent) {
 
         Socket mSocket = InjectorUtils.provideSocketInstance();
+        mSocket.connect();
 
         if (intent.getExtras() != null && !TextUtils.isEmpty(intent.getExtras().getString("email"))) {
             if (!mSocket.connected()) {

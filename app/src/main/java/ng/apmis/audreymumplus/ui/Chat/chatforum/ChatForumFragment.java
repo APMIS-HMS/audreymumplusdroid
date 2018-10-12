@@ -160,6 +160,9 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
         super.onResume();
         ((DashboardActivity) getActivity()).setActionBarButton(false, "Forums");
         ((DashboardActivity) getActivity()).bottomNavVisibility(false);
+        AudreyMumplus.getInstance().networkIO().execute(() -> {
+            InjectorUtils.provideJournalNetworkDataSource(activity).getForums();
+        });
         activity.startService(new Intent(activity, ChatSocketService.class).setAction("get-forums"));
         activity.startService(new Intent(activity, ChatSocketService.class).setAction("start-background"));
     }
