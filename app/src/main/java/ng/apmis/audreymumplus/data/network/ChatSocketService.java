@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.socketio.client.Ack;
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
 
@@ -15,6 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.ui.Chat.ChatContextModel;
@@ -45,73 +47,105 @@ public class ChatSocketService extends IntentService {
 
         Socket mSocket = InjectorUtils.provideSocketInstance();
 
-        if (intent.getExtras() != null && !TextUtils.isEmpty(intent.getExtras().getString("email"))) {
+        //Listen on all forum events
+        if (intent.getExtras() != null && intent.hasExtra("forums")) {
+
             if (!mSocket.connected()) {
-                globalEmail = intent.getExtras().getString("email");
-                mSocket.on("created", onCreated());
-                mSocket.on("getForums", onGetForums());
-                mSocket.on("getChats", getChats());
-            }
-        }
+                List<String> forums = intent.getExtras().getStringArrayList("forums");
 
-        if (intent.getAction().equals("start-background")) {
-            Log.d("socket background start", "background");
-            isForeground = false;
-        }
+                //When any forum event occurs, get the chat messages on it via REST
+                for (String forum : forums){
+                    Log.v("ForumEmit", "Listening to "+forum);
 
-        if (intent.getAction().equals("start-foreground")) {
-            Log.d("socket foreground start", "foreground");
-            isForeground = true;
-            if (!TextUtils.isEmpty(intent.getExtras().getString("chat"))) {
-                String cht = intent.getExtras().getString("chat");
-                JSONObject newChat;
-                try {
-                    newChat = new JSONObject(cht);
-                    mSocket.emit("create","chat", newChat);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            if (!TextUtils.isEmpty(intent.getExtras().getString("forumName"))) {
-                String forumName = intent.getExtras().getString("forumName");
-                try {
-                    JSONObject getChats = new JSONObject().put("forumName", forumName);
-                    mSocket.emit("getChats", getChats);
-                    Log.d("socket", getChats+" chats were emitted");
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    mSocket.on(forum, new Emitter.Listener() {
+                        @Override
+                        public void call(Object... args) {
+                            Log.v("ForumEmit", "Listened on "+forum);
+                            InjectorUtils.provideJournalNetworkDataSource(getApplicationContext())
+                                    .getChat(getApplicationContext(), forum);
+                        }
+                    });
                 }
             }
         }
 
-        if (intent.getAction().equals("get-forums")) {
-            mSocket.emit("getForums", new JSONObject());
-        }
+
+//        if (intent.getExtras() != null && !TextUtils.isEmpty(intent.getExtras().getString("email"))) {
+//            if (!mSocket.connected()) {
+//                globalEmail = intent.getExtras().getString("email");
+//                //mSocket.on("created", onCreated());
+//                mSocket.on("getForums", onGetForums());
+//                mSocket.on("getChats", getChats());
+//            }
+//        }
+
+//        if (intent.getAction().equals("start-background")) {
+//            Log.d("socket background start", "background");
+//            isForeground = false;
+//        }
+//
+//
+//        if (intent.getAction().equals("start-foreground")) {
+//            Log.d("socket foreground start", "foreground");
+//            isForeground = true;
+//            if (!TextUtils.isEmpty(intent.getExtras().getString("chat"))) {
+//                String cht = intent.getExtras().getString("chat");
+//                JSONObject newChat;
+//                try {
+//                    newChat = new JSONObject(cht);
+//
+//
+//
+//
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//            if (!TextUtils.isEmpty(intent.getExtras().getString("forumName"))) {
+//                String forumName = intent.getExtras().getString("forumName");
+//                try {
+//                    JSONObject getChats = new JSONObject().put("forumName", forumName);
+//
+//                    mSocket.emit("getChats", getChats);
+//
+//                    Log.d("socket", getChats+" chats were emitted");
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//
+//        if (intent.getAction().equals("get-forums")) {
+//            mSocket.emit("getForums", new JSONObject());
+//        }
 
     }
 
     Emitter.Listener onCreated() {
-        return args -> {
-            Log.d("Socket", "Notification should be here");
-            JSONObject jsonObject = (JSONObject) args[0];
-            try {
-                ChatContextModel oneChat = new Gson().fromJson(jsonObject.getJSONObject("message").toString(), ChatContextModel.class);
+        return new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                Log.d("Socket", "Notification should be here");
+                JSONObject jsonObject = (JSONObject) args[0];
+                try {
+                    ChatContextModel oneChat = new Gson().fromJson(jsonObject.getJSONObject("message").toString(), ChatContextModel.class);
 
-                AudreyMumplus.getInstance().diskIO().execute(() -> {
-                    InjectorUtils.provideRepository(getApplicationContext()).insertChat(oneChat);
-                });
+                    AudreyMumplus.getInstance().diskIO().execute(() -> {
+                        InjectorUtils.provideRepository(ChatSocketService.this.getApplicationContext()).insertChat(oneChat);
+                    });
 
-                if (!oneChat.getEmail().equals(globalEmail)) {
-                    if (isForeground) {
-                        NotificationUtils.buildForegroundChatNotification(this);
-                    } else {
-                        NotificationUtils.buildBackgroundChatNotification(this, oneChat);
+                    if (!oneChat.getEmail().equals(globalEmail)) {
+                        if (isForeground) {
+                            NotificationUtils.buildForegroundChatNotification(ChatSocketService.this);
+                        } else {
+                            NotificationUtils.buildBackgroundChatNotification(ChatSocketService.this, oneChat);
+                        }
                     }
-                }
 
-            } catch (JSONException e) {
-                e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         };
     }

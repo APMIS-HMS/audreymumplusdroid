@@ -19,7 +19,7 @@ import ng.apmis.audreymumplus.ui.pregnancymodule.journal.JournalModel;
 /**
  * Created by Thadeus-APMIS on 5/15/2018.
  */
-@Database(entities = {JournalModel.class, Person.class, Appointment.class, ChatForumModel.class, ChatContextModel.class, PillModel.class, KickCounterModel.class}, version = 3, exportSchema = false)
+@Database(entities = {JournalModel.class, Person.class, Appointment.class, ChatForumModel.class, ChatContextModel.class, PillModel.class, KickCounterModel.class}, version = 4, exportSchema = false)
 @TypeConverters({JournalConverters.class, PillsTypeConverter.class})
 public abstract class JournalDatabase extends RoomDatabase {
     public abstract JournalDao dailyJournalDao();
@@ -36,7 +36,7 @@ public abstract class JournalDatabase extends RoomDatabase {
                 if (sInstance == null) {
                     sInstance = Room.databaseBuilder(context.getApplicationContext(),
                             JournalDatabase.class, JournalDatabase.DATABASE_NAME)
-                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
                             .build();
                 }
             }
@@ -61,23 +61,23 @@ public abstract class JournalDatabase extends RoomDatabase {
         }
     };
 
-    static final Migration MIGRATION_3_4 = new Migration(3, 4) {
-        @Override
-        public void migrate(SupportSQLiteDatabase database) {
-            // Create the new table
-            database.execSQL(
-                    "CREATE TABLE black_person ('id' INTEGER PRIMARY KEY NOT NULL, _id TEXT, firstName TEXT, lastName TEXT, email TEXT, personId TEXT, dateOfBirth TEXT, motherMaidenName TEXT, primaryContactPhoneNo TEXT, ExpectedDateOfDelivery TEXT, profileImage TEXT)");
-// Copy the data
-            database.execSQL(
-                    "INSERT INTO black_person (id, firstName, lastName, email, personId, dateOfBirth, motherMaidenName, primaryContactPhoneNo, ExpectedDateOfDelivery, profileImage) SELECT id, firstName, lastName, email, personId, dateOfBirth, motherMaidenName, primaryContactPhoneNo, expectedDateOfDelivery, profileImage FROM person");
-
-// Remove the old table
-            database.execSQL("DROP TABLE person");
-// Change the table name to the correct one
-            database.execSQL("ALTER TABLE black_person RENAME TO person");
-
-        }
-    };
+//    static final Migration MIGRATION_3_4 = new Migration(3, 4) {
+//        @Override
+//        public void migrate(SupportSQLiteDatabase database) {
+//            // Create the new table
+//            database.execSQL(
+//                    "CREATE TABLE black_person ('id' INTEGER PRIMARY KEY NOT NULL, _id TEXT, firstName TEXT, lastName TEXT, email TEXT, personId TEXT, dateOfBirth TEXT, motherMaidenName TEXT, primaryContactPhoneNo TEXT, ExpectedDateOfDelivery TEXT, profileImage TEXT)");
+//// Copy the data
+//            database.execSQL(
+//                    "INSERT INTO black_person (id, firstName, lastName, email, personId, dateOfBirth, motherMaidenName, primaryContactPhoneNo, ExpectedDateOfDelivery, profileImage) SELECT id, firstName, lastName, email, personId, dateOfBirth, motherMaidenName, primaryContactPhoneNo, expectedDateOfDelivery, profileImage FROM person");
+//
+//// Remove the old table
+//            database.execSQL("DROP TABLE person");
+//// Change the table name to the correct one
+//            database.execSQL("ALTER TABLE black_person RENAME TO person");
+//
+//        }
+//    };
 
 
     static final Migration MIGRATION_1_2 = new Migration(1, 2) {
@@ -120,6 +120,14 @@ public abstract class JournalDatabase extends RoomDatabase {
             database.execSQL(
                     "CREATE TABLE kickcounter ('_id' INTEGER PRIMARY KEY NOT NULL, kicks INTEGER NOT NULL, week TEXT, duration TEXT, date INTEGER NOT NULL, day INTEGER NOT NULL)");
 
+        }
+    };
+
+    static final Migration MIGRATION_3_4 = new Migration(3, 4) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            //add the forums column to the Person table
+            database.execSQL("ALTER TABLE person ADD COLUMN forums TEXT");
         }
     };
 

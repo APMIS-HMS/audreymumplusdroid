@@ -74,7 +74,6 @@ dependencies {
     implementation "android.arch.persistence.room:guava:$room_version"
     // Test helpers
     testImplementation "android.arch.persistence.room:testing:$room_version"
-
     def lifecycle_version = "1.1.1"
     // ViewModel and LiveData
     implementation "android.arch.lifecycle:extensions:$lifecycle_version"
@@ -84,12 +83,11 @@ dependencies {
     // alternatively - just LiveData
     implementation "android.arch.lifecycle:livedata:$lifecycle_version"
     compile 'joda-time:joda-time:2.10'
-
     //for cropping images
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.4.7'
     implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
-    compile ('io.github.sac:SocketclusterClientJava:1.7.5'){
-        exclude group :'org.json', module: 'json'
+    compile('io.github.sac:SocketclusterClientJava:1.7.5') {
+        exclude group: 'org.json', module: 'json'
     }
     compile 'com.koushikdutta.async:androidasync:2.+'
     configurations.all {
