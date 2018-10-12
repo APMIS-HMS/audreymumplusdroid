@@ -13,6 +13,8 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -30,6 +32,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,13 +44,12 @@ import ng.apmis.audreymumplus.data.DatabaseFirebaseJobService;
 import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.ui.Chat.ChatContextModel;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumModel;
+import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.ui.pregnancymodule.journal.JournalModel;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 import ng.apmis.audreymumplus.utils.NotificationUtils;
 import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
 import ng.apmis.audreymumplus.utils.Week;
-
-import static ng.apmis.audreymumplus.utils.Constants.BASE_URL;
 
 /**
  * Created by Thadeus-APMIS on 5/15/2018.
@@ -66,6 +69,8 @@ public class MumplusNetworkDataSource {
     private final MutableLiveData<Person> personName;
     private SharedPreferencesManager sharedPreferencesManager;
     private RequestQueue queue;
+    //private static final String BASE_URL = "https://audrey-mum.herokuapp.com/";
+    private static final String BASE_URL = "https://slimy-rattlesnake-30.localtunnel.me/";
 
     private static final String WEEK_DAY_SYNC_TAG = "week-day";
 
@@ -144,18 +149,31 @@ public class MumplusNetworkDataSource {
         return personName;
     }
 
-    public void postChat(Object chat) {
+    public void postChat(Object chat, String forum) {
         AudreyMumplus.getInstance().networkIO().execute(() -> {
             JsonObjectRequest job = new JsonObjectRequest(Request.Method.POST, BASE_URL + "chat", (JSONObject) chat,
-                    response -> {
-                        try {
-                            InjectorUtils.provideSocketInstance().emit("chat", ((JSONObject) chat).get("forum"));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.v("ForumEmit", "Posted on " + forum);
+                            InjectorUtils.provideSocketInstance().emit("forum", forum);
                         }
                     }
-                    , error -> {
-            });
+                    , new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.e("ForumEmit error", error.toString());
+                }
+            })
+            {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", sharedPreferencesManager.getUserToken());
+                    return headers;
+                }
+            };
+
             queue.add(job);
         });
 
@@ -163,12 +181,40 @@ public class MumplusNetworkDataSource {
 
     public void getChat (Context context, String forum) {
         AudreyMumplus.getInstance().networkIO().execute(() -> {
-            JsonObjectRequest job = new JsonObjectRequest(Request.Method.GET, BASE_URL + "chat?forum=" + forum, null,
-                    response -> {
-                        ChatContextModel chatContextModel = new Gson().fromJson(response.toString(), ChatContextModel.class);
-                        NotificationUtils.buildBackgroundChatNotification(context, chatContextModel);
+            StringRequest job = new StringRequest(Request.Method.GET, BASE_URL + "chat",
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+
+                            List<ChatContextModel> chatContextModel = new ArrayList<>(Arrays.asList(new Gson().fromJson(response, ChatContextModel[].class)));
+                            if (DashboardActivity.globalOpenChatForum != null && DashboardActivity.globalOpenChatForum.equals(forum))
+                                NotificationUtils.buildForegroundChatNotification(context);
+                            else
+                                NotificationUtils.buildBackgroundChatNotification(context, chatContextModel.get(chatContextModel.size()-1));
+                        }
                     },
-                    error -> {});
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e("ForumEmit error", error.toString());
+                        }
+                    })
+
+            {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", sharedPreferencesManager.getUserToken());
+                    return headers;
+                }
+
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("forum", forum);
+                    return params;
+                }
+            };
 
             queue.add(job);
         });
@@ -417,4 +463,5 @@ public class MumplusNetworkDataSource {
         dispatcher.schedule(databaseSyncJob);
         Log.d(LOG_TAG, "Job scheduled");
     }
+
 }

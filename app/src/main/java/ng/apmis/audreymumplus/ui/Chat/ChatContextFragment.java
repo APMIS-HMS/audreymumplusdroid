@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +19,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -31,13 +28,11 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.data.network.ChatSocketService;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
-import ng.apmis.audreymumplus.utils.NotificationUtils;
 
 public class ChatContextFragment extends Fragment {
 
@@ -165,7 +160,11 @@ public class ChatContextFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        ((DashboardActivity) getActivity()).setActionBarButton(true, getArguments().getString("forumName"));
+        if (getArguments() != null && getArguments().getString("forumName") != null) {
+            ((DashboardActivity) getActivity()).setActionBarButton(true, getArguments().getString("forumName"));
+            DashboardActivity.globalOpenChatForum = getArguments().getString("forumName");
+        }
+
         ((DashboardActivity) getActivity()).bottomNavVisibility(false);
     }
 
@@ -173,6 +172,7 @@ public class ChatContextFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
+        DashboardActivity.globalOpenChatForum = null;
         ((DashboardActivity) getActivity()).setActionBarButton(false, getString(R.string.app_name));
         ((DashboardActivity) getActivity()).bottomNavVisibility(true);
         activity.startService(new Intent(getContext(), ChatSocketService.class).setAction("start-background"));
@@ -182,7 +182,15 @@ public class ChatContextFragment extends Fragment {
     public void postChat(ChatContextModel chat) {
         Gson gson = new Gson();
         String cht = gson.toJson(chat);
-        activity.startService(new Intent(getContext(), ChatSocketService.class).setAction("start-foreground").putExtra("chat", cht));
+        try {
+            JSONObject newChat = new JSONObject(cht);
+            InjectorUtils.provideJournalNetworkDataSource(getContext()).postChat(newChat, DashboardActivity.globalOpenChatForum);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        //activity.startService(new Intent(getContext(), ChatSocketService.class).setAction("start-foreground").putExtra("chat", cht));
     }
 
 }

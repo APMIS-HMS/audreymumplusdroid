@@ -29,6 +29,10 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.AudreyMumplus;
@@ -86,6 +90,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
     CircularImageView profileCircularImageView;
 
     public static Person globalPerson;
+    public static String globalOpenChatForum = null;
     private int mShortAnimationDuration;
 
     @Override
@@ -129,6 +134,10 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
             if (theUser != null) {
                 globalPerson = theUser;
 
+                List<String> forums = Arrays.asList("Test Forum 1");
+
+                //if (theUser.getForums() != null)
+                    startService(new Intent(this, ChatSocketService.class).putStringArrayListExtra("forums", new ArrayList<>(forums)));
                 startService(new Intent(this, ChatSocketService.class).setAction("start-background").putExtra("email", theUser.getEmail()));
 
                 userName.setText(getString(R.string.user_name, theUser.getFirstName(), theUser.getLastName()));

@@ -5,6 +5,9 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ng.apmis.audreymumplus.utils.Week;
 
 /**
@@ -29,6 +32,8 @@ public class Person {
     private String week;
     private int day;
 
+    private List<String> forums;
+
     @Ignore
     public Person(String _id, String firstName, String lastName, String email, String personId, String dateOfBirth, String motherMaidenName, String primaryContactPhoneNo, String ExpectedDateOfDelivery, String profileImage, String week, int day) {
         this._id = _id;
@@ -45,7 +50,7 @@ public class Person {
         this.day = day;
     }
 
-    public Person(int id, String _id, String firstName, String lastName, String email, String personId, String dateOfBirth, String motherMaidenName, String primaryContactPhoneNo, String ExpectedDateOfDelivery, String profileImage, String week, int day) {
+    public Person(int id, String _id, String firstName, String lastName, String email, String personId, String dateOfBirth, String motherMaidenName, String primaryContactPhoneNo, String ExpectedDateOfDelivery, String profileImage, String week, int day, List<String> forums) {
         this.id = id;
         this._id = _id;
         this.firstName = firstName;
@@ -59,6 +64,7 @@ public class Person {
         this.profileImage = profileImage;
         this.week = week;
         this.day = day;
+        this.forums = forums;
     }
 
     public int getId() {
@@ -121,6 +127,14 @@ public class Person {
         this.day = day;
     }
 
+    public List<String> getForums() {
+        return forums;
+    }
+
+    public void setForums(List<String> forums) {
+        this.forums = forums;
+    }
+
     @Override
     public String toString() {
         return "Person{" +
@@ -139,4 +153,6 @@ public class Person {
                 ", day=" + day +
                 '}';
     }
+
+
 }
