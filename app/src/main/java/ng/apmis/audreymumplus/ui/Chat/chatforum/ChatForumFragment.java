@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,9 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -54,6 +58,12 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
     EditText searchBar;
 
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -75,7 +85,6 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.v("changed text", String.valueOf(s));
                 forumAdapter.getFilter().filter(s);
             }
 
@@ -101,8 +110,35 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
             }
         });
 
+        forumRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                int lastCompletelyVisibleItemPosition = ((LinearLayoutManager) forumRecycler.getLayoutManager()).findLastCompletelyVisibleItemPosition();
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                Log.e("Scrolled position", String.format("%s, %s",dx, dy));
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
+
 
         return rootView;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.create_forum) {
+            new CreateChatForum().show(getChildFragmentManager(), null);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -132,12 +168,10 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
             new AlertDialog.Builder(activity)
                     .setTitle("Dear Mum")
                     .setMessage("Request to join forum")
-                    .setPositiveButton("Join", (dialog, which) -> {
-                        //TODO post to server to request to join forum (backend)
-                        Toast.makeText(activity, "Request sent to admin", Toast.LENGTH_SHORT).show();
-                    })
+                    .setPositiveButton("Join", (dialog, which) ->
+                            InjectorUtils.provideJournalNetworkDataSource(activity).joinForum(activity, globalPerson.getPersonId(), chatForums.getName())
+                    )
                     .setNegativeButton("Cancel", (dialog, which) -> {
-                        Toast.makeText(activity, "Ok bye", Toast.LENGTH_SHORT).show();
                     })
                     .show();
             return;

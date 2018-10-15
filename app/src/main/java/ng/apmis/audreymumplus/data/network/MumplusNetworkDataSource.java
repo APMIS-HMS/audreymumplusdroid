@@ -1,5 +1,7 @@
 package ng.apmis.audreymumplus.data.network;
 
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
@@ -131,7 +133,7 @@ public class MumplusNetworkDataSource {
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> params = new HashMap<>();
-                    params.put("Content-Type", "application/json; charset=UTF-8");
+                    params.put("Content-Type", "application/json; charset=utf-8");
                     params.put("Authorization", "Bearer " + sharedPreferencesManager.getUserToken());
                     return params;
                 }
@@ -170,7 +172,7 @@ public class MumplusNetworkDataSource {
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> params = new HashMap<>();
-                    params.put("Content-Type", "application/json; charset=UTF-8");
+                    params.put("Content-Type", "application/json; charset=utf-8");
                     params.put("Authorization", "Bearer " + sharedPreferencesManager.getUserToken());
                     return params;
                 }
@@ -212,7 +214,7 @@ public class MumplusNetworkDataSource {
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> params = new HashMap<>();
-                    params.put("Content-Type", "application/json; charset=UTF-8");
+                    params.put("Content-Type", "application/json; charset=utf-8");
                     params.put("Authorization", "Bearer " + sharedPreferencesManager.getUserToken());
                     return params;
                 }
@@ -257,7 +259,7 @@ public class MumplusNetworkDataSource {
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> params = new HashMap<>();
-                    params.put("Content-Type", "application/json; charset=UTF-8");
+                    params.put("Content-Type", "application/json; charset=utf-8");
                     params.put("Authorization", "Bearer " + sharedPreferencesManager.getUserToken());
                     return params;
                 }
@@ -312,7 +314,7 @@ public class MumplusNetworkDataSource {
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> params = new HashMap<>();
-                    params.put("Content-Type", "application/json; charset=UTF-8");
+                    params.put("Content-Type", "application/json; charset=utf-8");
                     params.put("Authorization", "Bearer " + sharedPreferencesManager.getUserToken());
                     return params;
                 }
@@ -367,7 +369,7 @@ public class MumplusNetworkDataSource {
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> params = new HashMap<>();
-                    params.put("Content-Type", "application/json; charset=UTF-8");
+                    params.put("Content-Type", "application/json; charset=utf-8");
                     params.put("Authorization", "Bearer " + sharedPreferencesManager.getUserToken());
                     return params;
                 }
@@ -381,7 +383,10 @@ public class MumplusNetworkDataSource {
 
 
     public void getForums() {
-        JsonObjectRequest updateProfileImageRequest = new JsonObjectRequest(Request.Method.GET, BASE_URL + "forum", null,
+
+        String url = String.format(BASE_URL + "forum?approved=%1$s", true);
+
+        JsonObjectRequest updateProfileImageRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
                     ArrayList<ChatForumModel> allForums = new ArrayList<>();
 
@@ -414,7 +419,7 @@ public class MumplusNetworkDataSource {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Content-Type", "application/json; charset=utf-8");
                 params.put("Authorization", "Bearer " + sharedPreferencesManager.getUserToken());
                 return params;
             }
@@ -469,4 +474,99 @@ public class MumplusNetworkDataSource {
         Log.d(LOG_TAG, "Job scheduled");
     }
 
+
+    //TODO post to server to request to join forum (backend)
+    public void joinForum(Context context, String personId, String forumName) {
+        ProgressDialog pd = new ProgressDialog(context);
+        pd.setTitle("Requesting Forum Creation");
+        pd.setMessage("Please wait...");
+        pd.setCancelable(false);
+        pd.setIndeterminate(true);
+        pd.show();
+
+        JSONObject joinForumObject = new JSONObject();
+        try {
+            joinForumObject.put("personId", personId);
+            joinForumObject.put("forumName", forumName);
+        } catch (JSONException e) {}
+
+        AudreyMumplus.getInstance().networkIO().execute(() -> {
+
+            JsonObjectRequest joinForumRequest = new JsonObjectRequest(Request.Method.POST, BASE_URL + "join-forum", joinForumObject,
+                    response -> {
+                        Log.d("joinforum response", response.toString());
+
+                        pd.dismiss();
+                        Toast.makeText(mContext, "Request sent to admin", Toast.LENGTH_SHORT).show();
+                    },
+                    error -> {
+                        if (error.getMessage() != null) {
+                            Log.e("join forums err", "message: " + error.getMessage());
+                        }
+                        Log.e("join forums err", "message: " + error.toString());
+                        pd.dismiss();
+                        Toast.makeText(mContext, "There was an error joining forums", Toast.LENGTH_SHORT).show();
+                    }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("Content-Type", "application/json; charset=utf-8");
+                    params.put("Authorization", "Bearer " + sharedPreferencesManager.getUserToken());
+                    return params;
+                }
+            };
+
+            joinForumRequest.setRetryPolicy(new DefaultRetryPolicy(30000, 1, 1));
+
+            queue.add(joinForumRequest);
+        });
+
+    }
+
+    public void createForum(String forumName, Dialog dialogFragment) {
+        ProgressDialog pd = new ProgressDialog(dialogFragment.getContext());
+        pd.setTitle("Requesting Forum Creation");
+        pd.setMessage("Please wait...");
+        pd.setCancelable(false);
+        pd.setIndeterminate(true);
+        pd.show();
+        JSONObject createForumObject = new JSONObject();
+        try {
+            createForumObject.put("name", forumName);
+        } catch (JSONException e) {}
+
+        AudreyMumplus.getInstance().networkIO().execute(() -> {
+
+            JsonObjectRequest createForumRequest = new JsonObjectRequest(Request.Method.POST, BASE_URL + "forum", createForumObject,
+                    response -> {
+                        Log.d("create forum response", response.toString());
+
+                        pd.dismiss();
+                        dialogFragment.dismiss();
+                        Toast.makeText(mContext, "Please wait admin approval", Toast.LENGTH_SHORT).show();
+                    },
+                    error -> {
+                        if (error.getMessage() != null) {
+                            Log.e("create forums err", "message: " + error.getMessage());
+                        }
+                        Log.e("create forums err", "message: " + error.toString());
+                        pd.dismiss();
+                        dialogFragment.dismiss();
+                        Toast.makeText(mContext, "There was an error creating forums", Toast.LENGTH_SHORT).show();
+                    }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("Content-Type", "application/json; charset=utf-8");
+                    params.put("Authorization", "Bearer " + sharedPreferencesManager.getUserToken());
+                    return params;
+                }
+            };
+
+            createForumRequest.setRetryPolicy(new DefaultRetryPolicy(30000, 1, 1));
+
+            queue.add(createForumRequest);
+        });
+
+    }
 }

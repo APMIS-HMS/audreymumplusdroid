@@ -244,6 +244,7 @@
     <string name="audrey_instagram_uri">https://www.instagram.com/theaudreypack2/</string>
     <string name="add_picture">Add picture</string>
     <string name="search_for_forums">Search for forums</string>
+    <string name="create_forum">Create Forum</string>
 
 
 </resources>
