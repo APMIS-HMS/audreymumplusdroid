@@ -46,6 +46,8 @@ import ng.apmis.audreymumplus.data.network.MumplusNetworkDataSource;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 
+import static ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity.globalPerson;
+
 /**
  * Created by Thadeus-APMIS on 6/29/2018.
  */
@@ -120,12 +122,8 @@ public class GetAudreyFragment extends Fragment {
 
         getAudreyButton.setOnClickListener((view -> {
             if (checkFields()) {
-                AudreyMumplus.getInstance().diskIO().execute(() -> {
-                    InjectorUtils.provideRepository(getActivity()).getPerson().observe(this, person -> {
-                        InjectorUtils.provideJournalNetworkDataSource(getActivity()).updateProfileGetAudrey(person.getPersonId(), registrationData, getActivity());
-                        InjectorUtils.provideRepository(getActivity()).getDayWeek(person);
-                    });
-                });
+                        InjectorUtils.provideJournalNetworkDataSource(getActivity()).updateProfileGetAudrey(globalPerson.getPersonId(), registrationData, getActivity());
+
             }
         }));
 

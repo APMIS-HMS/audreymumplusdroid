@@ -7,6 +7,7 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 import android.arch.persistence.room.migration.Migration;
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import ng.apmis.audreymumplus.ui.Appointments.Appointment;
 import ng.apmis.audreymumplus.ui.Chat.ChatContextModel;
@@ -19,7 +20,8 @@ import ng.apmis.audreymumplus.ui.pregnancymodule.journal.JournalModel;
 /**
  * Created by Thadeus-APMIS on 5/15/2018.
  */
-@Database(entities = {JournalModel.class, Person.class, Appointment.class, ChatForumModel.class, ChatContextModel.class, PillModel.class, KickCounterModel.class}, version = 4, exportSchema = false)
+@Database(entities = {JournalModel.class, Person.class, Appointment.class, ChatForumModel.class,
+        ChatContextModel.class, PillModel.class, KickCounterModel.class, WeeklyProgressData.class}, version = 5, exportSchema = false)
 @TypeConverters({JournalConverters.class, PillsTypeConverter.class})
 public abstract class JournalDatabase extends RoomDatabase {
     public abstract JournalDao dailyJournalDao();
@@ -36,7 +38,7 @@ public abstract class JournalDatabase extends RoomDatabase {
                 if (sInstance == null) {
                     sInstance = Room.databaseBuilder(context.getApplicationContext(),
                             JournalDatabase.class, JournalDatabase.DATABASE_NAME)
-                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
+                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
                             .build();
                 }
             }
@@ -44,22 +46,22 @@ public abstract class JournalDatabase extends RoomDatabase {
         return sInstance;
     }
 
-    static final Migration MIGRATION_4_5 = new Migration(4, 5) {
-        @Override
-        public void migrate(SupportSQLiteDatabase database) {
-            // Create the new table
-            database.execSQL(
-                    "CREATE TABLE black_person ('id' INTEGER PRIMARY KEY NOT NULL, _id TEXT, firstName TEXT, lastName TEXT, email TEXT, personId TEXT, dateOfBirth TEXT, motherMaidenName TEXT, primaryContactPhoneNo TEXT, ExpectedDateOfDelivery TEXT, profileImage TEXT, week TEXT, day INTEGER NOT NULL DEFAULT 0)");
-// Copy the data
-            database.execSQL(
-                    "INSERT INTO black_person (id, _id, firstName, lastName, email, personId, dateOfBirth, motherMaidenName, primaryContactPhoneNo, ExpectedDateOfDelivery, profileImage) SELECT id, _id, firstName, lastName, email, personId, dateOfBirth, motherMaidenName, primaryContactPhoneNo, ExpectedDateOfDelivery, profileImage FROM person");
-
-// Remove the old table
-            database.execSQL("DROP TABLE person");
-// Change the table name to the correct one
-            database.execSQL("ALTER TABLE black_person RENAME TO person");
-        }
-    };
+//    static final Migration MIGRATION_4_5 = new Migration(4, 5) {
+//        @Override
+//        public void migrate(SupportSQLiteDatabase database) {
+//            // Create the new table
+//            database.execSQL(
+//                    "CREATE TABLE black_person ('id' INTEGER PRIMARY KEY NOT NULL, _id TEXT, firstName TEXT, lastName TEXT, email TEXT, personId TEXT, dateOfBirth TEXT, motherMaidenName TEXT, primaryContactPhoneNo TEXT, ExpectedDateOfDelivery TEXT, profileImage TEXT, week TEXT, day INTEGER NOT NULL DEFAULT 0)");
+//// Copy the data
+//            database.execSQL(
+//                    "INSERT INTO black_person (id, _id, firstName, lastName, email, personId, dateOfBirth, motherMaidenName, primaryContactPhoneNo, ExpectedDateOfDelivery, profileImage) SELECT id, _id, firstName, lastName, email, personId, dateOfBirth, motherMaidenName, primaryContactPhoneNo, ExpectedDateOfDelivery, profileImage FROM person");
+//
+//// Remove the old table
+//            database.execSQL("DROP TABLE person");
+//// Change the table name to the correct one
+//            database.execSQL("ALTER TABLE black_person RENAME TO person");
+//        }
+//    };
 
 //    static final Migration MIGRATION_3_4 = new Migration(3, 4) {
 //        @Override
@@ -131,4 +133,12 @@ public abstract class JournalDatabase extends RoomDatabase {
         }
     };
 
+    static final Migration MIGRATION_4_5 = new Migration(4, 5) {
+
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase db) {
+            db.execSQL("CREATE TABLE `weeklyprogressdata` (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, _id TEXT, `week` INTEGER NOT NULL, `day` INTEGER NOT NULL, `title` TEXT, `intro` TEXT, `body` TEXT)");
+            db.execSQL("CREATE UNIQUE INDEX `index_weeklyprogressdata__id` ON `weeklyprogressdata` (`_id`)");
+        }
+    };
 }
