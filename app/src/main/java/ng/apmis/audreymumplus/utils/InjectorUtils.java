@@ -13,6 +13,8 @@ import ng.apmis.audreymumplus.ui.Chat.ChatFactory;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ForumFactory;
 import ng.apmis.audreymumplus.ui.pregnancymodule.journal.JournalFactory;
 import ng.apmis.audreymumplus.ui.pregnancymodule.journalweekgroup.JournalWeekGroupFactory;
+import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyweeklyprogress.PregnancyWeeklyProgressViewModel;
+import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyweeklyprogress.PregnancyWeeklyProgressViewModelFactory;
 
 /**
  * Created by Thadeus-APMIS on 5/15/2018.
@@ -54,6 +56,11 @@ public class InjectorUtils {
     public static JournalWeekGroupFactory providePregnancyJournalGroupFactory (Context context, String week) {
         AudreyRepository audreyRepository = provideRepository(context.getApplicationContext());
         return new JournalWeekGroupFactory(audreyRepository, week);
+    }
+
+    public static PregnancyWeeklyProgressViewModelFactory providePregnancyWeeklyProgressViewModelFactory(Context context){
+        AudreyRepository audreyRepository = provideRepository(context.getApplicationContext());
+        return new PregnancyWeeklyProgressViewModelFactory(audreyRepository);
     }
 
 }

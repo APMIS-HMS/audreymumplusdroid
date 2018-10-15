@@ -11,8 +11,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ng.apmis.audreymumplus.R;
+import ng.apmis.audreymumplus.data.database.WeeklyProgressData;
 
 /**
  * Created by Thadeus-APMIS on 6/27/2018.
@@ -22,7 +24,7 @@ public class PregnancyWeeklyProgressAdapter extends RecyclerView.Adapter<Pregnan
 
 
     Context mContext;
-    ArrayList<PregnancyWeeklyProgressModel> weeklyProgressModels;
+    ArrayList<WeeklyProgressData> weeklyProgressModels;
     FragmentManager fragmentManager;
 
     PregnancyWeeklyProgressAdapter(Context context, FragmentManager fragmentManager) {
@@ -31,11 +33,13 @@ public class PregnancyWeeklyProgressAdapter extends RecyclerView.Adapter<Pregnan
         this.fragmentManager = fragmentManager;
     }
 
-    public void addPregnancyProgress (ArrayList<PregnancyWeeklyProgressModel> weekProgress) {
-        if (weeklyProgressModels != null) {
-            weeklyProgressModels = new ArrayList<>();
-        }
-        weeklyProgressModels.addAll(weekProgress);
+    public void addPregnancyProgress (List<WeeklyProgressData> weekProgressData) {
+        weeklyProgressModels.addAll(weekProgressData);
+        notifyDataSetChanged();
+    }
+
+    public void clear(){
+        weeklyProgressModels.clear();
         notifyDataSetChanged();
     }
 
@@ -49,8 +53,8 @@ public class PregnancyWeeklyProgressAdapter extends RecyclerView.Adapter<Pregnan
 
     @Override
     public void onBindViewHolder(PregnancyWeeklyProgressViewHolder holder, int position) {
-        PregnancyWeeklyProgressModel eachDay = weeklyProgressModels.get(position);
-        holder.someDaysday.setText(mContext.getString(R.string.todays_day_placeholder, eachDay.getDay()));
+        WeeklyProgressData eachDay = weeklyProgressModels.get(position);
+        holder.someDaysday.setText(mContext.getString(R.string.todays_day_placeholder, eachDay.getDay()+""));
         holder.someDaysTitleIntro.setText(Html.fromHtml(mContext.getString(R.string.todays_progress,eachDay.getTitle(), eachDay.getIntro())));
     }
 
@@ -74,7 +78,7 @@ public class PregnancyWeeklyProgressAdapter extends RecyclerView.Adapter<Pregnan
         @Override
         public void onClick(View view) {
             Bundle detailBundle = new Bundle();
-            detailBundle.putParcelable("today", weeklyProgressModels.get(getAdapterPosition()));
+            detailBundle.putSerializable("today", weeklyProgressModels.get(getAdapterPosition()));
             PregnancyWeeklyProgressDetail pregWeekDetail = new PregnancyWeeklyProgressDetail();
             pregWeekDetail.setArguments(detailBundle);
             pregWeekDetail.show(fragmentManager, "Day Details");

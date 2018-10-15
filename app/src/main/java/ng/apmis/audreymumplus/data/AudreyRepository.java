@@ -14,6 +14,7 @@ import java.util.List;
 import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.data.database.JournalDao;
 import ng.apmis.audreymumplus.data.database.Person;
+import ng.apmis.audreymumplus.data.database.WeeklyProgressData;
 import ng.apmis.audreymumplus.data.network.MumplusNetworkDataSource;
 import ng.apmis.audreymumplus.ui.Appointments.Appointment;
 import ng.apmis.audreymumplus.ui.Chat.ChatContextModel;
@@ -247,5 +248,13 @@ public class AudreyRepository {
 
     public LiveData<JournalModel> getDaysJournal(String day) {
         return mJournalDao.getTodaysJournal(day);
+    }
+
+    public LiveData<List<WeeklyProgressData>> getWeeklyProgressData(){
+        return mJournalDao.getAllWeeklyProgressData();
+    }
+
+    public void bulkInsertWeeklyProgressData(List<WeeklyProgressData> progressData){
+        mExecutors.diskIO().execute(() -> mJournalDao.bulkInsertWeeklyProgress(progressData));
     }
 }

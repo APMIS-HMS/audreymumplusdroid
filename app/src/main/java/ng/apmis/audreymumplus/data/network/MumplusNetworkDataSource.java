@@ -53,6 +53,7 @@ import ng.apmis.audreymumplus.utils.NotificationUtils;
 import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
 import ng.apmis.audreymumplus.utils.Week;
 
+import static ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity.globalPerson;
 import static ng.apmis.audreymumplus.utils.Constants.BASE_URL;
 
 /**
@@ -271,7 +272,7 @@ public class MumplusNetworkDataSource {
 
     }
 
-    public void updateProfileGetAudrey(String currentPersonId, JSONObject changeFields, FragmentActivity context) {
+    public void updateProfileGetAudrey(String personId, JSONObject changeFields, FragmentActivity context) {
         ProgressDialog pd = new ProgressDialog(context);
         pd.setTitle("Updating Profile");
         pd.setMessage("Please wait...");
@@ -280,7 +281,7 @@ public class MumplusNetworkDataSource {
         pd.show();
         mExecutors.networkIO().execute(() -> {
 
-            String url = String.format(BASE_URL + "people?personId=%1$s", currentPersonId);
+            String url = String.format(BASE_URL + "people?personId=%1$s", personId);
 
             StringRequest updateProfileRequest = new StringRequest(Request.Method.PATCH, url,
                     response -> {

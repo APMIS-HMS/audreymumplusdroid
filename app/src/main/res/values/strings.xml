@@ -142,6 +142,10 @@
         <item>Pregnant Mums</item>
     </string-array>
 
+    <string-array name="week_0">
+        <item>Week 0</item>
+    </string-array>
+
     <string-array name="week_history">
         <item>All</item>
         <item>Week 1</item>

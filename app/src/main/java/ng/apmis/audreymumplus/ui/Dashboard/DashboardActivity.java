@@ -135,15 +135,16 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
             if (theUser != null) {
                 globalPerson = theUser;
 
-                List<String> forums = theUser.getForums();
-                for (String forum : forums) {
-                    InjectorUtils.provideJournalNetworkDataSource(this)
-                            .getChat(this, forum, true);
+                if (theUser.getForums() != null) {
+                    List<String> forums = theUser.getForums();
+                    for (String forum : forums) {
+                        InjectorUtils.provideJournalNetworkDataSource(this)
+                                .getChat(this, forum, true);
                         InjectorUtils.provideJournalNetworkDataSource(this).getForums();
-                }
+                    }
 
-                //if (theUser.getForums() != null)
-                startService(new Intent(this, ChatSocketService.class).putStringArrayListExtra("forums", new ArrayList<>(forums)));
+                    startService(new Intent(this, ChatSocketService.class).putStringArrayListExtra("forums", new ArrayList<>(forums)));
+                }
 
                 startService(new Intent(this, ChatSocketService.class).setAction("start-background").putExtra("email", theUser.getEmail()));
 

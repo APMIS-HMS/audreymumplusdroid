@@ -5,10 +5,49 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/user_transparent">
 
+    <LinearLayout
+        android:id="@+id/some_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/weekly_tip_title"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:text="@string/weekly_tips"/>
+
+        <Spinner
+            android:id="@+id/current_week_spinner"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:spinnerMode="dropdown"
+            android:entries="@array/week_0"
+            android:layout_marginEnd="12dp" />
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_margin="12dp"
+        android:background="@android:color/darker_gray"
+        android:layout_below="@+id/some_view"/>
+
     <ProgressBar
         android:id="@+id/progress_bar"
         android:layout_width="match_parent"
         android:layout_height="12dp"
+        android:layout_below="@+id/view_divider"
         android:indeterminate="true"
         style="@android:style/Widget.Material.ProgressBar.Horizontal"
         android:animationResolution="4000"
@@ -17,8 +56,9 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/progress_bar"
         android:id="@+id/content_view"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
@@ -84,44 +124,10 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <RelativeLayout
-                    android:id="@+id/some_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="12dp">
-
-                    <TextView
-                        android:id="@+id/weekly_tip_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:text="@string/weekly_tips" />
-
-                    <TextView
-                        android:id="@+id/current_week_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_margin="8dp"
-                        android:text="(Week 15)" />
-
-                    <View
-                        android:id="@+id/divider"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_below="@+id/weekly_tip_title"
-                        android:layout_marginTop="12dp"
-                        android:background="@color/colorPrimary" />
-
-                </RelativeLayout>
-
-
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/weekly_progress_recycler"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_below="@id/some_view"
                     android:clipToPadding="false"
                     android:paddingBottom="8dp" />
 

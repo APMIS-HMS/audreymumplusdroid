@@ -126,4 +126,14 @@ public interface JournalDao {
     @Query("SELECT SUM(kicks) FROM kickcounter WHERE day = :day")
     LiveData<Integer> getKickCountPerDay(int day);
 
+
+    /*
+        WEEKLY PROGRESS DATA
+     */
+    @Query("SELECT * FROM weeklyprogressdata")
+    LiveData<List<WeeklyProgressData>> getAllWeeklyProgressData();
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    void bulkInsertWeeklyProgress(List<WeeklyProgressData> data);
+
 }
