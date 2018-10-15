@@ -100,7 +100,6 @@ public class MumplusNetworkDataSource {
     }
 
     public void fetchPeopleAndSaveToDb(String personId) {
-        Log.d(LOG_TAG, "Fetch weather started");
         mExecutors.networkIO().execute(() -> {
 
             String url = String.format(BASE_URL + "people?personId=%1$s", personId);
@@ -121,7 +120,6 @@ public class MumplusNetworkDataSource {
                 personFromPeople.setWeek(Week.Week1.week);
 
                 AudreyMumplus.getInstance().diskIO().execute(() -> {
-                    //update user
                     InjectorUtils.provideRepository(mContext).savePerson(personFromPeople);
                 });
 
@@ -157,6 +155,9 @@ public class MumplusNetworkDataSource {
                         public void onResponse(JSONObject response) {
                             Log.v("ForumEmit", "Posted on " + forum);
                             InjectorUtils.provideSocketInstance().emit("forum", forum);
+                            AudreyMumplus.getInstance().diskIO().execute(()-> InjectorUtils.provideRepository(mContext).insertChat(new Gson().fromJson(response.toString(), ChatContextModel.class))
+                            );
+
                         }
                     }
                     , new Response.ErrorListener() {
@@ -168,9 +169,10 @@ public class MumplusNetworkDataSource {
             {
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
-                    Map<String, String> headers = new HashMap<>();
-                    headers.put("Authorization", sharedPreferencesManager.getUserToken());
-                    return headers;
+                    Map<String, String> params = new HashMap<>();
+                    params.put("Content-Type", "application/json; charset=UTF-8");
+                    params.put("Authorization", "Bearer " + sharedPreferencesManager.getUserToken());
+                    return params;
                 }
             };
 
@@ -179,7 +181,7 @@ public class MumplusNetworkDataSource {
 
     }
 
-    public void getChat (Context context, String forum) {
+    public void getChat (Context context, String forum, boolean initialPullDontNotify) {
         AudreyMumplus.getInstance().networkIO().execute(() -> {
             StringRequest job = new StringRequest(Request.Method.GET, BASE_URL + "chat",
                     new Response.Listener<String>() {
@@ -187,10 +189,16 @@ public class MumplusNetworkDataSource {
                         public void onResponse(String response) {
 
                             List<ChatContextModel> chatContextModel = new ArrayList<>(Arrays.asList(new Gson().fromJson(response, ChatContextModel[].class)));
-                            if (DashboardActivity.globalOpenChatForum != null && DashboardActivity.globalOpenChatForum.equals(forum))
-                                NotificationUtils.buildForegroundChatNotification(context);
-                            else
-                                NotificationUtils.buildBackgroundChatNotification(context, chatContextModel.get(chatContextModel.size()-1));
+
+                            if (!initialPullDontNotify) {
+
+                                if (DashboardActivity.globalOpenChatForum != null && DashboardActivity.globalOpenChatForum.equals(forum))
+                                    NotificationUtils.buildForegroundChatNotification(context);
+                                else
+                                    NotificationUtils.buildBackgroundChatNotification(context, chatContextModel.get(chatContextModel.size() - 1));
+                            }
+                            AudreyMumplus.getInstance().diskIO().execute(() -> InjectorUtils.provideRepository(context).insertAllChats(chatContextModel));
+
                         }
                     },
                     new Response.ErrorListener() {
@@ -203,9 +211,10 @@ public class MumplusNetworkDataSource {
             {
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
-                    Map<String, String> headers = new HashMap<>();
-                    headers.put("Authorization", sharedPreferencesManager.getUserToken());
-                    return headers;
+                    Map<String, String> params = new HashMap<>();
+                    params.put("Content-Type", "application/json; charset=UTF-8");
+                    params.put("Authorization", "Bearer " + sharedPreferencesManager.getUserToken());
+                    return params;
                 }
 
                 @Override
@@ -374,7 +383,6 @@ public class MumplusNetworkDataSource {
     public void getForums() {
         JsonObjectRequest updateProfileImageRequest = new JsonObjectRequest(Request.Method.GET, BASE_URL + "forum", null,
                 response -> {
-                    Log.v("get forums", response.toString());
                     ArrayList<ChatForumModel> allForums = new ArrayList<>();
 
                     try {
@@ -385,7 +393,6 @@ public class MumplusNetworkDataSource {
                             JSONObject forumObj = (JSONObject) jar.get(i);
                             ChatForumModel eachForum = new Gson().fromJson(forumObj.toString(), ChatForumModel.class);
                             allForums.add(eachForum);
-                            Log.v("forum obj", forumObj.toString());
                         }
 
                         AudreyMumplus.getInstance().diskIO().execute(() -> {
@@ -395,8 +402,6 @@ public class MumplusNetworkDataSource {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
-                    Toast.makeText(mContext, "get forums successful", Toast.LENGTH_SHORT).show();
                 },
                 error -> {
                     if (error.getMessage() != null) {

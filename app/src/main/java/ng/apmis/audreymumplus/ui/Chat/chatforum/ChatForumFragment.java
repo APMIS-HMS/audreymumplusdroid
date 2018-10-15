@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -30,6 +32,8 @@ import ng.apmis.audreymumplus.ui.Chat.ChatContextFragment;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 
+import static ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity.globalPerson;
+
 /**
  * Created by Thadeus-APMIS on 6/29/2018.
  */
@@ -39,7 +43,6 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
     ForumViewModel forumViewModel;
     @BindView(R.id.forums_list)
     RecyclerView forumRecycler;
-    ArrayList<ChatForumModel> allForums;
     ArrayList<ChatForumModel> dbForums;
     ForumAdapter forumAdapter;
     AppCompatActivity activity;
@@ -56,7 +59,6 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_chat_forums, container, false);
         ButterKnife.bind(this, rootView);
-        allForums = new ArrayList<>();
         dbForums = new ArrayList<>();
 
         forumAdapter = new ForumAdapter(getActivity(), this);
@@ -86,21 +88,7 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
         ForumFactory forumFactory = InjectorUtils.provideForumFactory(activity);
         forumViewModel = ViewModelProviders.of(this, forumFactory).get(ForumViewModel.class);
 
-     /*   if (getArguments() != null) {
-            Bundle bundle = new Bundle();
-            bundle.putString("forumName", getArguments().getString("forumName"));
-
-            ChatContextFragment myObj = new ChatContextFragment();
-            myObj.setArguments(bundle);
-
-            activity.getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, myObj)
-                    .addToBackStack(null)
-                    .commit();
-        }*/
-
-
-        forumViewModel.getUpdatedForums().observe(this, forumModelList -> {
+        forumViewModel.getUpdatedForums().observeForever(forumModelList -> {
             if (forumModelList.size() > 0) {
                 dbForums = (ArrayList<ChatForumModel>) forumModelList;
                 progressBar.setVisibility(View.GONE);
@@ -117,24 +105,6 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
         return rootView;
     }
 
-    private void checkForumChanges(ArrayList<ChatForumModel> allForums) {
-        Log.v("all forums", String.valueOf(allForums));
-        if (allForums != null) {
-            for (ChatForumModel x : allForums) {
-                for (ChatForumModel y : dbForums) {
-                    Log.v("true false", String.valueOf(x.get_id().equals(y.get_id())));
-                    if (x.get_id().equals(y.get_id())) {
-                        allForums.remove(x);
-                    }
-                }
-            }
-        }
-        Log.v("remains", allForums.toString());
-        /* AudreyMumplus.getInstance().diskIO().execute(() -> {
-                    InjectorUtils.provideRepository(activity).insertAllForums(allForums);
-                });*/
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -147,11 +117,6 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
         super.onResume();
         ((DashboardActivity) getActivity()).setActionBarButton(false, "Forums");
         ((DashboardActivity) getActivity()).bottomNavVisibility(false);
-        AudreyMumplus.getInstance().networkIO().execute(() -> {
-            InjectorUtils.provideJournalNetworkDataSource(activity).getForums();
-        });
-        activity.startService(new Intent(activity, ChatSocketService.class).setAction("get-forums"));
-        activity.startService(new Intent(activity, ChatSocketService.class).setAction("start-background"));
     }
 
     @Override
@@ -163,6 +128,20 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
 
     @Override
     public void onForumClick(ChatForumModel chatForums) {
+        if (!globalPerson.getForums().contains(chatForums.getName())) {
+            new AlertDialog.Builder(activity)
+                    .setTitle("Dear Mum")
+                    .setMessage("Request to join forum")
+                    .setPositiveButton("Join", (dialog, which) -> {
+                        //TODO post to server to request to join forum (backend)
+                        Toast.makeText(activity, "Request sent to admin", Toast.LENGTH_SHORT).show();
+                    })
+                    .setNegativeButton("Cancel", (dialog, which) -> {
+                        Toast.makeText(activity, "Ok bye", Toast.LENGTH_SHORT).show();
+                    })
+                    .show();
+            return;
+        }
         Bundle bundle = new Bundle();
         bundle.putString("forumName", chatForums.getName());
 

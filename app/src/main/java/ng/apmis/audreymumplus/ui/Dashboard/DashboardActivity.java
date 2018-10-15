@@ -134,10 +134,16 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
             if (theUser != null) {
                 globalPerson = theUser;
 
-                List<String> forums = Arrays.asList("Test Forum 1");
+                List<String> forums = theUser.getForums();
+                for (String forum : forums) {
+                    InjectorUtils.provideJournalNetworkDataSource(this)
+                            .getChat(this, forum, true);
+                        InjectorUtils.provideJournalNetworkDataSource(this).getForums();
+                }
 
                 //if (theUser.getForums() != null)
-                    startService(new Intent(this, ChatSocketService.class).putStringArrayListExtra("forums", new ArrayList<>(forums)));
+                startService(new Intent(this, ChatSocketService.class).putStringArrayListExtra("forums", new ArrayList<>(forums)));
+
                 startService(new Intent(this, ChatSocketService.class).setAction("start-background").putExtra("email", theUser.getEmail()));
 
                 userName.setText(getString(R.string.user_name, theUser.getFirstName(), theUser.getLastName()));
@@ -319,10 +325,10 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                         if (journalModel != null) {
                             Toast.makeText(this, "You have inputed a journal today", Toast.LENGTH_SHORT).show();
                         }*/
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment_container, new JournalAddFragment())
-                                .addToBackStack(null)
-                                .commit()
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, new JournalAddFragment())
+                            .addToBackStack(null)
+                            .commit()
                /*     })
                 )*/
             ));

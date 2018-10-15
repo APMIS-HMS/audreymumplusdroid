@@ -34,6 +34,26 @@ public class Person {
 
     private List<String> forums;
 
+    @Override
+    public String toString() {
+        return "Person{" +
+                "id=" + id +
+                ", _id='" + _id + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", personId='" + personId + '\'' +
+                ", dateOfBirth='" + dateOfBirth + '\'' +
+                ", motherMaidenName='" + motherMaidenName + '\'' +
+                ", primaryContactPhoneNo='" + primaryContactPhoneNo + '\'' +
+                ", ExpectedDateOfDelivery='" + ExpectedDateOfDelivery + '\'' +
+                ", profileImage='" + profileImage + '\'' +
+                ", week='" + week + '\'' +
+                ", day=" + day +
+                ", forums=" + forums +
+                '}';
+    }
+
     @Ignore
     public Person(String _id, String firstName, String lastName, String email, String personId, String dateOfBirth, String motherMaidenName, String primaryContactPhoneNo, String ExpectedDateOfDelivery, String profileImage, String week, int day) {
         this._id = _id;
@@ -133,25 +153,6 @@ public class Person {
 
     public void setForums(List<String> forums) {
         this.forums = forums;
-    }
-
-    @Override
-    public String toString() {
-        return "Person{" +
-                "id=" + id +
-                ", _id='" + _id + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", personId='" + personId + '\'' +
-                ", dateOfBirth='" + dateOfBirth + '\'' +
-                ", motherMaidenName='" + motherMaidenName + '\'' +
-                ", primaryContactPhoneNo='" + primaryContactPhoneNo + '\'' +
-                ", ExpectedDateOfDelivery='" + ExpectedDateOfDelivery + '\'' +
-                ", profileImage=" + profileImage + '\'' +
-                ", week='" + week + '\'' +
-                ", day=" + day +
-                '}';
     }
 
 
