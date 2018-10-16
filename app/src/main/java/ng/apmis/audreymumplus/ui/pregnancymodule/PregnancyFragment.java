@@ -55,7 +55,7 @@ public class PregnancyFragment extends Fragment {
 
         ((DashboardActivity)getActivity()).getPersonLive().observe(this, person -> {
 
-            if (person != null) {
+            if (person != null && !TextUtils.isEmpty(person.get_id())) {
                 String[] week = String.valueOf(person.getWeek()).split(" ");
                 weekIndicator.setText(getString(R.string.week_indicator, week[1]));
                 dayIndicator.setText(getString(R.string.day_indicator, String.valueOf(person.getDay())));

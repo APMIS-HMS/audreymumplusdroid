@@ -109,7 +109,7 @@ public class PregnancyWeeklyProgressFragment extends Fragment {
 
 
         ((DashboardActivity)getActivity()).getPersonLive().observe(this, person -> {
-            if (person != null) {
+            if (person != null && !TextUtils.isEmpty(person.get_id())) {
                 week = person.getWeek();
                 edd = person.getExpectedDateOfDelivery();
                 currentDay = String.valueOf(person.getDay());
