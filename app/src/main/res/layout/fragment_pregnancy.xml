@@ -59,7 +59,7 @@
                         android:layout_marginTop="16dp"
                         app:civ_border_color="@color/colorAccent"
                         app:civ_border_width="5dp"
-                        tools:src="@drawable/ic_my_pregnancy"/>
+                        tools:src="@drawable/ic_pregnancy_belly"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"

@@ -211,7 +211,7 @@
                     android:layout_height="45dp"
                     android:layout_centerInParent="true"
                     android:layout_marginTop="20dp"
-                    app:srcCompat="@drawable/ic_my_pregnancy"
+                    app:srcCompat="@drawable/ic_pregnancy"
                     android:clickable="false"
                     android:focusable="false" />
 
@@ -346,7 +346,7 @@
                     android:layout_height="45dp"
                     android:layout_centerInParent="true"
                     android:layout_marginTop="20dp"
-                    app:srcCompat="@drawable/ic_faq_icon"
+                    app:srcCompat="@drawable/ic_pills"
                     android:clickable="false"
                     android:focusable="false" />
 

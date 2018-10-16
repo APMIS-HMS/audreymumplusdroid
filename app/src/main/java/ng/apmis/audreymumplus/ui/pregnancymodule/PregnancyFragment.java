@@ -50,7 +50,7 @@ public class PregnancyFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_pregnancy, container, false);
         ButterKnife.bind(this, rootView);
 
-        pregnancyIcon.setImageResource(R.drawable.ic_my_pregnancy);
+        pregnancyIcon.setImageResource(R.drawable.ic_pregnancy_belly);
 
         ((DashboardActivity)getActivity()).getPersonLive().observe(this, person -> {
             if (person != null) {
