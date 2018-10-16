@@ -148,15 +148,15 @@ public class AudreyRepository {
             Log.v("diff of year", String.valueOf(whatDay));
 
             //Number of days left to get to EDD
-            Days howMany = Days.daysBetween(LocalDate.fromDateFields(new Date()), eddDate);
+            Days daysLeft = Days.daysBetween(LocalDate.fromDateFields(new Date()), eddDate);
 
 
-            Log.v("diff days remaining", String.valueOf(howMany.getDays()));
+            Log.v("diff days remaining", String.valueOf(daysLeft.getDays()));
 
             //Get current week divide totals days spent by 7
-            int getWeek = (totalPregDays - howMany.getDays()) / 7;
+            int getWeek = (totalPregDays - daysLeft.getDays()) / 7;
 
-            if ((totalPregDays - howMany.getDays()) % 7 > 0) {
+            if ((totalPregDays - daysLeft.getDays()) % 7 > 0) {
                 getWeek = getWeek + 1;
             }
 
@@ -168,7 +168,12 @@ public class AudreyRepository {
             Log.v("current week", currentWeekProgress);
 
             //The actual day we are on in the pregnancy progress
-            int currentDayProgress = totalPregDays - howMany.getDays();
+            int currentDayProgress = totalPregDays - daysLeft.getDays();
+
+            //If the days left exceed total preggers days, return 1 day as the preg progress
+            if (currentDayProgress < 1)
+                currentDayProgress = 1;
+
 
             person.setWeek(currentWeekProgress);
             person.setDay(currentDayProgress);
@@ -250,11 +255,31 @@ public class AudreyRepository {
         return mJournalDao.getTodaysJournal(day);
     }
 
-    public LiveData<List<WeeklyProgressData>> getWeeklyProgressData(){
+    public LiveData<List<WeeklyProgressData>> getAllWeeklyProgressData(){
         return mJournalDao.getAllWeeklyProgressData();
+    }
+
+    public LiveData<List<WeeklyProgressData>> getSelectedWeeklyProgressData(int week){
+        return mJournalDao.getSelectedWeeklyProgressData(week);
     }
 
     public void bulkInsertWeeklyProgressData(List<WeeklyProgressData> progressData){
         mExecutors.diskIO().execute(() -> mJournalDao.bulkInsertWeeklyProgress(progressData));
+    }
+
+    public void clearAllTables(){
+        mExecutors.diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                mJournalDao.deleteAppointments();
+                mJournalDao.deleteChats();
+                mJournalDao.deleteForums();
+                mJournalDao.deleteJournals();
+                mJournalDao.deleteKicks();
+                mJournalDao.deletePerson();
+                mJournalDao.deletePillReminders();
+                mJournalDao.deleteWeeklyProgressData();
+            }
+        });
     }
 }

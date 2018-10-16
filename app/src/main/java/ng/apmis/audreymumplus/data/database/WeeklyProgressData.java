@@ -3,7 +3,6 @@ package ng.apmis.audreymumplus.data.database;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
-import android.os.Parcelable;
 
 import java.io.Serializable;
 

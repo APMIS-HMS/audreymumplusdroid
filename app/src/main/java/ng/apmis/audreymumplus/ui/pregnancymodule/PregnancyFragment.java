@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,6 +54,7 @@ public class PregnancyFragment extends Fragment {
         pregnancyIcon.setImageResource(R.drawable.ic_my_pregnancy);
 
         ((DashboardActivity)getActivity()).getPersonLive().observe(this, person -> {
+
             if (person != null) {
                 String[] week = String.valueOf(person.getWeek()).split(" ");
                 weekIndicator.setText(getString(R.string.week_indicator, week[1]));

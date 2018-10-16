@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import ng.apmis.audreymumplus.R;
+import ng.apmis.audreymumplus.data.database.WeeklyProgressData;
 
 /**
  * Created by Thadeus-APMIS on 6/28/2018.
@@ -23,10 +24,10 @@ public class PregnancyWeeklyProgressDetail extends DialogFragment {
         View rootView = inflater.inflate(R.layout.fragment_weekly_progress_detail, container, false);
 
         Bundle mArgs = getArguments();
-        PregnancyWeeklyProgressModel detail = mArgs.getParcelable("today");
+        WeeklyProgressData detail = (WeeklyProgressData) mArgs.getSerializable("today");
 
         TextView detailsTv = rootView.findViewById(R.id.weekly_progress_detail_tv);
-        detailsTv.setText(Html.fromHtml(getString(R.string.detail_week_progress, detail.getDay(), detail.getTitle(), detail.getIntro(), detail.getBody())));
+        detailsTv.setText(Html.fromHtml(getString(R.string.detail_week_progress, detail.getDay()+"", detail.getTitle(), detail.getIntro(), detail.getBody())));
 
 
         return rootView;

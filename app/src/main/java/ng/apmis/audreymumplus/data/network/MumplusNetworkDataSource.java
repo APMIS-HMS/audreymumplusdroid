@@ -46,11 +46,13 @@ import ng.apmis.audreymumplus.ui.Chat.ChatContextModel;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumModel;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.ui.pregnancymodule.journal.JournalModel;
+import ng.apmis.audreymumplus.utils.AlarmMangerSingleton;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 import ng.apmis.audreymumplus.utils.NotificationUtils;
 import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
 import ng.apmis.audreymumplus.utils.Week;
 
+import static ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity.UNKWOWN_PROGRESS;
 import static ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity.globalPerson;
 import static ng.apmis.audreymumplus.utils.Constants.BASE_URL;
 
@@ -132,7 +134,7 @@ public class MumplusNetworkDataSource {
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> params = new HashMap<>();
-                    params.put("Content-Type", "application/json; charset=UTF-8");
+                    params.put("Content-Type", "application/json; charset=utf-8");
                     params.put("Authorization", "Bearer " + sharedPreferencesManager.getUserToken());
                     return params;
                 }
@@ -291,11 +293,15 @@ public class MumplusNetworkDataSource {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-//                        Log.e("TAGGED", job.toString());
+
                         Person updatedPerson = new Gson().fromJson(job.toString(), Person.class);
-//                        Log.e("TAGGED", "Updated person "+updatedPerson.getFirstName() +" "+updatedPerson.getId());
+                        //set days to -1, signifying unknown time since days aren't stored in online server
+                        updatedPerson.setDay(UNKWOWN_PROGRESS);
+
                         AudreyMumplus.getInstance().diskIO().execute(() -> {
                             InjectorUtils.provideRepository(mContext).updatePerson(updatedPerson);
+                            Log.v("Tag", updatedPerson.toString());
+
                         });
                         pd.dismiss();
                         Toast.makeText(mContext, "Update update successful", Toast.LENGTH_SHORT).show();
@@ -368,7 +374,7 @@ public class MumplusNetworkDataSource {
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> params = new HashMap<>();
-                    params.put("Content-Type", "application/json; charset=UTF-8");
+                    params.put("Content-Type", "application/json; charset=utf-8");
                     params.put("Authorization", "Bearer " + sharedPreferencesManager.getUserToken());
                     return params;
                 }
@@ -415,7 +421,7 @@ public class MumplusNetworkDataSource {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                params.put("Content-Type", "application/json; charset=UTF-8");
+                params.put("Content-Type", "application/json; charset=utf-8");
                 params.put("Authorization", "Bearer " + sharedPreferencesManager.getUserToken());
                 return params;
             }
