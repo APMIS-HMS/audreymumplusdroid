@@ -186,7 +186,9 @@ public class PregnancyWeeklyProgressFragment extends Fragment {
 
         try {
             currentWeekSpinner.setSelection(Integer.parseInt(currentWeek));
-        } catch (NumberFormatException ignored){}
+        } catch (NumberFormatException ignored){
+
+        }
 
 
     }
