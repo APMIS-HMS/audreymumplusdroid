@@ -83,6 +83,7 @@ public class PregnancyWeeklyProgressFragment extends Fragment {
 
     private String edd;
 
+    private boolean hasPerformedFirstFilter = false;
     private int lastSelectedPosition = 0;
 
     AppCompatActivity activity;
@@ -117,12 +118,6 @@ public class PregnancyWeeklyProgressFragment extends Fragment {
                 currentDay = String.valueOf(person.getDay());
                 currentWeek = String.valueOf(person.getWeek()).split(" ")[1];
                 currentWeekSpinner.setAdapter(weekAdapter);
-                try {
-                    currentWeekSpinner.setSelection(Integer.parseInt(currentWeek));
-                    lastSelectedPosition = Integer.parseInt(currentWeek);
-                } catch (NumberFormatException ignored){
-
-                }
             }
 
             if (edd != null) {
@@ -156,7 +151,6 @@ public class PregnancyWeeklyProgressFragment extends Fragment {
                 weeklyProgressAdapter = new PregnancyWeeklyProgressAdapter(getContext(), getFragmentManager());
                 weeklyProgressAdapter.addPregnancyProgress(weeklyProgressData);
                 weeklyProgressRecycler.setAdapter(weeklyProgressAdapter);
-
 //                if (weeklyProgressAdapter.getItemCount() < 1 && edd != null) {
 //                    Snackbar.make(contentView, "Check Internet and Retry", Snackbar.LENGTH_INDEFINITE)
 //                            .setAction("Ok", view -> {}).show();
@@ -173,8 +167,12 @@ public class PregnancyWeeklyProgressFragment extends Fragment {
                 contentView.setVisibility(View.VISIBLE);
                 getAudreyView.setVisibility(View.GONE);
             }
-
         };
+
+        try {
+            currentWeekSpinner.setSelection(Integer.parseInt(currentWeek));
+            lastSelectedPosition = Integer.parseInt(currentWeek);
+        } catch (NumberFormatException ignored){}
 
         refreshAndObserveWeeklyProgressPerWeek(0);
         currentWeekSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
