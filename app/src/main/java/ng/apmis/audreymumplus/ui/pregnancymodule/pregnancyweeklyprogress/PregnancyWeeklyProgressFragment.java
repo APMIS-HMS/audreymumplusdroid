@@ -83,7 +83,6 @@ public class PregnancyWeeklyProgressFragment extends Fragment {
 
     private String edd;
 
-    private boolean hasPerformedFirstFilter = false;
     private int lastSelectedPosition = 0;
 
     AppCompatActivity activity;
@@ -141,8 +140,9 @@ public class PregnancyWeeklyProgressFragment extends Fragment {
     }
 
     private void initViewModel(){
+        Log.e("TAG", "when are you called first");
         PregnancyWeeklyProgressViewModelFactory factory = InjectorUtils.providePregnancyWeeklyProgressViewModelFactory(getActivity().getApplicationContext());
-        pregnancyWeeklyProgressViewModel = ViewModelProviders.of(getActivity(), factory).get(PregnancyWeeklyProgressViewModel.class);
+        pregnancyWeeklyProgressViewModel = ViewModelProviders.of(this, factory).get(PregnancyWeeklyProgressViewModel.class);
 
         weeklyProgressDataObserver = weeklyProgressData -> {
 
@@ -169,16 +169,11 @@ public class PregnancyWeeklyProgressFragment extends Fragment {
             }
         };
 
-        try {
-            currentWeekSpinner.setSelection(Integer.parseInt(currentWeek));
-            lastSelectedPosition = Integer.parseInt(currentWeek);
-        } catch (NumberFormatException ignored){}
-
-        refreshAndObserveWeeklyProgressPerWeek(0);
         currentWeekSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Log.e("TAG", "when are you called for "+position);
                 refreshAndObserveWeeklyProgressPerWeek(position);
                 lastSelectedPosition = position;
             }
@@ -189,12 +184,17 @@ public class PregnancyWeeklyProgressFragment extends Fragment {
             }
         });
 
+        try {
+            currentWeekSpinner.setSelection(Integer.parseInt(currentWeek));
+        } catch (NumberFormatException ignored){}
+
+
     }
 
     private void refreshAndObserveWeeklyProgressPerWeek(int week){
         if (weeklyProgressDataObserver != null) {
-            pregnancyWeeklyProgressViewModel.getWeeklyProgressData(lastSelectedPosition).removeObservers(getActivity());
-            pregnancyWeeklyProgressViewModel.getWeeklyProgressData(week).observe(getActivity(), weeklyProgressDataObserver);
+            pregnancyWeeklyProgressViewModel.getWeeklyProgressData(lastSelectedPosition).removeObservers(this);
+            pregnancyWeeklyProgressViewModel.getWeeklyProgressData(week).observe(this, weeklyProgressDataObserver);
         }
     }
 
