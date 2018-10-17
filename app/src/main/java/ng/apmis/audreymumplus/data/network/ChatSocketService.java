@@ -55,13 +55,13 @@ public class ChatSocketService extends IntentService {
                 List<String> forums = intent.getExtras().getStringArrayList("forums");
 
                 //When any forum event occurs, get the chat messages on it via REST
-                for (String forum : forums){
-                    Log.v("ForumEmit", "Listening to "+forum);
+                for (String forum : forums) {
+                    Log.v("ForumEmit", "Listening to " + forum);
 
                     mSocket.on(forum, new Emitter.Listener() {
                         @Override
                         public void call(Object... args) {
-                            Log.v("ForumEmit", "Listened on "+forum);
+                            Log.v("ForumEmit", "Listened on " + forum);
                             InjectorUtils.provideJournalNetworkDataSource(getApplicationContext())
                                     .getChat(getApplicationContext(), forum, false);
                         }
@@ -69,139 +69,6 @@ public class ChatSocketService extends IntentService {
                 }
             }
         }
-
-
-//        if (intent.getExtras() != null && !TextUtils.isEmpty(intent.getExtras().getString("email"))) {
-//            if (!mSocket.connected()) {
-//                globalEmail = intent.getExtras().getString("email");
-//                //mSocket.on("created", onCreated());
-//                mSocket.on("getForums", onGetForums());
-//                mSocket.on("getChats", getChats());
-//            }
-//        }
-
-//        if (intent.getAction().equals("start-background")) {
-//            Log.d("socket background start", "background");
-//            isForeground = false;
-//        }
-//
-//
-//        if (intent.getAction().equals("start-foreground")) {
-//            Log.d("socket foreground start", "foreground");
-//            isForeground = true;
-//            if (!TextUtils.isEmpty(intent.getExtras().getString("chat"))) {
-//                String cht = intent.getExtras().getString("chat");
-//                JSONObject newChat;
-//                try {
-//                    newChat = new JSONObject(cht);
-//
-//
-//
-//
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//            if (!TextUtils.isEmpty(intent.getExtras().getString("forumName"))) {
-//                String forumName = intent.getExtras().getString("forumName");
-//                try {
-//                    JSONObject getChats = new JSONObject().put("forumName", forumName);
-//
-//                    mSocket.emit("getChats", getChats);
-//
-//                    Log.d("socket", getChats+" chats were emitted");
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//
-//        if (intent.getAction().equals("get-forums")) {
-//            mSocket.emit("getForums", new JSONObject());
-//        }
-
     }
 
-    Emitter.Listener onCreated() {
-        return new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                Log.d("Socket", "Notification should be here");
-                JSONObject jsonObject = (JSONObject) args[0];
-                try {
-                    ChatContextModel oneChat = new Gson().fromJson(jsonObject.getJSONObject("message").toString(), ChatContextModel.class);
-
-                    AudreyMumplus.getInstance().diskIO().execute(() -> {
-                        InjectorUtils.provideRepository(ChatSocketService.this.getApplicationContext()).insertChat(oneChat);
-                    });
-
-                    if (!oneChat.getEmail().equals(globalEmail)) {
-                        if (isForeground) {
-                            NotificationUtils.buildForegroundChatNotification(ChatSocketService.this);
-                        } else {
-                            NotificationUtils.buildBackgroundChatNotification(ChatSocketService.this, oneChat);
-                        }
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-    }
-
-    Emitter.Listener onGetForums() {
-        return args -> {
-            JSONObject jsonObject = (JSONObject) args[0];
-
-            ArrayList<ChatForumModel> allForums = new ArrayList<>();
-
-            try {
-                JSONObject job = new JSONObject(jsonObject.toString());
-                JSONArray jar = job.getJSONArray("data");
-
-                for (int i = 0; i < jar.length(); i++) {
-                    JSONObject forumObj = (JSONObject) jar.get(i);
-                    ChatForumModel eachForum = new Gson().fromJson(forumObj.toString(), ChatForumModel.class);
-                    allForums.add(eachForum);
-                    Log.v("forum obj", forumObj.toString());
-                }
-
-                AudreyMumplus.getInstance().diskIO().execute(() -> {
-                    InjectorUtils.provideRepository(this).insertAllForums(allForums);
-                });
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        };
-    }
-
-    Emitter.Listener getChats() {
-        return args -> {
-
-            Log.d("Socket", "All chats should be received here");
-
-            ArrayList<ChatContextModel> allchats = new ArrayList<>();
-            try {
-                JSONArray jar = (JSONArray) args[0];
-
-                for (int i = 0; i < jar.length(); i++) {
-                    JSONObject chatObj = (JSONObject) jar.get(i);
-                    ChatContextModel eachChat = new Gson().fromJson(chatObj.toString(), ChatContextModel.class);
-                    allchats.add(eachChat);
-
-                }
-                AudreyMumplus.getInstance().diskIO().execute(() -> {
-                    InjectorUtils.provideRepository(this).insertAllChats(allchats);
-                });
-
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-        };
-    }
 }

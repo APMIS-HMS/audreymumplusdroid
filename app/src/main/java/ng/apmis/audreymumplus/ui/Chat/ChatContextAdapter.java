@@ -83,6 +83,10 @@ public class ChatContextAdapter extends RecyclerView.Adapter<ChatContextAdapter.
         return allChats.size();
     }
 
+    public ChatContextModel getItem(int position) {
+        return allChats.get(position);
+    }
+
     class ChatContextViewHolder extends RecyclerView.ViewHolder {
 
         TextView chatText;

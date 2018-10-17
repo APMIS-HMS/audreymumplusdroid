@@ -2,10 +2,8 @@ package ng.apmis.audreymumplus.ui.Chat.chatforum;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -23,7 +21,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -31,10 +28,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.R;
-import ng.apmis.audreymumplus.data.network.ChatSocketService;
 import ng.apmis.audreymumplus.ui.Chat.ChatContextFragment;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
+import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
 
 import static ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity.globalPerson;
 
@@ -56,7 +53,7 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
     ProgressBar progressBar;
     @BindView(R.id.search_bar)
     EditText searchBar;
-
+    SharedPreferencesManager sharedPreferencesManager;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,6 +67,7 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
         View rootView = inflater.inflate(R.layout.fragment_chat_forums, container, false);
         ButterKnife.bind(this, rootView);
         dbForums = new ArrayList<>();
+        sharedPreferencesManager = new SharedPreferencesManager(getActivity());
 
         forumAdapter = new ForumAdapter(getActivity(), this);
         forumRecycler.setLayoutManager(new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false));
@@ -110,15 +108,18 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
             }
         });
 
+
         forumRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 int lastCompletelyVisibleItemPosition = ((LinearLayoutManager) forumRecycler.getLayoutManager()).findLastCompletelyVisibleItemPosition();
+                if (lastCompletelyVisibleItemPosition == lastCompletelyVisibleItemPosition - 2 && forumAdapter.getItemCount() < sharedPreferencesManager.getTotalRoomCountOnserver()) {
+                    AudreyMumplus.getInstance().networkIO().execute(() -> InjectorUtils.provideJournalNetworkDataSource(activity).getForums(forumAdapter.getItemCount()));
+                }
             }
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                Log.e("Scrolled position", String.format("%s, %s",dx, dy));
                 super.onScrolled(recyclerView, dx, dy);
             }
         });

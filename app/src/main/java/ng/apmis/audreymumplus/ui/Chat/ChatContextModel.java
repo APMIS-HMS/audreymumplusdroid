@@ -16,13 +16,17 @@ public class ChatContextModel {
     private String message;
     private String email;
     private String userName;
+    private String createdAt;
+    private String updatedAt;
 
-    public ChatContextModel(String _id, String forumName, String message, String email, String userName) {
+    public ChatContextModel(String _id, String forumName, String message, String email, String userName, String createdAt, String updatedAt) {
         this._id = _id;
         this.forumName = forumName;
         this.message = message;
         this.email = email;
         this.userName = userName;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     @Ignore()
@@ -58,6 +62,22 @@ public class ChatContextModel {
         this.userName = userName;
     }
 
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     @Override
     public String toString() {
         return "ChatContextModel{" +
@@ -66,6 +86,8 @@ public class ChatContextModel {
                 ", message='" + message + '\'' +
                 ", email='" + email + '\'' +
                 ", userName='" + userName + '\'' +
+                ", createdAt='" + createdAt + '\'' +
+                ", updatedAt='" + updatedAt + '\'' +
                 '}';
     }
 }

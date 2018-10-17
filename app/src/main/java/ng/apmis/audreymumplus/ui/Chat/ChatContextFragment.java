@@ -26,6 +26,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,6 +36,7 @@ import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.data.network.ChatSocketService;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
+import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
 
 public class ChatContextFragment extends Fragment {
 
@@ -179,6 +182,14 @@ public class ChatContextFragment extends Fragment {
         activity.startService(new Intent(getContext(), ChatSocketService.class).setAction("start-background"));
     }
 
+    @Override
+    public void onPause() {
+        Log.e("Onpause called", "called here");
+        SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(activity);
+        ChatContextModel chatContextModel = chatContextAdapter.getItem(chatContextAdapter.getItemCount());
+        sharedPreferencesManager.addForumNameAndLastCreatedAtAsString(forumName, chatContextModel.getCreatedAt());
+        super.onPause();
+    }
 
     public void postChat(ChatContextModel chat) {
         Gson gson = new Gson();
@@ -192,6 +203,27 @@ public class ChatContextFragment extends Fragment {
         }
 
         //activity.startService(new Intent(getContext(), ChatSocketService.class).setAction("start-foreground").putExtra("chat", cht));
+    }
+
+    public static class ForumNameAndLastDate {
+        public String forumName;
+        public String date;
+
+        public ForumNameAndLastDate() {
+        }
+
+        public ForumNameAndLastDate(String forumName, String date) {
+            this.forumName = forumName;
+            this.date = date;
+        }
+
+        @Override
+        public String toString() {
+            return "ForumNameAndLastDate{" +
+                    "forumName='" + forumName + '\'' +
+                    ", Date='" + date + '\'' +
+                    '}';
+        }
     }
 
 }

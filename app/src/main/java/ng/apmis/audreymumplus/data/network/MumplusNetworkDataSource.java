@@ -36,6 +36,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -184,23 +185,36 @@ public class MumplusNetworkDataSource {
 
     }
 
-    public void getChat (Context context, String forum, boolean initialPullDontNotify) {
+    public void getChat (Context context, String forumName, boolean initialPullDontNotify) {
+
+        JSONObject getChatJsonObject = new JSONObject();
+        try {
+            getChatJsonObject.put("forumName", forumName);
+            getChatJsonObject.put("createdAt", initialPullDontNotify ? String.valueOf(Calendar.getInstance().getTime()) : new SharedPreferencesManager(mContext).getLastChatForumAndCreatedAt(forumName));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         AudreyMumplus.getInstance().networkIO().execute(() -> {
-            StringRequest job = new StringRequest(Request.Method.GET, BASE_URL + "chat",
-                    new Response.Listener<String>() {
+            JsonObjectRequest job = new JsonObjectRequest(Request.Method.POST, BASE_URL + "get-chat", getChatJsonObject,
+                    new Response.Listener<JSONObject>() {
                         @Override
-                        public void onResponse(String response) {
+                        public void onResponse(JSONObject response) {
 
-                            List<ChatContextModel> chatContextModel = new ArrayList<>(Arrays.asList(new Gson().fromJson(response, ChatContextModel[].class)));
+                            try {
+                                List<ChatContextModel> chatContextModel = new ArrayList<>(Arrays.asList(new Gson().fromJson(response.getJSONArray("data").toString(), ChatContextModel[].class)));
 
-                            if (!initialPullDontNotify) {
+                                if (!initialPullDontNotify) {
 
-                                if (DashboardActivity.globalOpenChatForum != null && DashboardActivity.globalOpenChatForum.equals(forum))
-                                    NotificationUtils.buildForegroundChatNotification(context);
-                                else
-                                    NotificationUtils.buildBackgroundChatNotification(context, chatContextModel.get(chatContextModel.size() - 1));
+                                    if (DashboardActivity.globalOpenChatForum != null && DashboardActivity.globalOpenChatForum.equals(forumName))
+                                        NotificationUtils.buildForegroundChatNotification(context);
+                                    else
+                                        NotificationUtils.buildBackgroundChatNotification(context, chatContextModel.get(chatContextModel.size()));
+                                }
+                                AudreyMumplus.getInstance().diskIO().execute(() -> InjectorUtils.provideRepository(context).insertAllChats(chatContextModel));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                            AudreyMumplus.getInstance().diskIO().execute(() -> InjectorUtils.provideRepository(context).insertAllChats(chatContextModel));
 
                         }
                     },
@@ -223,7 +237,7 @@ public class MumplusNetworkDataSource {
                 @Override
                 protected Map<String, String> getParams() throws AuthFailureError {
                     Map<String, String> params = new HashMap<>();
-                    params.put("forum", forum);
+                    params.put("forum", forumName);
                     return params;
                 }
             };
@@ -383,15 +397,20 @@ public class MumplusNetworkDataSource {
     }
 
 
-    public void getForums() {
+    public void getForums(int skipcount) {
 
-        String url = String.format(BASE_URL + "forum?approved=%1$s", true);
+        String url = String.format(BASE_URL + "forum?approved=%1$s&?$skip=" + skipcount, true);
+        Log.e("forum url", url);
 
         JsonObjectRequest updateProfileImageRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
                     ArrayList<ChatForumModel> allForums = new ArrayList<>();
-
+                    Log.e("response string", response.toString());
                     try {
+                        int serverForums = response.getInt("total");
+                        Log.e("serverForums", String.valueOf(serverForums));
+                        new SharedPreferencesManager(mContext).setTotalRoomCountOnserver(response.getInt("total"));
+
                         JSONObject job = new JSONObject(response.toString());
                         JSONArray jar = job.getJSONArray("data");
 
@@ -430,6 +449,7 @@ public class MumplusNetworkDataSource {
 
         queue.add(updateProfileImageRequest);
     }
+
 
 
     /**
@@ -476,7 +496,6 @@ public class MumplusNetworkDataSource {
     }
 
 
-    //TODO post to server to request to join forum (backend)
     public void joinForum(Context context, String personId, String forumName) {
         ProgressDialog pd = new ProgressDialog(context);
         pd.setTitle("Requesting Forum Creation");

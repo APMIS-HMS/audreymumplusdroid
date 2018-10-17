@@ -140,7 +140,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                     for (String forum : forums) {
                         InjectorUtils.provideJournalNetworkDataSource(this)
                                 .getChat(this, forum, true);
-                        InjectorUtils.provideJournalNetworkDataSource(this).getForums();
+                        InjectorUtils.provideJournalNetworkDataSource(this).getForums(0);
                     }
 
                     startService(new Intent(this, ChatSocketService.class).putStringArrayListExtra("forums", new ArrayList<>(forums)));

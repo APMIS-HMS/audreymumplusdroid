@@ -5,6 +5,12 @@ import android.content.Context;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import ng.apmis.audreymumplus.ui.Chat.ChatContextFragment;
+import ng.apmis.audreymumplus.ui.Chat.ChatContextModel;
+
 public class SharedPreferencesManager {
 
     android.content.SharedPreferences pref;
@@ -33,10 +39,49 @@ public class SharedPreferencesManager {
 
     private static final String USER_PASSWORD = "password";
 
+    private static final String SERVER_ROOM_COUNT = "forumjoin";
+
+    private static final String LAST_CHAT_TIME_FORUM_LIST_STRING = "lastchat";
+
+    List<ChatContextModel> lastCreatedAtAndForumName = new ArrayList<>();
+
     public SharedPreferencesManager(Context context) {
         this._context = context;
         pref = _context.getSharedPreferences(PREF_NAME, _context.MODE_PRIVATE);
         editor = pref.edit();
+    }
+
+    public ChatContextFragment.ForumNameAndLastDate getLastChatForumAndCreatedAt (String forumName) {
+        ChatContextFragment.ForumNameAndLastDate returnForum = new ChatContextFragment.ForumNameAndLastDate();
+        String allList = pref.getString(LAST_CHAT_TIME_FORUM_LIST_STRING, "");
+
+        List<ChatContextFragment.ForumNameAndLastDate> stored = Utils.convertStringToList(allList);
+
+        for (ChatContextFragment.ForumNameAndLastDate x: stored) {
+            if (x.forumName.equals(forumName))
+                returnForum = x;
+        }
+        return returnForum;
+    }
+
+    public void addForumNameAndLastCreatedAtAsString (String forumName, String createdAt) {
+        String allList = pref.getString(LAST_CHAT_TIME_FORUM_LIST_STRING, "");
+
+        List<ChatContextFragment.ForumNameAndLastDate> stored = Utils.convertStringToList(allList);
+
+        for (ChatContextFragment.ForumNameAndLastDate x: stored) {
+            if (x.forumName.equals(forumName)) {
+                stored.remove(x);
+                break;
+            }
+        }
+
+        stored.add(new ChatContextFragment.ForumNameAndLastDate(forumName, createdAt));
+
+        String storeAgain = Utils.convertListToString(stored);
+
+        editor.putString(LAST_CHAT_TIME_FORUM_LIST_STRING, storeAgain);
+        editor.commit();
     }
 
     public void setFirstTimeLaunch(boolean isFirstTime) {
@@ -78,6 +123,15 @@ public class SharedPreferencesManager {
 
         return loggedUser;
 
+    }
+
+    public int getTotalRoomCountOnserver () {
+        return pref.getInt(SERVER_ROOM_COUNT, 0);
+    }
+
+    public void setTotalRoomCountOnserver (int totalRoomCount) {
+        editor.putInt(SERVER_ROOM_COUNT, totalRoomCount);
+        editor.commit();
     }
 
     public void storeUserEmail(String email) {

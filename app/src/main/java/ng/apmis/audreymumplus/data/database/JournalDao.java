@@ -80,7 +80,7 @@ public interface JournalDao {
     @Query("SELECT * FROM person")
     Person getStaticPerson();
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void bulkInsertForums (List<ChatForumModel> allForums);
 
 
