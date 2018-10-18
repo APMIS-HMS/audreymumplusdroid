@@ -83,6 +83,8 @@ public class PregnancyWeeklyProgressFragment extends Fragment {
 
     private String edd;
 
+    private int lastSelectedPosition = 0;
+
     AppCompatActivity activity;
     String week;
 
@@ -133,25 +135,14 @@ public class PregnancyWeeklyProgressFragment extends Fragment {
                     .commit();
         });
 
-        currentWeekSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                refreshAndObserveWeeklyProgressPerWeek(position);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
 
         return rootView;
     }
 
     private void initViewModel(){
+        Log.e("TAG", "when are you called first");
         PregnancyWeeklyProgressViewModelFactory factory = InjectorUtils.providePregnancyWeeklyProgressViewModelFactory(getActivity().getApplicationContext());
-        pregnancyWeeklyProgressViewModel = ViewModelProviders.of(getActivity(), factory).get(PregnancyWeeklyProgressViewModel.class);
+        pregnancyWeeklyProgressViewModel = ViewModelProviders.of(this, factory).get(PregnancyWeeklyProgressViewModel.class);
 
         weeklyProgressDataObserver = weeklyProgressData -> {
 
@@ -160,7 +151,6 @@ public class PregnancyWeeklyProgressFragment extends Fragment {
                 weeklyProgressAdapter = new PregnancyWeeklyProgressAdapter(getContext(), getFragmentManager());
                 weeklyProgressAdapter.addPregnancyProgress(weeklyProgressData);
                 weeklyProgressRecycler.setAdapter(weeklyProgressAdapter);
-
 //                if (weeklyProgressAdapter.getItemCount() < 1 && edd != null) {
 //                    Snackbar.make(contentView, "Check Internet and Retry", Snackbar.LENGTH_INDEFINITE)
 //                            .setAction("Ok", view -> {}).show();
@@ -177,17 +167,36 @@ public class PregnancyWeeklyProgressFragment extends Fragment {
                 contentView.setVisibility(View.VISIBLE);
                 getAudreyView.setVisibility(View.GONE);
             }
-
         };
 
-        refreshAndObserveWeeklyProgressPerWeek(0);
+        currentWeekSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Log.e("TAG", "when are you called for "+position);
+                refreshAndObserveWeeklyProgressPerWeek(position);
+                lastSelectedPosition = position;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        try {
+            currentWeekSpinner.setSelection(Integer.parseInt(currentWeek));
+        } catch (NumberFormatException ignored){
+
+        }
+
 
     }
 
     private void refreshAndObserveWeeklyProgressPerWeek(int week){
         if (weeklyProgressDataObserver != null) {
-            pregnancyWeeklyProgressViewModel.getWeeklyProgressData(0).removeObservers(getActivity());
-            pregnancyWeeklyProgressViewModel.getWeeklyProgressData(week).observe(getActivity(), weeklyProgressDataObserver);
+            pregnancyWeeklyProgressViewModel.getWeeklyProgressData(lastSelectedPosition).removeObservers(this);
+            pregnancyWeeklyProgressViewModel.getWeeklyProgressData(week).observe(this, weeklyProgressDataObserver);
         }
     }
 
