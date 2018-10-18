@@ -63,7 +63,7 @@ public class ChatSocketService extends IntentService {
                         public void call(Object... args) {
                             Log.v("ForumEmit", "Listened on " + forum);
                             InjectorUtils.provideJournalNetworkDataSource(getApplicationContext())
-                                    .getChat(getApplicationContext(), forum, false);
+                                    .getChat(forum);
                         }
                     });
                 }

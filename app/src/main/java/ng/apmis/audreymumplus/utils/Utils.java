@@ -12,9 +12,13 @@ import org.json.JSONArray;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import ng.apmis.audreymumplus.ui.Chat.ChatContextFragment;
 
@@ -49,22 +53,31 @@ public class Utils {
     }
 
     public static String convertListToString (List<ChatContextFragment.ForumNameAndLastDate> forumNameAndLastDateList) {
-        /*String[] array = new String[forumNameAndLastDateList.size()];
-        int index = 0;
-        for (ChatContextFragment.ForumNameAndLastDate value : forumNameAndLastDateList) {
-            array[index] = value.toString();
-            index++;
-        }*/
+
         Gson gson = new Gson();
         return gson.toJson(forumNameAndLastDateList);
-        //return Arrays.toString(array);
+
     }
 
     public static List<ChatContextFragment.ForumNameAndLastDate> convertStringToList (String convertedList) {
-        List<ChatContextFragment.ForumNameAndLastDate> unConvertList = null;
+        if (convertedList.equals("")) {
+            return new ArrayList<>();
+        } else {
+            return new ArrayList<>(Arrays.asList(new Gson().fromJson(convertedList, ChatContextFragment.ForumNameAndLastDate[].class)));
+        }
+    }
 
-        unConvertList = Arrays.asList(new Gson().fromJson(convertedList, ChatContextFragment.ForumNameAndLastDate[].class));
-        return unConvertList;
+    public static String localDateToDbString(Date date){
+        String pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+
+        SimpleDateFormat format = new SimpleDateFormat(pattern, Locale.UK);
+        format.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        String dateString;
+
+        dateString = format.format(date);
+
+        return dateString;
     }
 
 }

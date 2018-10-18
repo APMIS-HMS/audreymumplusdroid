@@ -1,7 +1,6 @@
 package ng.apmis.audreymumplus.data.network;
 
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
@@ -35,7 +34,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -49,14 +47,13 @@ import ng.apmis.audreymumplus.ui.Chat.ChatContextModel;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumModel;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.ui.pregnancymodule.journal.JournalModel;
-import ng.apmis.audreymumplus.utils.AlarmMangerSingleton;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 import ng.apmis.audreymumplus.utils.NotificationUtils;
 import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
+import ng.apmis.audreymumplus.utils.Utils;
 import ng.apmis.audreymumplus.utils.Week;
 
 import static ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity.UNKWOWN_PROGRESS;
-import static ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity.globalPerson;
 import static ng.apmis.audreymumplus.utils.Constants.BASE_URL;
 
 /**
@@ -161,7 +158,7 @@ public class MumplusNetworkDataSource {
                         public void onResponse(JSONObject response) {
                             Log.v("ForumEmit", "Posted on " + forum);
                             InjectorUtils.provideSocketInstance().emit("forum", forum);
-                            AudreyMumplus.getInstance().diskIO().execute(()-> InjectorUtils.provideRepository(mContext).insertChat(new Gson().fromJson(response.toString(), ChatContextModel.class))
+                            AudreyMumplus.getInstance().diskIO().execute(() -> InjectorUtils.provideRepository(mContext).insertChat(new Gson().fromJson(response.toString(), ChatContextModel.class))
                             );
 
                         }
@@ -171,8 +168,7 @@ public class MumplusNetworkDataSource {
                 public void onErrorResponse(VolleyError error) {
                     Log.e("ForumEmit error", error.toString());
                 }
-            })
-            {
+            }) {
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> params = new HashMap<>();
@@ -187,15 +183,18 @@ public class MumplusNetworkDataSource {
 
     }
 
-    public void getChat (Context context, String forumName, boolean initialPullDontNotify) {
+    public void getChat(String forumName) {
 
         JSONObject getChatJsonObject = new JSONObject();
+
         try {
             getChatJsonObject.put("forumName", forumName);
-            getChatJsonObject.put("createdAt", initialPullDontNotify ? String.valueOf(Calendar.getInstance().getTime()) : new SharedPreferencesManager(mContext).getLastChatForumAndCreatedAt(forumName));
+            getChatJsonObject.put("createdAt", sharedPreferencesManager.getLastChatForumAndCreatedAt(forumName).date);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        Log.e("createdAt bbb", String.valueOf(sharedPreferencesManager.getLastChatForumAndCreatedAt(forumName).toString()));
 
         AudreyMumplus.getInstance().networkIO().execute(() -> {
             JsonObjectRequest job = new JsonObjectRequest(Request.Method.POST, BASE_URL + "get-chat", getChatJsonObject,
@@ -204,16 +203,19 @@ public class MumplusNetworkDataSource {
                         public void onResponse(JSONObject response) {
 
                             try {
-                                List<ChatContextModel> chatContextModel = new ArrayList<>(Arrays.asList(new Gson().fromJson(response.getJSONArray("data").toString(), ChatContextModel[].class)));
+                                List<ChatContextModel> allListFromServer = new ArrayList<>(Arrays.asList(new Gson().fromJson(response.getJSONArray("data").toString(), ChatContextModel[].class)));
 
-                                if (!initialPullDontNotify) {
+                                Log.e("all returned chats", allListFromServer.toString());
 
-                                    if (DashboardActivity.globalOpenChatForum != null && DashboardActivity.globalOpenChatForum.equals(forumName))
-                                        NotificationUtils.buildForegroundChatNotification(context);
-                                    else
-                                        NotificationUtils.buildBackgroundChatNotification(context, chatContextModel.get(chatContextModel.size()));
+                                if (allListFromServer.size() > 0) {
+                                    if (DashboardActivity.globalOpenChatForum != null && DashboardActivity.globalOpenChatForum.equals(forumName)) {
+                                        NotificationUtils.buildForegroundChatNotification(mContext);
+                                    } else {
+                                        NotificationUtils.buildBackgroundChatNotification(mContext, allListFromServer.get(allListFromServer.size() -1));
+                                    }
+                                    AudreyMumplus.getInstance().diskIO().execute(() -> InjectorUtils.provideRepository(mContext).insertAllChats(allListFromServer));
                                 }
-                                AudreyMumplus.getInstance().diskIO().execute(() -> InjectorUtils.provideRepository(context).insertAllChats(chatContextModel));
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -235,44 +237,53 @@ public class MumplusNetworkDataSource {
                     params.put("Authorization", "Bearer " + sharedPreferencesManager.getUserToken());
                     return params;
                 }
-
-                @Override
-                protected Map<String, String> getParams() throws AuthFailureError {
-                    Map<String, String> params = new HashMap<>();
-                    params.put("forum", forumName);
-                    return params;
-                }
             };
 
             queue.add(job);
         });
     }
 
-    public void fetchUserName(String email) {
-        Log.d(LOG_TAG, "Fetch weather started");
-        mExecutors.networkIO().execute(() -> {
+    public void getChats(String forumName) {
 
-            String url = String.format(BASE_URL + "people?email=%1$s", email);
+        sharedPreferencesManager.addForumNameAndLastCreatedAtAsStringInPrefs(forumName, Utils.localDateToDbString(Calendar.getInstance().getTime()), 0);
 
-            JsonObjectRequest peopleJob = new JsonObjectRequest(Request.Method.GET, url, null, response -> {
+        JSONObject getChatJsonObject = new JSONObject();
+        try {
+            getChatJsonObject.put("forumName", forumName);
+            getChatJsonObject.put("createdAt", sharedPreferencesManager.getLastChatForumAndCreatedAt(forumName).date);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-                JSONObject dataObject = new JSONObject();
+        Log.e("createdAt getChats", String.valueOf(sharedPreferencesManager.getLastChatForumAndCreatedAt(forumName).toString()));
 
-                try {
-                    JSONArray jsonArray = response.getJSONArray("data");
-                    dataObject = (JSONObject) jsonArray.get(0);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+        AudreyMumplus.getInstance().networkIO().execute(() -> {
+            JsonObjectRequest job = new JsonObjectRequest(Request.Method.POST, BASE_URL + "get-chat", getChatJsonObject,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
 
-                Person personFromPeople = new Gson().fromJson(dataObject.toString(), Person.class);
-                personName.postValue(personFromPeople);
+                            try {
+                                List<ChatContextModel> chatContextModel = new ArrayList<>(Arrays.asList(new Gson().fromJson(response.getJSONArray("data").toString(), ChatContextModel[].class)));
 
-            }, error -> {
+                                Log.e("all returned chats", chatContextModel.toString());
 
-                Toast.makeText(mContext, "There was a problem", Toast.LENGTH_SHORT).show();
+                                AudreyMumplus.getInstance().diskIO().execute(() -> InjectorUtils.provideRepository(mContext).insertAllChats(chatContextModel));
 
-            }) {
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.e("ForumEmit error", error.toString());
+                        }
+                    })
+
+            {
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
                     Map<String, String> params = new HashMap<>();
@@ -280,13 +291,14 @@ public class MumplusNetworkDataSource {
                     params.put("Authorization", "Bearer " + sharedPreferencesManager.getUserToken());
                     return params;
                 }
-
             };
 
-            queue.add(peopleJob);
+            queue.add(job);
         });
 
+
     }
+
 
     public void updateProfileGetAudrey(String personId, JSONObject changeFields, FragmentActivity context) {
         ProgressDialog pd = new ProgressDialog(context);
@@ -403,18 +415,16 @@ public class MumplusNetworkDataSource {
     }
 
 
-    public void getForums(int skipcount) {
+    public void getForums(int skipCount) {
 
-        String url = String.format(BASE_URL + "forum?approved=%1$s&?$skip=" + skipcount, true);
+        String url = String.format(BASE_URL + "forum?approved=%1$s&$skip=" + skipCount, true);
         Log.e("forum url", url);
 
-        JsonObjectRequest updateProfileImageRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+        JsonObjectRequest getForumRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
                     ArrayList<ChatForumModel> allForums = new ArrayList<>();
-                    Log.e("response string", response.toString());
                     try {
-                        int serverForums = response.getInt("total");
-                        Log.e("serverForums", String.valueOf(serverForums));
+
                         new SharedPreferencesManager(mContext).setTotalRoomCountOnserver(response.getInt("total"));
 
                         JSONObject job = new JSONObject(response.toString());
@@ -451,11 +461,10 @@ public class MumplusNetworkDataSource {
             }
         };
 
-        updateProfileImageRequest.setRetryPolicy(new DefaultRetryPolicy(30000, 1, 1));
+        getForumRequest.setRetryPolicy(new DefaultRetryPolicy(30000, 1, 1));
 
-        queue.add(updateProfileImageRequest);
+        queue.add(getForumRequest);
     }
-
 
 
     /**
@@ -514,7 +523,8 @@ public class MumplusNetworkDataSource {
         try {
             joinForumObject.put("personId", personId);
             joinForumObject.put("forumName", forumName);
-        } catch (JSONException e) {}
+        } catch (JSONException e) {
+        }
 
         AudreyMumplus.getInstance().networkIO().execute(() -> {
 
@@ -549,8 +559,8 @@ public class MumplusNetworkDataSource {
 
     }
 
-    public void createForum(String forumName, Dialog dialogFragment) {
-        ProgressDialog pd = new ProgressDialog(dialogFragment.getContext());
+    public void createForum(String forumName, Context context) {
+        ProgressDialog pd = new ProgressDialog(context);
         pd.setTitle("Requesting Forum Creation");
         pd.setMessage("Please wait...");
         pd.setCancelable(false);
@@ -559,7 +569,8 @@ public class MumplusNetworkDataSource {
         JSONObject createForumObject = new JSONObject();
         try {
             createForumObject.put("name", forumName);
-        } catch (JSONException e) {}
+        } catch (JSONException e) {
+        }
 
         AudreyMumplus.getInstance().networkIO().execute(() -> {
 
@@ -568,7 +579,6 @@ public class MumplusNetworkDataSource {
                         Log.d("create forum response", response.toString());
 
                         pd.dismiss();
-                        dialogFragment.dismiss();
                         Toast.makeText(mContext, "Please wait admin approval", Toast.LENGTH_SHORT).show();
                     },
                     error -> {
@@ -577,7 +587,6 @@ public class MumplusNetworkDataSource {
                         }
                         Log.e("create forums err", "message: " + error.toString());
                         pd.dismiss();
-                        dialogFragment.dismiss();
                         Toast.makeText(mContext, "There was an error creating forums", Toast.LENGTH_SHORT).show();
                     }) {
                 @Override
@@ -592,6 +601,85 @@ public class MumplusNetworkDataSource {
             createForumRequest.setRetryPolicy(new DefaultRetryPolicy(30000, 1, 1));
 
             queue.add(createForumRequest);
+        });
+
+    }
+
+    public void changePassword (Context context, String password) {
+        ProgressDialog pd = new ProgressDialog(context);
+        pd.setTitle("Changing password");
+        pd.setMessage("Please wait...");
+        pd.setCancelable(false);
+        pd.setIndeterminate(true);
+        pd.show();
+        JSONObject changePasswordObject = new JSONObject();
+        try {
+            changePasswordObject.put("newPassword", password);
+            changePasswordObject.put("reEnterPassword", password);
+        } catch (JSONException e) {
+        }
+
+        AudreyMumplus.getInstance().networkIO().execute(() -> {
+
+            JsonObjectRequest changePasswordRequest = new JsonObjectRequest(Request.Method.POST, BASE_URL + "reset-password", changePasswordObject,
+                    response -> {
+                        Log.d("Change pwd response", response.toString());
+
+                        pd.dismiss();
+                        Toast.makeText(mContext, "Password changed successfully", Toast.LENGTH_SHORT).show();
+                    },
+                    error -> {
+                        if (error.getMessage() != null) {
+                            Log.e("Change password err", "message: " + error.getMessage());
+                        }
+                        Log.e("Change password err", "message: " + error.toString());
+                        pd.dismiss();
+
+                        Toast.makeText(mContext, "Something went wrong", Toast.LENGTH_SHORT).show();
+                    });
+
+            changePasswordRequest.setRetryPolicy(new DefaultRetryPolicy(30000, 1, 1));
+
+            queue.add(changePasswordRequest);
+        });
+
+    }
+
+    public void resetPassword(Context context, String email) {
+        ProgressDialog pd = new ProgressDialog(context);
+        pd.setTitle("Resetting password");
+        pd.setMessage("Please wait...");
+        pd.setCancelable(false);
+        pd.setIndeterminate(true);
+        pd.show();
+        JSONObject resetPasswordObject = new JSONObject();
+        try {
+            resetPasswordObject.put("email", email);
+        } catch (JSONException e) {
+        }
+
+        AudreyMumplus.getInstance().networkIO().execute(() -> {
+
+            JsonObjectRequest resetPasswordRequest = new JsonObjectRequest(Request.Method.POST, BASE_URL + "reset-password", resetPasswordObject,
+                    response -> {
+                        Log.d("Reset password response", response.toString());
+
+                        pd.dismiss();
+                        Toast.makeText(mContext, "Check email for new password", Toast.LENGTH_SHORT).show();
+                    },
+                    error -> {
+                        if (error.getMessage() != null) {
+                            Log.e("Reset password err", "message: " + error.getMessage());
+                        }
+                        Log.e("Reset password err", "message: " + error.toString());
+                        pd.dismiss();
+
+                        Toast.makeText(mContext, "Check entered email", Toast.LENGTH_SHORT).show();
+                    });
+
+            resetPasswordRequest.setRetryPolicy(new DefaultRetryPolicy(30000, 1, 1));
+
+            queue.add(resetPasswordRequest);
         });
 
     }

@@ -3,11 +3,9 @@ package ng.apmis.audreymumplus.ui.Dashboard;
 import android.app.ProgressDialog;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Observer;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -21,7 +19,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -34,7 +31,6 @@ import com.bumptech.glide.Glide;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -49,11 +45,11 @@ import ng.apmis.audreymumplus.ui.Appointments.AppointmentFragment;
 import ng.apmis.audreymumplus.ui.Chat.ChatContextFragment;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumFragment;
 import ng.apmis.audreymumplus.ui.HelpFragment;
+import ng.apmis.audreymumplus.ui.Home.HomeFragment;
+import ng.apmis.audreymumplus.ui.getaudrey.GetAudreyFragment;
 import ng.apmis.audreymumplus.ui.kickcounter.KickCounterFragment;
 import ng.apmis.audreymumplus.ui.pills.PillReminderFragment;
 import ng.apmis.audreymumplus.ui.pregnancymodule.PregnancyFragment;
-import ng.apmis.audreymumplus.ui.getaudrey.GetAudreyFragment;
-import ng.apmis.audreymumplus.ui.Home.HomeFragment;
 import ng.apmis.audreymumplus.ui.pregnancymodule.journal.JournalAddFragment;
 import ng.apmis.audreymumplus.ui.pregnancymodule.journal.JournalFragment;
 import ng.apmis.audreymumplus.ui.profile.ProfileFragment;
@@ -64,6 +60,8 @@ import ng.apmis.audreymumplus.utils.InjectorUtils;
 import ng.apmis.audreymumplus.utils.NotificationUtils;
 import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
 import ng.apmis.audreymumplus.utils.Week;
+
+import static ng.apmis.audreymumplus.utils.SharedPreferencesManager.PREF_NAME;
 
 public class DashboardActivity extends AppCompatActivity implements HomeFragment.OnfragmentInteractionListener {
     @BindView(R.id.bottom_navigation)
@@ -122,15 +120,41 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         profileCircularImageView = headerLayout.findViewById(R.id.user_image);
         //new GetVersionCode().execute();
 
-        AudreyMumplus.getInstance().diskIO().execute(() -> InjectorUtils.provideRepository(this)
-                .getPerson().observe(this, new Observer<Person>() {
-                    @Override
-                    public void onChanged(@Nullable Person person) {
-                        DashboardActivity.this.person.postValue(person == null ? new Person("", "", "", "", Week.Week0.week, "", "", "", "", "", "", UNKWOWN_PROGRESS) : person);
+        AudreyMumplus.getInstance().diskIO().execute(() -> {
+            InjectorUtils.provideRepository(this)
+                    .getPerson().observe(this, person -> {
+
+                if (person != null) {
+
+                    if (person.getDay() == UNKWOWN_PROGRESS || sharedPreferencesManager.justLoggedIn()) {
+
+                        InjectorUtils.provideRepository(this).getDayWeek(person);
+                    /*Set repeat alarm for week update start*/
+                        AlarmMangerSingleton.setDailyWeekDayProgress(this);
 
                     }
-                })
-        );
+                    userName.setText(getString(R.string.user_name, person.getFirstName(), person.getLastName()));
+
+                    Glide.with(DashboardActivity.this)
+                            .load(person.getProfileImage() != null ? person.getProfileImage() : R.drawable.ic_profile_place_holder)
+                            .into(profileCircularImageView);
+                    InjectorUtils.provideJournalNetworkDataSource(this).getForums(0);
+
+                    List<String> forums = person.getForums();
+                    for (String forum : forums) {
+                        InjectorUtils.provideJournalNetworkDataSource(this)
+                                .getChats(forum);
+                    }
+
+                    startService(new Intent(this, ChatSocketService.class).putStringArrayListExtra("forums", new ArrayList<>(forums)));
+
+                }
+
+                DashboardActivity.this.person.postValue(person == null ? new Person("", "", "", "", Week.Week0.week, "", "", "", "", "", "", UNKWOWN_PROGRESS) : person);
+
+            });
+            sharedPreferencesManager.setJustLoggedIn(false);
+        });
 
         launchKickCounter.setOnClickListener((view) -> {
             mFragmentManager.beginTransaction()
@@ -140,42 +164,8 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         });
 
         getPersonLive().observe(this, theUser -> {
-            Log.e("TAG", "Observer call");
             if (theUser != null && !TextUtils.isEmpty(theUser.get_id())) {
-
-                //declare the new global person
                 globalPerson = theUser;
-
-                if (theUser.getDay() == UNKWOWN_PROGRESS || sharedPreferencesManager.justLoggedIn()){
-
-                    Log.e("TAG", "I am person");
-                    InjectorUtils.provideRepository(this).getDayWeek(theUser);
-
-                    /*Set repeat alarm for week update start*/
-                    AlarmMangerSingleton.setDailyWeekDayProgress(this);
-
-                    sharedPreferencesManager.setJustLoggedIn(false);
-                }
-
-
-                if (theUser.getForums() != null) {
-                    List<String> forums = theUser.getForums();
-                    for (String forum : forums) {
-                        InjectorUtils.provideJournalNetworkDataSource(this)
-                                .getChat(this, forum, true);
-                        InjectorUtils.provideJournalNetworkDataSource(this).getForums(0);
-                    }
-
-                    startService(new Intent(this, ChatSocketService.class).putStringArrayListExtra("forums", new ArrayList<>(forums)));
-                }
-
-                startService(new Intent(this, ChatSocketService.class).setAction("start-background").putExtra("email", theUser.getEmail()));
-
-                userName.setText(getString(R.string.user_name, theUser.getFirstName(), theUser.getLastName()));
-
-                Glide.with(DashboardActivity.this)
-                        .load(theUser.getProfileImage() != null ? theUser.getProfileImage() : R.drawable.ic_profile_place_holder)
-                        .into(profileCircularImageView);
             }
         });
 
@@ -186,7 +176,8 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
         logoutView.setOnClickListener((View) -> {
             Toast.makeText(this, "Logout", Toast.LENGTH_SHORT).show();
-            //TODO Please remove all observers here
+
+            getApplicationContext().getSharedPreferences(PREF_NAME, 0).edit().clear().apply();
 
             sharedPreferencesManager.storeUserToken("");
             ProgressDialog progressDialog = new ProgressDialog(this);

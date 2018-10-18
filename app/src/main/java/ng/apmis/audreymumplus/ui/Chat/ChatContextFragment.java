@@ -1,21 +1,16 @@
 package ng.apmis.audreymumplus.ui.Chat;
 
-import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -24,10 +19,6 @@ import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,19 +41,19 @@ public class ChatContextFragment extends Fragment {
     AppCompatActivity activity;
     Person globalPerson;
 
-    ArrayList<ChatContextModel> dbForums;
     ChatViewModel chatViewModel;
 
 
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
-
+    SharedPreferencesManager sharedPreferencesManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_chat_context, container, false);
         ButterKnife.bind(this, rootView);
+        sharedPreferencesManager = new SharedPreferencesManager(activity);
         //globalPerson = ((DashboardActivity) getActivity()).globalPerson;
         if (getArguments() != null) {
             forumName = getArguments().getString("forumName");
@@ -81,14 +72,11 @@ public class ChatContextFragment extends Fragment {
                 ChatFactory forumFactory = InjectorUtils.provideChatFactory(getActivity(), forumName);
                 chatViewModel = ViewModelProviders.of(this, forumFactory).get(ChatViewModel.class);
 
-                chatViewModel.getUpdatedChats().observeForever(chatList -> {
+                chatViewModel.getUpdatedChats().observe(this, chatList -> {
                     progressBar.setVisibility(View.GONE);
-                    if ((chatList != null ? chatList.size() : 0) > 0) {
-                        dbForums = (ArrayList<ChatContextModel>) chatList;
-                /*progressBar.setVisibility(View.GONE);
-                emptyView.setVisibility(View.GONE);*/
+                    if (chatList.size() > 0) {
                         chatContextAdapter.setAllChats(chatList);
-                        chatRecycler.scrollToPosition(chatList.size() -1);
+                        chatRecycler.scrollToPosition(chatContextAdapter.getItemCount());
                     }
                 });
             }
@@ -105,54 +93,8 @@ public class ChatContextFragment extends Fragment {
             }
         });
 
-       // hideSoftInput(getActivity());
-        touchScreenAndHideKeyboardOnFocus(rootView, getActivity());
 
         return rootView;
-    }
-
-    public static void touchScreenAndHideKeyboardOnFocus(View view, final Activity activity) {
-
-        if (view instanceof EditText) {
-            view.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if (!hasFocus) {
-                        if(activity != null) {
-                            InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-                            if (activity.getCurrentFocus() != null) {
-                                inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        if (view instanceof ViewGroup) {
-            for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
-                View innerView = ((ViewGroup) view).getChildAt(i);
-                touchScreenAndHideKeyboardOnFocus(innerView, activity);
-            }
-        }
-    }
-
-    public static void hideSoftInput(FragmentActivity activity) {
-        try {
-            if (activity == null || activity.isFinishing()) return;
-            Window window = activity.getWindow();
-            if (window == null) return;
-            View view = window.getCurrentFocus();
-            //give decorView a chance
-            if (view == null) view = window.getDecorView();
-            if (view == null) return;
-
-            InputMethodManager imm = (InputMethodManager) activity.getApplicationContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (imm == null || !imm.isActive()) return;
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -184,10 +126,9 @@ public class ChatContextFragment extends Fragment {
 
     @Override
     public void onPause() {
-        Log.e("Onpause called", "called here");
-        SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(activity);
         ChatContextModel chatContextModel = chatContextAdapter.getItem(chatContextAdapter.getItemCount());
-        sharedPreferencesManager.addForumNameAndLastCreatedAtAsString(forumName, chatContextModel.getCreatedAt());
+        if (chatContextModel != null)
+            sharedPreferencesManager.addForumNameAndLastCreatedAtAsStringInPrefs(forumName, chatContextAdapter.getItem(chatContextAdapter.getItemCount()).getCreatedAt(), chatContextAdapter.getItemCount());
         super.onPause();
     }
 
@@ -201,27 +142,28 @@ public class ChatContextFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        //activity.startService(new Intent(getContext(), ChatSocketService.class).setAction("start-foreground").putExtra("chat", cht));
     }
 
     public static class ForumNameAndLastDate {
         public String forumName;
         public String date;
+        public int lastCount;
 
         public ForumNameAndLastDate() {
         }
 
-        public ForumNameAndLastDate(String forumName, String date) {
+        public ForumNameAndLastDate(String forumName, String date, int lastChatPosition) {
             this.forumName = forumName;
             this.date = date;
+            this.lastCount = lastCount;
         }
 
         @Override
         public String toString() {
             return "ForumNameAndLastDate{" +
                     "forumName='" + forumName + '\'' +
-                    ", Date='" + date + '\'' +
+                    ", date='" + date + '\'' +
+                    ", lastCount=" + lastCount +
                     '}';
         }
     }

@@ -11,6 +11,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -113,7 +115,8 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 int lastCompletelyVisibleItemPosition = ((LinearLayoutManager) forumRecycler.getLayoutManager()).findLastCompletelyVisibleItemPosition();
-                if (lastCompletelyVisibleItemPosition == lastCompletelyVisibleItemPosition - 2 && forumAdapter.getItemCount() < sharedPreferencesManager.getTotalRoomCountOnserver()) {
+
+                if (lastCompletelyVisibleItemPosition == forumAdapter.getItemCount() - 2 && forumAdapter.getItemCount() < sharedPreferencesManager.getTotalRoomCountOnserver()) {
                     AudreyMumplus.getInstance().networkIO().execute(() -> InjectorUtils.provideJournalNetworkDataSource(activity).getForums(forumAdapter.getItemCount()));
                 }
             }
@@ -136,7 +139,28 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.create_forum) {
-            new CreateChatForum().show(getChildFragmentManager(), null);
+
+            LayoutInflater inflater = this.getLayoutInflater();
+            View dialogView=inflater.inflate(R.layout.create_chat_forum, null);
+
+            EditText forumName = dialogView.findViewById(R.id.forum_name);
+
+            new AlertDialog.Builder(getActivity())
+                    .setTitle("Create Forum")
+                    .setNegativeButton("Cancel", ((dialog, which) -> {
+                        dialog.dismiss();
+                    }))
+                    .setPositiveButton("Create", ((dialog, which) -> {
+                        if (!TextUtils.isEmpty(forumName.getText().toString())) {
+                            InjectorUtils.provideJournalNetworkDataSource(getActivity()).createForum(forumName.getText().toString().trim(), activity);
+                        } else {
+                            forumName.setError("Field cannot be empty!!!");
+                            Toast.makeText(this.getActivity(), "Please enter a name", Toast.LENGTH_SHORT).show();
+                        }
+                        dialog.dismiss();
+                    }))
+                    .show();
+
             return true;
         }
         return super.onOptionsItemSelected(item);

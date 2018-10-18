@@ -3,6 +3,7 @@ package ng.apmis.audreymumplus.ui.Chat.chatforum;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -25,10 +26,7 @@ import ng.apmis.audreymumplus.utils.InjectorUtils;
 
 public class CreateChatForum extends DialogFragment {
 
-    @BindView(R.id.forum_name)
     TextInputEditText forumName;
-    @BindView(R.id.create_forum)
-    Button createForum;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -37,15 +35,26 @@ public class CreateChatForum extends DialogFragment {
         View rootView = inflater.inflate(R.layout.create_chat_forum, container, false);
         ButterKnife.bind(this, rootView);
 
-        createForum.setOnClickListener((view) ->  {
-            if (!TextUtils.isEmpty(forumName.getText().toString())) {
-                InjectorUtils.provideJournalNetworkDataSource(getActivity()).createForum(forumName.getText().toString().trim(), getDialog());
-            } else {
-                forumName.setError("Field cannot be empty!!!");
-                Toast.makeText(this.getActivity(), "Please enter a name", Toast.LENGTH_SHORT).show();
-            }
+        View dialogView = inflater.inflate(R.layout.create_chat_forum, null);
 
-        });
+        forumName = dialogView.findViewById(R.id.forum_name);
+
+        new AlertDialog.Builder(getActivity())
+                .setTitle("Create Forum")
+                .setMessage("Enter suggested forum name")
+                .setNegativeButton("Cancel", ((dialog, which) -> {
+                    dialog.dismiss();
+                }))
+                .setPositiveButton("Create", ((dialog, which) -> {
+                    if (!TextUtils.isEmpty(forumName.getText().toString())) {
+                        InjectorUtils.provideJournalNetworkDataSource(getActivity()).createForum(forumName.getText().toString().trim(), getActivity());
+                    } else {
+                        forumName.setError("Field cannot be empty!!!");
+                        Toast.makeText(getActivity(), "Please enter a name", Toast.LENGTH_SHORT).show();
+                    }
+                    dialog.dismiss();
+                }))
+                .show();
 
         return rootView;
     }

@@ -42,6 +42,10 @@ public class ChatContextAdapter extends RecyclerView.Adapter<ChatContextAdapter.
         notifyDataSetChanged();
     }
 
+    public int getPositionOfLastItem (ChatContextModel lastSavedChat) {
+        return allChats.indexOf(lastSavedChat);
+    }
+
 
     @NonNull
     @Override
@@ -84,7 +88,11 @@ public class ChatContextAdapter extends RecyclerView.Adapter<ChatContextAdapter.
     }
 
     public ChatContextModel getItem(int position) {
-        return allChats.get(position);
+        if (position == 0) {
+            return null;
+        } else {
+            return allChats.get(position -1);
+        }
     }
 
     class ChatContextViewHolder extends RecyclerView.ViewHolder {

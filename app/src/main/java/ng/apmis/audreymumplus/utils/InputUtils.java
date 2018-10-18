@@ -1,4 +1,4 @@
-package com.crossover.crosschat.android.utils;
+package ng.apmis.audreymumplus.utils;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,9 +9,7 @@ import android.widget.EditText;
 
 import java.util.Objects;
 
-/**
- * Created by Mahmoud Abdurrahman (mahmoud.abdurrahman@crossover.com) on 2/10/18.
- */
+
 public class InputUtils {
 
     public static final String TAG = InputUtils.class.getSimpleName();

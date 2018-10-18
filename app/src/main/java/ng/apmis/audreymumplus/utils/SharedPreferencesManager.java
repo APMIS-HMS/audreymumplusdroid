@@ -1,6 +1,9 @@
 package ng.apmis.audreymumplus.utils;
 
 import android.content.Context;
+import android.util.Log;
+
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,7 +46,6 @@ public class SharedPreferencesManager {
 
     private static final String LAST_CHAT_TIME_FORUM_LIST_STRING = "lastchat";
 
-    List<ChatContextModel> lastCreatedAtAndForumName = new ArrayList<>();
 
     public SharedPreferencesManager(Context context) {
         this._context = context;
@@ -52,35 +54,12 @@ public class SharedPreferencesManager {
     }
 
     public ChatContextFragment.ForumNameAndLastDate getLastChatForumAndCreatedAt (String forumName) {
-        ChatContextFragment.ForumNameAndLastDate returnForum = new ChatContextFragment.ForumNameAndLastDate();
-        String allList = pref.getString(LAST_CHAT_TIME_FORUM_LIST_STRING, "");
-
-        List<ChatContextFragment.ForumNameAndLastDate> stored = Utils.convertStringToList(allList);
-
-        for (ChatContextFragment.ForumNameAndLastDate x: stored) {
-            if (x.forumName.equals(forumName))
-                returnForum = x;
-        }
-        return returnForum;
+        String item = pref.getString(forumName, "");
+        return new Gson().fromJson(item, ChatContextFragment.ForumNameAndLastDate.class);
     }
 
-    public void addForumNameAndLastCreatedAtAsString (String forumName, String createdAt) {
-        String allList = pref.getString(LAST_CHAT_TIME_FORUM_LIST_STRING, "");
-
-        List<ChatContextFragment.ForumNameAndLastDate> stored = Utils.convertStringToList(allList);
-
-        for (ChatContextFragment.ForumNameAndLastDate x: stored) {
-            if (x.forumName.equals(forumName)) {
-                stored.remove(x);
-                break;
-            }
-        }
-
-        stored.add(new ChatContextFragment.ForumNameAndLastDate(forumName, createdAt));
-
-        String storeAgain = Utils.convertListToString(stored);
-
-        editor.putString(LAST_CHAT_TIME_FORUM_LIST_STRING, storeAgain);
+    public void addForumNameAndLastCreatedAtAsStringInPrefs(String forumName, String createdAt, int lastChatPosition) {
+        editor.putString(forumName, new Gson().toJson(new ChatContextFragment.ForumNameAndLastDate(forumName,createdAt, lastChatPosition)));
         editor.commit();
     }
 
@@ -153,12 +132,12 @@ public class SharedPreferencesManager {
     }
 
     public void storeUserPassword (String password) {
-        editor.putString(USER_PASSWORD, password);
+        editor.putString(USER_PASSWORD, EncryptionUtils.encrypt(password));
         editor.commit();
     }
 
     public String getStoredUserPassword () {
-        return pref.getString(USER_PASSWORD, "");
+        return EncryptionUtils.decrypt(pref.getString(USER_PASSWORD, ""));
     }
 
 

@@ -129,6 +129,7 @@ public class ForumAdapter extends RecyclerView.Adapter<ForumAdapter.ForumViewHol
 
                 FilterResults filterResults = new FilterResults();
                 filterResults.values = filteredForums;
+                filterResults.count = filteredForums.size();
                 return filterResults;
             }
 
