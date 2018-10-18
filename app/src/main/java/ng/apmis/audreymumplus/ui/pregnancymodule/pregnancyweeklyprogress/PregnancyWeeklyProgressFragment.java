@@ -3,7 +3,6 @@ package ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyweeklyprogress;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -11,15 +10,17 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -42,7 +43,6 @@ import ng.apmis.audreymumplus.data.database.WeeklyProgress;
 import ng.apmis.audreymumplus.data.database.WeeklyProgressData;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.ui.getaudrey.GetAudreyFragment;
-import ng.apmis.audreymumplus.ui.pregnancymodule.FragmentLifecycle;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 
 public class PregnancyWeeklyProgressFragment extends Fragment {
@@ -73,11 +73,12 @@ public class PregnancyWeeklyProgressFragment extends Fragment {
     @BindView(R.id.get_audrey_btn)
     Button getAudreyButton;
     @BindView(R.id.current_week_spinner)
-    Spinner currentWeekTv;
+    Spinner currentWeekSpinner;
 
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
 
+    Observer<List<WeeklyProgressData>> weeklyProgressDataObserver;
     PregnancyWeeklyProgressViewModel pregnancyWeeklyProgressViewModel;
 
     private String edd;
@@ -108,17 +109,18 @@ public class PregnancyWeeklyProgressFragment extends Fragment {
 
 
         ((DashboardActivity)getActivity()).getPersonLive().observe(this, person -> {
-            if (person != null) {
+            if (person != null && !TextUtils.isEmpty(person.get_id())) {
                 week = person.getWeek();
                 edd = person.getExpectedDateOfDelivery();
                 currentDay = String.valueOf(person.getDay());
                 currentWeek = String.valueOf(person.getWeek()).split(" ")[1];
-                currentWeekTv.setAdapter(weekAdapter);
+                currentWeekSpinner.setAdapter(weekAdapter);
             }
 
             if (edd != null) {
-                getWeeklyProgress();
+                getAudreyButton.setVisibility(View.GONE);//remove this button in case weekly data is still loading
                 initViewModel();
+                getWeeklyProgress();
             } else {
                 progressBar.setVisibility(View.GONE);
             }
@@ -131,6 +133,19 @@ public class PregnancyWeeklyProgressFragment extends Fragment {
                     .commit();
         });
 
+        currentWeekSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                refreshAndObserveWeeklyProgressPerWeek(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         return rootView;
     }
 
@@ -138,14 +153,13 @@ public class PregnancyWeeklyProgressFragment extends Fragment {
         PregnancyWeeklyProgressViewModelFactory factory = InjectorUtils.providePregnancyWeeklyProgressViewModelFactory(getActivity().getApplicationContext());
         pregnancyWeeklyProgressViewModel = ViewModelProviders.of(getActivity(), factory).get(PregnancyWeeklyProgressViewModel.class);
 
-        Observer<List<WeeklyProgressData>> weeklyProgressDataObserver = weeklyProgressData -> {
+        weeklyProgressDataObserver = weeklyProgressData -> {
 
             if (weeklyProgressAdapter == null) {
 
                 weeklyProgressAdapter = new PregnancyWeeklyProgressAdapter(getContext(), getFragmentManager());
                 weeklyProgressAdapter.addPregnancyProgress(weeklyProgressData);
                 weeklyProgressRecycler.setAdapter(weeklyProgressAdapter);
-                progressBar.setVisibility(View.GONE);
 
 //                if (weeklyProgressAdapter.getItemCount() < 1 && edd != null) {
 //                    Snackbar.make(contentView, "Check Internet and Retry", Snackbar.LENGTH_INDEFINITE)
@@ -159,13 +173,22 @@ public class PregnancyWeeklyProgressFragment extends Fragment {
             }
 
             if (weeklyProgressAdapter.getItemCount() > 0 && edd != null) {
+                progressBar.setVisibility(View.GONE);
                 contentView.setVisibility(View.VISIBLE);
                 getAudreyView.setVisibility(View.GONE);
             }
 
         };
 
-        pregnancyWeeklyProgressViewModel.getData().observe(getActivity(), weeklyProgressDataObserver);
+        refreshAndObserveWeeklyProgressPerWeek(0);
+
+    }
+
+    private void refreshAndObserveWeeklyProgressPerWeek(int week){
+        if (weeklyProgressDataObserver != null) {
+            pregnancyWeeklyProgressViewModel.getWeeklyProgressData(0).removeObservers(getActivity());
+            pregnancyWeeklyProgressViewModel.getWeeklyProgressData(week).observe(getActivity(), weeklyProgressDataObserver);
+        }
     }
 
     private void getWeeklyProgress() {
@@ -180,7 +203,6 @@ public class PregnancyWeeklyProgressFragment extends Fragment {
                             List<WeeklyProgress> progress = new ArrayList<>(Arrays.asList(new Gson().fromJson(jsonArray.toString(), WeeklyProgress[].class)));
                             saveWeeklyProgressDataToDb(progress);
                         }
-
 //                        JSONArray remoteWeeksArray = response.getJSONArray("data");
 ////                        Log.v("remoteweekarray", remoteWeeksArray.toString());
 //
@@ -227,7 +249,9 @@ public class PregnancyWeeklyProgressFragment extends Fragment {
                 error -> {
                     Log.v("weekly error", String.valueOf(error));
                     progressBar.setVisibility(View.GONE);
-                    Snackbar.make(contentView, "There was an error", Snackbar.LENGTH_INDEFINITE)
+
+                    if (weeklyProgressAdapter.getItemCount() == 0)
+                        Snackbar.make(currentWeekSpinner, "Error fetching data", Snackbar.LENGTH_SHORT)
                             .setAction("Ok", view -> {}).show();
                 });
 
@@ -236,6 +260,8 @@ public class PregnancyWeeklyProgressFragment extends Fragment {
 
     public void saveWeeklyProgressDataToDb(List<WeeklyProgress> progress){
         for (WeeklyProgress weeklyProgress : progress){
+            //ensure weeks have a value
+            weeklyProgress.populateWeekData();
             //save each data to DB
             pregnancyWeeklyProgressViewModel.bulkInsertWeeklyProgress(weeklyProgress.getData());
         }

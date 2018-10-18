@@ -6,7 +6,6 @@ import android.arch.lifecycle.ViewModel;
 import java.util.List;
 
 import ng.apmis.audreymumplus.data.AudreyRepository;
-import ng.apmis.audreymumplus.data.database.WeeklyProgress;
 import ng.apmis.audreymumplus.data.database.WeeklyProgressData;
 
 public class PregnancyWeeklyProgressViewModel extends ViewModel {
@@ -17,13 +16,15 @@ public class PregnancyWeeklyProgressViewModel extends ViewModel {
 
     public PregnancyWeeklyProgressViewModel(AudreyRepository audreyRepository) {
         this.audreyRepository = audreyRepository;
-
-        this.data = audreyRepository.getWeeklyProgressData();
     }
 
-    public LiveData<List<WeeklyProgressData>> getData() {
-        return data;
+    public LiveData<List<WeeklyProgressData>> getWeeklyProgressData(int week) {
+        if (week == 0)
+            return audreyRepository.getAllWeeklyProgressData();
+        else
+            return audreyRepository.getSelectedWeeklyProgressData(week);
     }
+
 
     public void bulkInsertWeeklyProgress(List<WeeklyProgressData> progressData){
         audreyRepository.bulkInsertWeeklyProgressData(progressData);

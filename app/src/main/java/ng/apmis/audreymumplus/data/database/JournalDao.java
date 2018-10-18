@@ -130,10 +130,36 @@ public interface JournalDao {
     /*
         WEEKLY PROGRESS DATA
      */
-    @Query("SELECT * FROM weeklyprogressdata")
+    @Query("SELECT * FROM weeklyprogressdata ORDER BY week ASC")
     LiveData<List<WeeklyProgressData>> getAllWeeklyProgressData();
+
+    @Query("SELECT * FROM weeklyprogressdata WHERE week = :week")
+    LiveData<List<WeeklyProgressData>> getSelectedWeeklyProgressData(int week);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void bulkInsertWeeklyProgress(List<WeeklyProgressData> data);
+
+
+
+    @Query("DELETE FROM appointments")
+    public void deleteAppointments();
+
+    @Query("DELETE FROM chat")
+    public void deleteChats();
+
+    @Query("DELETE FROM forums")
+    public void deleteForums();
+
+    @Query("DELETE FROM journal")
+    public void deleteJournals();
+
+    @Query("DELETE FROM kickcounter")
+    public void deleteKicks();
+
+    @Query("DELETE FROM pillreminder")
+    public void deletePillReminders();
+
+    @Query("DELETE FROM weeklyprogressdata")
+    public void deleteWeeklyProgressData();
 
 }

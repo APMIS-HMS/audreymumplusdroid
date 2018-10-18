@@ -1,10 +1,13 @@
 package ng.apmis.audreymumplus.ui.Dashboard;
 
+import android.app.ProgressDialog;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Observer;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -94,6 +97,8 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
     public static String globalOpenChatForum = null;
     private int mShortAnimationDuration;
 
+    public static int UNKWOWN_PROGRESS = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,9 +123,12 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         //new GetVersionCode().execute();
 
         AudreyMumplus.getInstance().diskIO().execute(() -> InjectorUtils.provideRepository(this)
-                .getPerson().observe(this, person -> {
-                    this.person.postValue(person == null ? new Person("", "", "", "", Week.Week0.week, "", "", "", "", "", "", 0) : person);
+                .getPerson().observe(this, new Observer<Person>() {
+                    @Override
+                    public void onChanged(@Nullable Person person) {
+                        DashboardActivity.this.person.postValue(person == null ? new Person("", "", "", "", Week.Week0.week, "", "", "", "", "", "", UNKWOWN_PROGRESS) : person);
 
+                    }
                 })
         );
 
@@ -132,8 +140,23 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         });
 
         getPersonLive().observe(this, theUser -> {
-            if (theUser != null) {
+            Log.e("TAG", "Observer call");
+            if (theUser != null && !TextUtils.isEmpty(theUser.get_id())) {
+
+                //declare the new global person
                 globalPerson = theUser;
+
+                if (theUser.getDay() == UNKWOWN_PROGRESS || sharedPreferencesManager.justLoggedIn()){
+
+                    Log.e("TAG", "I am person");
+                    InjectorUtils.provideRepository(this).getDayWeek(theUser);
+
+                    /*Set repeat alarm for week update start*/
+                    AlarmMangerSingleton.setDailyWeekDayProgress(this);
+
+                    sharedPreferencesManager.setJustLoggedIn(false);
+                }
+
 
                 if (theUser.getForums() != null) {
                     List<String> forums = theUser.getForums();
@@ -150,16 +173,6 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
                 userName.setText(getString(R.string.user_name, theUser.getFirstName(), theUser.getLastName()));
 
-                if (theUser.getDay() == 0 || sharedPreferencesManager.justLoggedIn()) {
-                    InjectorUtils.provideRepository(this).getDayWeek(theUser);
-
-                    /*Set repeat alarm for week update start*/
-                    AlarmMangerSingleton.setDailyWeekDayProgress(this);
-
-                    sharedPreferencesManager.setJustLoggedIn(false);
-
-                }
-
                 Glide.with(DashboardActivity.this)
                         .load(theUser.getProfileImage() != null ? theUser.getProfileImage() : R.drawable.ic_profile_place_holder)
                         .into(profileCircularImageView);
@@ -173,9 +186,23 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
         logoutView.setOnClickListener((View) -> {
             Toast.makeText(this, "Logout", Toast.LENGTH_SHORT).show();
+            //TODO Please remove all observers here
+
             sharedPreferencesManager.storeUserToken("");
-            finish();
-            startActivity(new Intent(this, LoginActivity.class));
+            ProgressDialog progressDialog = new ProgressDialog(this);
+            progressDialog.setMessage("Logging out");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+
+            InjectorUtils.provideRepository(this).clearAllTables();
+            InjectorUtils.provideRepository(this).getAllWeeklyProgressData().observe(this, data -> {
+                //Log out when all has been deleted
+                if (data == null || data.size() == 0) {
+                    progressDialog.dismiss();
+                    finish();
+                    startActivity(new Intent(this, LoginActivity.class));
+                }
+            });
         });
 
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {

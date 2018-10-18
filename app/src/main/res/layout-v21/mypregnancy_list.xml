@@ -53,16 +53,12 @@
         android:animationResolution="4000"
         android:indeterminateBehavior="repeat" />
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/progress_bar"
-        android:id="@+id/content_view"
-        android:visibility="visible">
 
-        <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        <LinearLayout
+            android:id="@+id/content_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_below="@+id/progress_bar"
             android:orientation="vertical">
 <!--
 
@@ -134,7 +130,6 @@
             </RelativeLayout>
 
         </LinearLayout>
-    </ScrollView>
 
     <RelativeLayout
         android:id="@+id/get_audrey_view"

@@ -12,9 +12,6 @@ public class WeeklyProgress {
         this._id = _id;
         this.week = week;
         this.data = data;
-
-        for (WeeklyProgressData weeklyProgressData : data)
-            weeklyProgressData.setWeek(week);
     }
 
     public String get_id() {
@@ -39,5 +36,10 @@ public class WeeklyProgress {
 
     public void setData(List<WeeklyProgressData> data) {
         this.data = data;
+    }
+
+    public void populateWeekData(){
+        for (WeeklyProgressData weeklyProgressData : data)
+            weeklyProgressData.setWeek(week);
     }
 }
