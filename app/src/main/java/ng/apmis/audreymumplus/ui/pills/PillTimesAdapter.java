@@ -83,7 +83,6 @@ public class PillTimesAdapter extends RecyclerView.Adapter<PillTimesAdapter.Pill
 
         @Override
         public void onClick(View view) {
-            Toast.makeText(mContext, String.valueOf(pillTime.get(getAdapterPosition())), Toast.LENGTH_SHORT).show();
             timeRemoverListener.onRemove(getAdapterPosition());
         }
     }

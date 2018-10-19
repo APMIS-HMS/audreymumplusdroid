@@ -75,7 +75,9 @@ public class AppointmentAdapter extends BaseAdapter {
         String monthString  = (String) DateFormat.format("MMM", appointmentModel.getAppointmentTime()); // Jun
         String dayOfTheWeek = (String) DateFormat.format("EEEE", appointmentModel.getAppointmentTime());
 
-        Date dt = new Date(appointmentModel.getAppointmentTime());
+        long twentyMinute = 1200000;
+
+        Date dt = new Date(appointmentModel.getAppointmentTime() - twentyMinute);
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("hh:mm aa");
         String time = sdf.format(dt);
 

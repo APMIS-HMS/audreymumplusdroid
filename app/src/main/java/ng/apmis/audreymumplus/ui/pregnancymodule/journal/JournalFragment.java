@@ -47,7 +47,7 @@ public class JournalFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_my_journal, container, false);
         ButterKnife.bind(this, rootView);
 
-        if (getArguments().getString("week") != null) {
+        if (getArguments() != null) {
             allJournals = new ArrayList<>();
 
             ListView listView = rootView.findViewById(R.id.journal);
@@ -70,6 +70,8 @@ public class JournalFragment extends Fragment {
             };
 
             journalViewModel.getSortedJournalEntries().observe(this, journalObserver);
+
+            onSpinnerOptionsSelection(weekOption);
 
             listView.setOnItemClickListener((parent, view, position, id) -> {
                 JournalModel clickedJournal = (JournalModel) parent.getItemAtPosition(position);
@@ -100,14 +102,9 @@ public class JournalFragment extends Fragment {
 
     @Override
     public void onStop() {
-        journalViewModel.getSortedJournalEntries().removeObservers(this);
+        if (journalViewModel != null)
+            journalViewModel.getSortedJournalEntries().removeObservers(this);
         super.onStop();
-    }
-
-    private void setupSpinnerAdapters(String[] dataList, Spinner spinner) {
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, dataList);
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
-        spinner.setAdapter(spinnerAdapter);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -115,10 +112,8 @@ public class JournalFragment extends Fragment {
         any.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    String selectedString = adapterView.getItemAtPosition(i).toString();
-                    if (!TextUtils.isEmpty(selectedString)) {
-                        getWeekModel(selectedString);
-                    }
+                String selectedString = adapterView.getItemAtPosition(i).toString();
+                getWeekModel(selectedString);
             }
 
             @Override
@@ -128,7 +123,7 @@ public class JournalFragment extends Fragment {
         });
     }
 
-    public void getWeekModel (String week) {
+    public void getWeekModel(String week) {
         if (week.equals(Week.ALL.getWeek())) {
             journalAdapter.setJournals(allJournals);
             return;

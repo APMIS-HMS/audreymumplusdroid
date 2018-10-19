@@ -38,7 +38,7 @@ public class NotificationUtils {
     public static void buildBackgroundChatNotification (Context mContext, ChatContextModel oneChat) {
 
         String notificationTitle = oneChat.getForumName();
-        String notificationBody = mContext.getString(R.string.notification_body, oneChat.getEmail(), oneChat.getMessage());
+        String notificationBody = mContext.getString(R.string.chat_notification_body, oneChat.getEmail(), oneChat.getMessage());
 
         Intent intent = new Intent(mContext.getApplicationContext(), DashboardActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

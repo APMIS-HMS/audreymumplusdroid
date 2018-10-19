@@ -98,7 +98,7 @@ public class GalleryFragment extends android.support.v4.app.Fragment {
                     case "Baby Scan":
                         galleryAdapter.setGalleryModels(babyScan);
                         break;
-                    case "Pregnancy Belly":
+                    case "Baby Bump":
                         galleryAdapter.setGalleryModels(pregnancyBelly);
                 }
             }

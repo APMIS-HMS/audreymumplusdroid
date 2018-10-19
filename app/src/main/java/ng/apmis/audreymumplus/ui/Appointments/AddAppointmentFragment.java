@@ -86,7 +86,6 @@ public class AddAppointmentFragment extends Fragment {
             appointmentTime.set(Calendar.YEAR, year);
             appointmentTime.set(Calendar.MONTH, month);
             appointmentTime.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            Toast.makeText(getActivity(), "" + year + " " + month + " " + dayOfMonth, Toast.LENGTH_SHORT).show();
         });
 
         saveAppointment.setOnClickListener((view) -> {
@@ -142,7 +141,10 @@ public class AddAppointmentFragment extends Fragment {
         appointmentTime.set(Calendar.HOUR_OF_DAY, parseInt(time[0]));
         appointmentTime.set(Calendar.MINUTE, parseInt(time[1]));
 
-        thisAppointment = new Appointment(appointmentTitle.getText().toString(), locationAddress.getText().toString(), appointmentDetails.getText().toString(), appointmentTime.getTimeInMillis(), 0);
+        //Notification triggers 20 minutes to appointment time
+        long twentyMinutes = 1200000;
+
+        thisAppointment = new Appointment(appointmentTitle.getText().toString(), locationAddress.getText().toString(), appointmentDetails.getText().toString(), appointmentTime.getTimeInMillis() + twentyMinutes, 0);
 
         AudreyMumplus.getInstance().diskIO().execute(() -> {
 
@@ -154,8 +156,8 @@ public class AddAppointmentFragment extends Fragment {
             getActivity().runOnUiThread(() -> {
                 new Handler().postDelayed(() -> {
                     new AlertDialog.Builder(getActivity())
-                            .setTitle("Success")
-                            .setMessage("Appointment set successfully")
+                            .setTitle("Appointment saved")
+                            .setMessage("Notifies 20 Minutes to appointment time")
                             .setPositiveButton("Ok", (dialogInterface, i) -> getActivity().getSupportFragmentManager().popBackStack("ADD_APPOINTMENT", FragmentManager.POP_BACK_STACK_INCLUSIVE)).show();
 
 

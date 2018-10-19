@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteCantOpenDatabaseException;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,6 +24,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +35,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.theartofdev.edmodo.cropper.CropImage;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -320,54 +326,19 @@ public class JournalAddFragment extends Fragment {
                 ImageCropFunction();
 
             }
-        } else if (requestCode == 1) {
-
-
-            if (data != null) {
-
-                Bundle bundle = data.getExtras();
-                Bitmap bitmap = bundle.getParcelable("data");
-                if (uriToSet.equals("baby-scan")) {
-                    Toast.makeText(getActivity(), "Baby scan " + uri.toString(), Toast.LENGTH_SHORT).show();
-                    pregScan = uri.toString();
-                } else {
-                    Toast.makeText(getActivity(), "Belly scan " + uri.toString(), Toast.LENGTH_SHORT).show();
-                    babyBump = uri.toString();
-                }
-                setImageUri.setText("image/" + uri.getLastPathSegment());
-            }
         }
 
     }
 
     public void ImageCropFunction() {
 
+            if (uriToSet.equals("baby-scan")) {
+                pregScan = uri.toString();
+            } else {
+                babyBump = uri.toString();
+            }
+            setImageUri.setText("image/" + uri.getLastPathSegment());
 
-        // Image Crop Code
-        try {
-            cropIntent = new Intent("com.android.camera.action.CROP");
-
-            cropIntent.setDataAndType(uri, "image/*");
-
-            cropIntent.putExtra("crop", "true");
-            cropIntent.putExtra("outputX", 440);
-            cropIntent.putExtra("outputY", 440);
-            cropIntent.putExtra("aspectX", 4);
-            cropIntent.putExtra("aspectY", 4);
-            cropIntent.putExtra("scaleUpIfNeeded", true);
-            cropIntent.putExtra("return-data", true);
-
-
-            cropIntent.setFlags(FLAG_GRANT_WRITE_URI_PERMISSION);
-            cropIntent.setFlags(FLAG_GRANT_READ_URI_PERMISSION);
-
-
-            startActivityForResult(cropIntent, 1);
-
-
-        } catch (ActivityNotFoundException ignored) {
-
-        }
     }
 
     private File createImageFile() throws IOException {
@@ -403,7 +374,7 @@ public class JournalAddFragment extends Fragment {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 9000 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(activity, "Click add camera button", Toast.LENGTH_SHORT).show();
+            startActivityForResult(camIntent, 0);
         } else {
             Toast.makeText(getActivity(), "You need permission to use camera", Toast.LENGTH_SHORT).show();
         }

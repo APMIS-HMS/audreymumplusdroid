@@ -97,7 +97,7 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
         ForumFactory forumFactory = InjectorUtils.provideForumFactory(activity);
         forumViewModel = ViewModelProviders.of(this, forumFactory).get(ForumViewModel.class);
 
-        forumViewModel.getUpdatedForums().observeForever(forumModelList -> {
+        forumViewModel.getUpdatedForums().observe(this, forumModelList -> {
             if (forumModelList.size() > 0) {
                 dbForums = (ArrayList<ChatForumModel>) forumModelList;
                 progressBar.setVisibility(View.GONE);

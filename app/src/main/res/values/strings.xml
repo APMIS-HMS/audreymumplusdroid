@@ -23,7 +23,7 @@
     <string name="gender">Gender</string>
     <string name="search_view_hint">enter search</string>
     <string name="Select">select time</string>
-    <string name="PregnancyBelly">Pregnancy Belly</string>
+    <string name="PregnancyBelly">Baby Bump</string>
     <string name="weekly_progress">Weekly Progress</string>
     <string name="Mygallery">My Gallery</string>
     <string name="pregJournal">My Journal</string>
@@ -98,6 +98,7 @@
     <string name="channel_name">Audrey chat channel</string>
     <string name="channel_description">Chats from Audrey Pack App</string>
     <string name="notification_body"><![CDATA[Details: %s<br/> Location: %s]]></string>
+    <string name="chat_notification_body"><![CDATA[%s<br/>%s]]></string>
     <string name="notification_body_pills"><![CDATA[Instructions: %s<br/> Tablets: %s]]></string>
     <string name="delete_reminder">Delete</string>
     <string name="appointment_details">Details</string>
