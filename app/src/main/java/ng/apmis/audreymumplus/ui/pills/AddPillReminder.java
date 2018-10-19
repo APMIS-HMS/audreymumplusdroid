@@ -8,7 +8,9 @@ import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,6 +21,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -30,8 +33,10 @@ import com.shawnlin.numberpicker.NumberPicker;
 
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,6 +46,7 @@ import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.utils.AlarmBroadcast;
 import ng.apmis.audreymumplus.utils.AlarmMangerSingleton;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
+import ng.apmis.audreymumplus.utils.InputUtils;
 
 /**
  * Created by Thadeus-APMIS on 8/16/2018.
@@ -49,17 +55,17 @@ import ng.apmis.audreymumplus.utils.InjectorUtils;
 public class AddPillReminder extends Fragment implements PillTimesAdapter.TimeRemoverListener{
 
     @BindView(R.id.pill_name)
-    EditText pillNameEt;
+    TextInputEditText pillNameEt;
     @BindView(R.id.qty_per_time)
-    EditText quantityPerTimeEt;
+    TextInputEditText quantityPerTimeEt;
     @BindView(R.id.frequency)
-    EditText frequency;
+    TextInputEditText frequency;
     @BindView(R.id.time_unit_picker)
-    NumberPicker numberPicker;
+    Spinner numberPicker;
     @BindView(R.id.duration_spinner)
     Spinner durationSpinner;
     @BindView(R.id.instruction)
-    EditText instructionsEt;
+    TextInputEditText instructionsEt;
     @BindView(R.id.reminder)
     Switch reminderSwitch;
 /*
@@ -89,6 +95,7 @@ public class AddPillReminder extends Fragment implements PillTimesAdapter.TimeRe
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_add_pill_reminder, container, false);
         ButterKnife.bind(this, rootView);
+        InputUtils.showKeyboard(getActivity(), pillNameEt);
 
         pillTimeRecyler.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         pillTimesAdapter = new PillTimesAdapter(getActivity(), this);
@@ -106,8 +113,25 @@ public class AddPillReminder extends Fragment implements PillTimesAdapter.TimeRe
             }
         });
 
-        numberPicker.setOnValueChangedListener((picker, oldVal, newVal) -> {
-            selectedUnit = String.valueOf(newVal);
+        List<String> array = new ArrayList<>();
+        int i = 0;
+        while (i < 280) {
+            array.add(String.valueOf(i + 1));
+            i++;
+        }
+
+        numberPicker.setAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item, array));
+
+        numberPicker.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedUnit = parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
         });
 
 
@@ -133,24 +157,16 @@ public class AddPillReminder extends Fragment implements PillTimesAdapter.TimeRe
                 AudreyMumplus.getInstance().diskIO().execute(() -> {
 
                     long reminderId = InjectorUtils.provideRepository(getActivity()).insertPillReminder(newPill);
-                    Intent alarmIntent = new Intent(getActivity(), AlarmBroadcast.class);
+                    newPill.set_id(reminderId);
 
-                    alarmIntent.setAction("pillreminder");
-                    alarmIntent.putExtra("pillreminder", reminderId);
+                    //TODO save current date
 
+                    AlarmMangerSingleton.setRepeatingPillReminderAlarm(getActivity(), newPill);
 
-                    AlarmManager alarmManager = new AlarmMangerSingleton(getActivity()).getInstance().getAlarmManager();
+                    new Handler().postDelayed(() -> {
+                        getActivity().onBackPressed();
+                    }, 500);
 
-                    //Set pending intent for every alarmtime selected
-                    for (long x : pillTimesAdapter.pillTime) {
-                        Calendar c = Calendar.getInstance();
-                        c.setTime(new Date(x));
-                        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), (int) c.getTimeInMillis(), alarmIntent, PendingIntent.FLAG_ONE_SHOT);
-                        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
-                    }
-
-
-                    getActivity().getSupportFragmentManager().popBackStack("ADD_PILL", FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 });
             } else {
                 Toast.makeText(getActivity(), "Check fields!!!", Toast.LENGTH_SHORT).show();
@@ -214,4 +230,9 @@ public class AddPillReminder extends Fragment implements PillTimesAdapter.TimeRe
         }
     }
 
+    @Override
+    public void onPause() {
+        InputUtils.hideKeyboard();
+        super.onPause();
+    }
 }

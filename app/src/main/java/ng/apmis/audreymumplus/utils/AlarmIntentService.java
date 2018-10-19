@@ -9,18 +9,15 @@ import java.util.Date;
 
 import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.ui.Appointments.Appointment;
+import ng.apmis.audreymumplus.ui.pills.PillModel;
 
 
 public class AlarmIntentService extends IntentService {
 
     private static final String TAG = AlarmIntentService.class.getSimpleName();
 
-    private static final String RESET_ALL_ALARMS = "set-alarm";
-    private static final String ACTION_BAZ = "ng.apmis.audreymumplus.utils.action.BAZ";
-
-    // TODO: Rename parameters
-    private static final String EXTRA_PARAM1 = "ng.apmis.audreymumplus.utils.extra.PARAM1";
-    private static final String EXTRA_PARAM2 = "ng.apmis.audreymumplus.utils.extra.PARAM2";
+    private static final String RESET_ALL_PILL_REMINDER_ALARMS = "set-pills";
+    private static final String RESET_ALL_APPOINTMENT_ALARMS = "set-appointments";
 
     public AlarmIntentService() {
         super("AlarmIntentService");
@@ -32,34 +29,26 @@ public class AlarmIntentService extends IntentService {
      *
      * @see IntentService
      */
-    // TODO: Customize helper method
-    public static void startAlarmReset (Context context) {
+
+    public static void startResettingAllAppointmentAlarm (Context context) {
         Intent intent = new Intent(context, AlarmIntentService.class);
-        intent.setAction(RESET_ALL_ALARMS);
+        intent.setAction(RESET_ALL_APPOINTMENT_ALARMS);
         context.startService(intent);
     }
 
-    /**
-     * Starts this service to perform action Baz with the given parameters. If
-     * the service is already performing a task this action will be queued.
-     *
-     * @see IntentService
-     */
-    // TODO: Customize helper method
-    public static void startActionBaz(Context context, String param1, String param2) {
+    public static void startResettingAllPillReminderAlarm (Context context) {
         Intent intent = new Intent(context, AlarmIntentService.class);
-        intent.setAction(ACTION_BAZ);
-        intent.putExtra(EXTRA_PARAM1, param1);
-        intent.putExtra(EXTRA_PARAM2, param2);
+        intent.setAction(RESET_ALL_PILL_REMINDER_ALARMS);
         context.startService(intent);
     }
+
 
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
             final String action = intent.getAction();
             Log.d(TAG, "Alarms are being rescheduled");
-            if (RESET_ALL_ALARMS.equals(action)) {
+            if (RESET_ALL_APPOINTMENT_ALARMS.equals(action)) {
                 AudreyMumplus.getInstance().diskIO().execute(() -> {
                     for (Appointment x : InjectorUtils.provideRepository(this).getStaticAppointmentList()) {
                         Log.v("Got list", x.toString());
@@ -73,6 +62,15 @@ public class AlarmIntentService extends IntentService {
                 });
 
                 AlarmMangerSingleton.setDailyWeekDayProgress(this);
+            }
+            if (RESET_ALL_PILL_REMINDER_ALARMS.equals(action)) {
+                AudreyMumplus.getInstance().diskIO().execute(() -> {
+                    for (PillModel x: InjectorUtils.provideRepository(this).getStaticPillReminderList()) {
+                        Log.v(TAG + " pills", x.toString());
+                        //TODO check time when date is set on pill object
+                        AlarmMangerSingleton.setRepeatingPillReminderAlarm(this, x);
+                    }
+                });
             }
         }
     }

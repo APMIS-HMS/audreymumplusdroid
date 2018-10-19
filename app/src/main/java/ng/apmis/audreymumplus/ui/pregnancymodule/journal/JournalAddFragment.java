@@ -44,6 +44,7 @@ import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
+import ng.apmis.audreymumplus.utils.InputUtils;
 import ng.apmis.audreymumplus.utils.Week;
 
 import static android.app.Activity.RESULT_OK;
@@ -107,6 +108,8 @@ public class JournalAddFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.new_journal, container, false);
         ButterKnife.bind(this, rootView);
+
+        InputUtils.showKeyboard(activity, moodEdittext);
 
         saveJournal.setOnClickListener((view) -> {
             if (checkFields()) {
@@ -388,6 +391,12 @@ public class JournalAddFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         activity = (AppCompatActivity) context;
+    }
+
+    @Override
+    public void onPause() {
+        InputUtils.hideKeyboard();
+        super.onPause();
     }
 
     @Override

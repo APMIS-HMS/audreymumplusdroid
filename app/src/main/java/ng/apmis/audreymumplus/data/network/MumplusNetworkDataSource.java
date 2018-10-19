@@ -1,10 +1,12 @@
 package ng.apmis.audreymumplus.data.network;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
@@ -39,6 +41,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Handler;
 
 import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.data.DatabaseFirebaseJobService;
@@ -55,6 +58,7 @@ import ng.apmis.audreymumplus.utils.Week;
 
 import static ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity.UNKWOWN_PROGRESS;
 import static ng.apmis.audreymumplus.utils.Constants.BASE_URL;
+import static ng.apmis.audreymumplus.utils.SharedPreferencesManager.USER_PASSWORD;
 
 /**
  * Created by Thadeus-APMIS on 5/15/2018.
@@ -605,7 +609,10 @@ public class MumplusNetworkDataSource {
 
     }
 
-    public void changePassword (Context context, String password) {
+    public void changePassword (Context context, SharedPreferences sharedPreferences, SharedPreferences.OnSharedPreferenceChangeListener listener, String oldPassword) {
+
+        String newPassword = sharedPreferences.getString(USER_PASSWORD, "").trim();
+
         ProgressDialog pd = new ProgressDialog(context);
         pd.setTitle("Changing password");
         pd.setMessage("Please wait...");
@@ -614,18 +621,21 @@ public class MumplusNetworkDataSource {
         pd.show();
         JSONObject changePasswordObject = new JSONObject();
         try {
-            changePasswordObject.put("newPassword", password);
-            changePasswordObject.put("reEnterPassword", password);
+            changePasswordObject.put("newPassword", newPassword);
+            changePasswordObject.put("reEnterPassword", newPassword);
         } catch (JSONException e) {
         }
 
+        //TODO call on backpressed when successfully changed or failed in a handler
         AudreyMumplus.getInstance().networkIO().execute(() -> {
 
+            sharedPreferences.unregisterOnSharedPreferenceChangeListener(listener);
             JsonObjectRequest changePasswordRequest = new JsonObjectRequest(Request.Method.POST, BASE_URL + "reset-password", changePasswordObject,
                     response -> {
                         Log.d("Change pwd response", response.toString());
-
+                        sharedPreferencesManager.storeUserPassword(newPassword);
                         pd.dismiss();
+                        ((Activity)context).onBackPressed();
                         Toast.makeText(mContext, "Password changed successfully", Toast.LENGTH_SHORT).show();
                     },
                     error -> {
@@ -633,7 +643,9 @@ public class MumplusNetworkDataSource {
                             Log.e("Change password err", "message: " + error.getMessage());
                         }
                         Log.e("Change password err", "message: " + error.toString());
+                        sharedPreferencesManager.storeUserPassword(oldPassword);
                         pd.dismiss();
+                        ((Activity)context).onBackPressed();
 
                         Toast.makeText(mContext, "Something went wrong", Toast.LENGTH_SHORT).show();
                     });

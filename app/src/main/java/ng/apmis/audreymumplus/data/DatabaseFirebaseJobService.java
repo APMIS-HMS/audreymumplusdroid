@@ -31,7 +31,6 @@ public class DatabaseFirebaseJobService extends JobService {
         public boolean onStartJob(final JobParameters jobParameters) {
             Log.d(LOG_TAG, "Job service started");
 /*
-            // TODO Finish this method when instructed. Will eventually call the fetchWeather code
             ((DashboardActivity)getApplicationContext()).getPersonLive().observe(getApplicationContext(), person -> {
                 InjectorUtils.provideRepository(getApplicationContext()).getDayWeek(person);
             });*/

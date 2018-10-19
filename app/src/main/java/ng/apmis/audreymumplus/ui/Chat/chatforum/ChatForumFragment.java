@@ -141,12 +141,13 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
         if (item.getItemId() == R.id.create_forum) {
 
             LayoutInflater inflater = this.getLayoutInflater();
-            View dialogView=inflater.inflate(R.layout.create_chat_forum, null);
+            View dialogView = inflater.inflate(R.layout.create_chat_forum, null);
 
             EditText forumName = dialogView.findViewById(R.id.forum_name);
 
             new AlertDialog.Builder(getActivity())
                     .setTitle("Create Forum")
+                    .setView(dialogView)
                     .setNegativeButton("Cancel", ((dialog, which) -> {
                         dialog.dismiss();
                     }))
@@ -155,9 +156,8 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
                             InjectorUtils.provideJournalNetworkDataSource(getActivity()).createForum(forumName.getText().toString().trim(), activity);
                         } else {
                             forumName.setError("Field cannot be empty!!!");
-                            Toast.makeText(this.getActivity(), "Please enter a name", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Please enter a name", Toast.LENGTH_SHORT).show();
                         }
-                        dialog.dismiss();
                     }))
                     .show();
 

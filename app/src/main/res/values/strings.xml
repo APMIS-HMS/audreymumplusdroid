@@ -80,8 +80,8 @@
     <string name="message_us_msg">You can tweet at us on <![CDATA[<b><a>@Audreypack</a></b>]]> or you can send us an email: <![CDATA[<b><a>help@audreypack.com</a></b>]]></string>
     <string name="our_mission">Our Mission</string>
     <string name="mission_text"><![CDATA[Our main focus at  The Audrey Pack is the reduction of maternal and child mortality rate. For us, achieving the Millennium development Goals (MDG) 4 & 5, set by the United Nations is our driving force. At the same time helping brands build a strong product brand equity by using the Audrey Pack Platform. We distribute free packs to pregnant and new mums, giving mothers the opportunity to try before they buy the best of baby care and household products]]></string>
-    <string name="registered_mum_txt">20,000\nRegistered Mums.</string>
-    <string name="partner_text">4\nPartners.</string>
+    <string name="registered_mum_txt">Registered over\n4 million mothers.</string>
+    <string name="partner_text">Over 20\nPartners.</string>
     <string name="distributed_text">1,000,000\nDistributed Packs.</string>
     <string name="journal_date">My journal on %s</string>
     <string name="cravings_title">Cravings</string>
@@ -237,8 +237,6 @@
         <item>FCT</item>
     </string-array>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="audrey_email">help@audreypack.com</string>
     <string name="audrey_facebook">theaudreypack</string>
     <string name="audrey_twitter">\@theaudreypack</string>
@@ -249,6 +247,7 @@
     <string name="add_picture">Add picture</string>
     <string name="search_for_forums">Search for forums</string>
     <string name="create_forum">Create Forum</string>
+
 
 
 </resources>

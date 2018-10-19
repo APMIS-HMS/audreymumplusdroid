@@ -282,4 +282,8 @@ public class AudreyRepository {
             }
         });
     }
+
+    public List<PillModel> getStaticPillReminderList() {
+        return mJournalDao.getStaticPillReminderList();
+    }
 }

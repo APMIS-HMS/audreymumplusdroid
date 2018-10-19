@@ -4,10 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import android.widget.Toast;
 
 import ng.apmis.audreymumplus.AudreyMumplus;
-import ng.apmis.audreymumplus.data.AudreyRepository;
 import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.ui.Appointments.Appointment;
 import ng.apmis.audreymumplus.ui.pills.PillModel;
@@ -22,7 +20,8 @@ public class AlarmBroadcast extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")) {
-            AlarmIntentService.startAlarmReset(context);
+            AlarmIntentService.startResettingAllAppointmentAlarm(context);
+            AlarmIntentService.startResettingAllPillReminderAlarm(context);
         }
 
         if (intent.getAction().equals("update-week")) {
@@ -42,9 +41,9 @@ public class AlarmBroadcast extends BroadcastReceiver {
         }
 
         if (intent.getAction().equals("pillreminder")) {
-            long appointment_id = intent.getExtras().getLong("pillreminder");
+            long pillReminderId = intent.getExtras().getLong("pillreminder");
             AudreyMumplus.getInstance().diskIO().execute(() -> {
-                PillModel pillModel = InjectorUtils.provideRepository(context).getPillModel(appointment_id);
+                PillModel pillModel = InjectorUtils.provideRepository(context).getPillModel(pillReminderId);
                 NotificationUtils.buildPillReminderNotification(context, pillModel);
             });
         }

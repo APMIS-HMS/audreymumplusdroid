@@ -1,6 +1,9 @@
 package ng.apmis.audreymumplus.ui.settings;
 
+import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -23,6 +26,8 @@ import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
 public class SettingsFragment extends Fragment {
 
     EditText passwordEditText;
+    Activity activity;
+    boolean goBack = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,23 +42,35 @@ public class SettingsFragment extends Fragment {
                 .setTitle("Enter current password")
                 .setView(dialogView)
                 .setNegativeButton("Cancel", ((dialog, which) -> {
+                    goBack = true;
                     dialog.dismiss();
-                    getActivity().onBackPressed();
                 }))
                 .setPositiveButton("Submit", ((dialog, which) -> {
-                    if (passwordEditText.getText().toString().equals(new SharedPreferencesManager(getActivity()).getStoredUserPassword())) {
+                    if (passwordEditText.getText().toString().equals(new SharedPreferencesManager(getActivity()).getStoredUserPassword())) {                goBack = false;
                         getActivity().getFragmentManager().beginTransaction()
                                 .add(R.id.fragment_container, new SettingPreferences(), "settings")
                                 .commit();
                     } else {
+                        goBack = true;
                         Toast.makeText(getActivity(), "password invalid", Toast.LENGTH_SHORT).show();
-                        getActivity().onBackPressed();
+
                     }
-                    dialog.dismiss();
-                }))
+                })).setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                if (goBack)
+                    activity.onBackPressed();
+            }
+        })
                 .show();
 
 
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        activity = (DashboardActivity)context;
     }
 
     @Override

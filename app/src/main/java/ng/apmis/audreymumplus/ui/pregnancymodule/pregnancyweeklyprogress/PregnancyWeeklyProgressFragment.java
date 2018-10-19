@@ -212,47 +212,10 @@ public class PregnancyWeeklyProgressFragment extends Fragment {
                             List<WeeklyProgress> progress = new ArrayList<>(Arrays.asList(new Gson().fromJson(jsonArray.toString(), WeeklyProgress[].class)));
                             saveWeeklyProgressDataToDb(progress);
                         }
-//                        JSONArray remoteWeeksArray = response.getJSONArray("data");
-////                        Log.v("remoteweekarray", remoteWeeksArray.toString());
-//
-//                        JSONObject currentWeek = new JSONObject(remoteWeeksArray.get(1).toString());
-//                        if (currentWeek.getJSONArray("data").length() < 1) {
-//                            currentWeek = new JSONObject(remoteWeeksArray.get(0).toString());
-//                        }
-//
-//                        JSONArray remoteWeekDaysArray = currentWeek.getJSONArray("data");
-//
-//                        for (int day = 0; day < remoteWeekDaysArray.length(); day++) {
-//                            PregnancyWeeklyProgressModel oneItem = new Gson().fromJson(remoteWeekDaysArray.get(day).toString(), PregnancyWeeklyProgressModel.class);
-//                            //Todo uncomment logic when there's a way to fix days in a week according to progress
-//                          /*  Log.v("oneItem", oneItem.toString());
-//                            if (oneItem.getDay().equals(currentDay)) {
-//                                todaysModelItem = oneItem;
-//                                //TODO check if day doesn't exist
-//                            } else {
-//                                weeklyProgressModelArrayList.add(oneItem);
-//                            }*/
-//                            weeklyProgressModelArrayList.add(oneItem);
-//
-//                         /*   if (todaysModelItem != null) {
-//                                todaysDay.setText(getString(R.string.todays_day_placeholder,todaysModelItem.getDay()));
-//                                todaysProgressTitle.setText(Html.fromHtml(getString(R.string.todays_progress, todaysModelItem.getTitle(), todaysModelItem.getIntro())));
-//                            }*/
-//
-//                            weeklyProgressAdapter.addPregnancyProgress(weeklyProgressModelArrayList);
-//
-//                           /* todaysProgressCard.setOnClickListener(view -> {
-//                                Bundle detailBundle = new Bundle();
-//                                detailBundle.putParcelable("today", todaysModelItem);
-//                                PregnancyWeeklyProgressDetail pregWeekDetail = new PregnancyWeeklyProgressDetail();
-//                                pregWeekDetail.setArguments(detailBundle);
-//                                pregWeekDetail.show(getChildFragmentManager(), "Day Details");
-//                            });*/
-//                        }
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
 
                 },
                 error -> {

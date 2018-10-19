@@ -8,8 +8,10 @@ import android.support.v4.app.FragmentManager;
 import android.util.Log;
 
 import java.util.Calendar;
+import java.util.Date;
 
 import ng.apmis.audreymumplus.ui.Appointments.Appointment;
+import ng.apmis.audreymumplus.ui.pills.PillModel;
 
 /**
  * Created by Thadeus-APMIS on 8/8/2018.
@@ -71,5 +73,25 @@ public class AlarmMangerSingleton {
         alarmManager.cancel(pendingIntent);
 
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+    }
+
+    public static void setRepeatingPillReminderAlarm (Context context, PillModel pillModel) {
+        Intent alarmIntent = new Intent(context, AlarmBroadcast.class);
+
+        alarmIntent.setAction("pillreminder");
+        alarmIntent.putExtra("pillreminder", pillModel.get_id());
+
+        AlarmManager alarmManager = new AlarmMangerSingleton(context).getInstance().getAlarmManager();
+
+        //Set pending intent for every alarmtime selected
+        for (long x : pillModel.getPillTimes()) {
+            Calendar c = Calendar.getInstance();
+            c.setTime(new Date(x));
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, (int) c.getTimeInMillis(), alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        }
+
+        //TODO set pending intent to clear the alarm when due(date)
+
     }
 }

@@ -40,7 +40,7 @@ public class SharedPreferencesManager {
 
     private static final String APMIS_ID = "apmisid";
 
-    private static final String USER_PASSWORD = "password";
+    public static final String USER_PASSWORD = "password";
 
     private static final String SERVER_ROOM_COUNT = "forumjoin";
 

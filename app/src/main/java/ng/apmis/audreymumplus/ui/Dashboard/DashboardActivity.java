@@ -177,7 +177,8 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
         logoutView.setOnClickListener((View) -> {
             Toast.makeText(this, "Logout", Toast.LENGTH_SHORT).show();
 
-            getApplicationContext().getSharedPreferences(PREF_NAME, 0).edit().clear().apply();
+            /*Reset all shared preferences*/
+            //getApplicationContext().getSharedPreferences(PREF_NAME, 0).edit().clear().apply();
 
             sharedPreferencesManager.storeUserToken("");
             ProgressDialog progressDialog = new ProgressDialog(this);

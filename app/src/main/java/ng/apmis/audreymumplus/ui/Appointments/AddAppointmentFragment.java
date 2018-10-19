@@ -9,6 +9,7 @@ import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
@@ -34,6 +35,7 @@ import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.utils.AlarmBroadcast;
 import ng.apmis.audreymumplus.utils.AlarmMangerSingleton;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
+import ng.apmis.audreymumplus.utils.InputUtils;
 
 import static java.lang.Integer.parseInt;
 
@@ -78,6 +80,7 @@ public class AddAppointmentFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.new_appointment, container, false);
         ButterKnife.bind(this, rootView);
         appointmentTime = Calendar.getInstance();
+        InputUtils.showKeyboard(getActivity(), appointmentTitle);
 
         calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
             appointmentTime.set(Calendar.YEAR, year);
@@ -146,30 +149,19 @@ public class AddAppointmentFragment extends Fragment {
             long _id = InjectorUtils.provideRepository(getActivity()).saveAppointment(thisAppointment);
             thisAppointment.set_id(_id);
 
-            Log.v("Appointment set", thisAppointment.toString());
-
-          /*  Intent alarmIntent = new Intent(getActivity(), AlarmBroadcast.class);
-            alarmIntent.setAction("appointment");
-            alarmIntent.putExtra("appointment", thisAppointment.get_id());
-
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), (int) thisAppointment.get_id(), alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-
-            AlarmManager alarmManager =  new AlarmMangerSingleton(getActivity()).getInstance().getAlarmManager();
-            alarmManager.set(AlarmManager.RTC_WAKEUP, thisAppointment.getAppointmentTime(), pendingIntent);
-*/
             AlarmMangerSingleton.setSingleAppointmentAlarm(getActivity(), thisAppointment);
 
-            getActivity().runOnUiThread(() -> {
-                new AlertDialog.Builder(getActivity())
-                        .setTitle("Success")
-                        .setMessage("Appointment set successfully")
-                        .setPositiveButton("Ok", (dialogInterface, i) -> getActivity().getSupportFragmentManager().popBackStack("ADD_APPOINTMENT", FragmentManager.POP_BACK_STACK_INCLUSIVE)).show();
+            new Handler().postDelayed(() -> {
+                getActivity().runOnUiThread(() -> {
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle("Success")
+                            .setMessage("Appointment set successfully")
+                            .setPositiveButton("Ok", (dialogInterface, i) -> getActivity().getSupportFragmentManager().popBackStack("ADD_APPOINTMENT", FragmentManager.POP_BACK_STACK_INCLUSIVE)).show();
 
-            });
+                });
+            }, 500);
 
         });
-
-
     }
 
     @Override
@@ -184,6 +176,7 @@ public class AddAppointmentFragment extends Fragment {
         super.onStop();
         ((DashboardActivity) getActivity()).setActionBarButton(false, "Appointments");
         ((DashboardActivity) getActivity()).bottomNavVisibility(false);
+        InputUtils.hideKeyboard();
     }
 
     public static class DialogTime extends DialogFragment implements TimePickerDialog.OnTimeSetListener {

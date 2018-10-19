@@ -53,6 +53,7 @@ import ng.apmis.audreymumplus.R;
 import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
+import ng.apmis.audreymumplus.utils.InputUtils;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
@@ -102,6 +103,7 @@ public class ProfileFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
 
         ButterKnife.bind(this, rootView);
+        InputUtils.showKeyboard(activity, firstNameEdittext);
 
         AudreyMumplus.getInstance().diskIO().execute(() -> {
 
@@ -290,6 +292,12 @@ public class ProfileFragment extends Fragment {
         super.onStop();
         ((DashboardActivity) getActivity()).setActionBarButton(false, getString(R.string.app_name));
         ((DashboardActivity) getActivity()).bottomNavVisibility(true);
+    }
+
+    @Override
+    public void onPause() {
+        InputUtils.hideKeyboard();
+        super.onPause();
     }
 
     @Override

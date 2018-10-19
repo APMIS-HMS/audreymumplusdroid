@@ -162,4 +162,6 @@ public interface JournalDao {
     @Query("DELETE FROM weeklyprogressdata")
     public void deleteWeeklyProgressData();
 
+    @Query("SELECT * FROM pillreminder")
+    List<PillModel> getStaticPillReminderList();
 }

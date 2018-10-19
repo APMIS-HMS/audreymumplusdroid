@@ -27,6 +27,7 @@ import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.data.network.ChatSocketService;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
+import ng.apmis.audreymumplus.utils.InputUtils;
 import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
 
 public class ChatContextFragment extends Fragment {
@@ -53,6 +54,7 @@ public class ChatContextFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_chat_context, container, false);
         ButterKnife.bind(this, rootView);
+        InputUtils.showKeyboard(activity, chatMessageEditText);
         sharedPreferencesManager = new SharedPreferencesManager(activity);
         //globalPerson = ((DashboardActivity) getActivity()).globalPerson;
         if (getArguments() != null) {
@@ -126,9 +128,11 @@ public class ChatContextFragment extends Fragment {
 
     @Override
     public void onPause() {
+        //TODO confirm is new time of last chat is saved
         ChatContextModel chatContextModel = chatContextAdapter.getItem(chatContextAdapter.getItemCount());
         if (chatContextModel != null)
             sharedPreferencesManager.addForumNameAndLastCreatedAtAsStringInPrefs(forumName, chatContextAdapter.getItem(chatContextAdapter.getItemCount()).getCreatedAt(), chatContextAdapter.getItemCount());
+        InputUtils.hideKeyboard();
         super.onPause();
     }
 
