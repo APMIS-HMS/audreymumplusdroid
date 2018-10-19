@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,8 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Calendar;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.R;
@@ -30,6 +33,7 @@ import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 import ng.apmis.audreymumplus.utils.InputUtils;
 import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
+import ng.apmis.audreymumplus.utils.Utils;
 
 public class ChatContextFragment extends Fragment {
 
@@ -130,11 +134,9 @@ public class ChatContextFragment extends Fragment {
 
     @Override
     public void onPause() {
-        //TODO confirm is new time of last chat is saved
-        Log.e("Last chat time", chatContextAdapter.getItem(chatContextAdapter.getItemCount()).getCreatedAt() + "chatCount " + chatContextAdapter.getItemCount());
         ChatContextModel chatContextModel = chatContextAdapter.getItem(chatContextAdapter.getItemCount());
         if (chatContextModel != null)
-            sharedPreferencesManager.addForumNameAndLastCreatedAtAsStringInPrefs(forumName, chatContextModel.getCreatedAt(), chatContextAdapter.getItemCount());
+            sharedPreferencesManager.addForumNameAndLastCreatedAtAsStringInPrefs(forumName, !TextUtils.isEmpty(chatContextModel.getCreatedAt()) ? chatContextModel.getCreatedAt() : Utils.localDateToDbString(Calendar.getInstance().getTime()), chatContextAdapter.getItemCount());
         InputUtils.hideKeyboard();
         super.onPause();
     }
@@ -154,7 +156,7 @@ public class ChatContextFragment extends Fragment {
     public static class ForumNameAndLastDate {
         public String forumName;
         public String date;
-        public int lastCount;
+        public int lastChatPosition;
 
         public ForumNameAndLastDate() {
         }
@@ -162,7 +164,7 @@ public class ChatContextFragment extends Fragment {
         public ForumNameAndLastDate(String forumName, String date, int lastChatPosition) {
             this.forumName = forumName;
             this.date = date;
-            this.lastCount = lastCount;
+            this.lastChatPosition = lastChatPosition;
         }
 
         @Override
@@ -170,7 +172,7 @@ public class ChatContextFragment extends Fragment {
             return "ForumNameAndLastDate{" +
                     "forumName='" + forumName + '\'' +
                     ", date='" + date + '\'' +
-                    ", lastCount=" + lastCount +
+                    ", lastCount=" + lastChatPosition +
                     '}';
         }
     }
