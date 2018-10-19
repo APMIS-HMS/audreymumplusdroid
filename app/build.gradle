@@ -5,7 +5,7 @@ android {
         production_signing {
             keyAlias 'audreypack'
             keyPassword 'android2018'
-            storeFile file('usr/audreypackkeystore.jks')
+            storeFile file('C:/Users/ainoj/OneDrive - APMIS Health Management Systems Ltd/audreypackkeystore.jks')
             storePassword 'android2018'
         }
     }
@@ -14,8 +14,8 @@ android {
         applicationId "ng.apmis.audreymumplus"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 4
-        versionName "1.0.0"
+        versionCode 5
+        versionName "1.0.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true

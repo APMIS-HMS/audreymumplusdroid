@@ -21,7 +21,7 @@ import ng.apmis.audreymumplus.ui.pregnancymodule.journal.JournalModel;
  * Created by Thadeus-APMIS on 5/15/2018.
  */
 @Database(entities = {JournalModel.class, Person.class, Appointment.class, ChatForumModel.class,
-        ChatContextModel.class, PillModel.class, KickCounterModel.class, WeeklyProgressData.class}, version = 5, exportSchema = false)
+        ChatContextModel.class, PillModel.class, KickCounterModel.class, WeeklyProgressData.class}, version = 3, exportSchema = false)
 @TypeConverters({JournalConverters.class, PillsTypeConverter.class})
 public abstract class JournalDatabase extends RoomDatabase {
     public abstract JournalDao dailyJournalDao();
@@ -38,7 +38,7 @@ public abstract class JournalDatabase extends RoomDatabase {
                 if (sInstance == null) {
                     sInstance = Room.databaseBuilder(context.getApplicationContext(),
                             JournalDatabase.class, JournalDatabase.DATABASE_NAME)
-                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
+                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                             .build();
                 }
             }
@@ -46,49 +46,13 @@ public abstract class JournalDatabase extends RoomDatabase {
         return sInstance;
     }
 
-//    static final Migration MIGRATION_4_5 = new Migration(4, 5) {
-//        @Override
-//        public void migrate(SupportSQLiteDatabase database) {
-//            // Create the new table
-//            database.execSQL(
-//                    "CREATE TABLE black_person ('id' INTEGER PRIMARY KEY NOT NULL, _id TEXT, firstName TEXT, lastName TEXT, email TEXT, personId TEXT, dateOfBirth TEXT, motherMaidenName TEXT, primaryContactPhoneNo TEXT, ExpectedDateOfDelivery TEXT, profileImage TEXT, week TEXT, day INTEGER NOT NULL DEFAULT 0)");
-//// Copy the data
-//            database.execSQL(
-//                    "INSERT INTO black_person (id, _id, firstName, lastName, email, personId, dateOfBirth, motherMaidenName, primaryContactPhoneNo, ExpectedDateOfDelivery, profileImage) SELECT id, _id, firstName, lastName, email, personId, dateOfBirth, motherMaidenName, primaryContactPhoneNo, ExpectedDateOfDelivery, profileImage FROM person");
-//
-//// Remove the old table
-//            database.execSQL("DROP TABLE person");
-//// Change the table name to the correct one
-//            database.execSQL("ALTER TABLE black_person RENAME TO person");
-//        }
-//    };
-
-//    static final Migration MIGRATION_3_4 = new Migration(3, 4) {
-//        @Override
-//        public void migrate(SupportSQLiteDatabase database) {
-//            // Create the new table
-//            database.execSQL(
-//                    "CREATE TABLE black_person ('id' INTEGER PRIMARY KEY NOT NULL, _id TEXT, firstName TEXT, lastName TEXT, email TEXT, personId TEXT, dateOfBirth TEXT, motherMaidenName TEXT, primaryContactPhoneNo TEXT, ExpectedDateOfDelivery TEXT, profileImage TEXT)");
-//// Copy the data
-//            database.execSQL(
-//                    "INSERT INTO black_person (id, firstName, lastName, email, personId, dateOfBirth, motherMaidenName, primaryContactPhoneNo, ExpectedDateOfDelivery, profileImage) SELECT id, firstName, lastName, email, personId, dateOfBirth, motherMaidenName, primaryContactPhoneNo, expectedDateOfDelivery, profileImage FROM person");
-//
-//// Remove the old table
-//            database.execSQL("DROP TABLE person");
-//// Change the table name to the correct one
-//            database.execSQL("ALTER TABLE black_person RENAME TO person");
-//
-//        }
-//    };
-
 
     static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
-// Remove the old table
+
             database.execSQL("DROP TABLE appointments");
 
-            // Create the new table
             database.execSQL(
                     "CREATE TABLE appointments ('_id' INTEGER PRIMARY KEY NOT NULL, title TEXT, appointmentAddress TEXT, appointmentDetails TEXT, appointmentTime INTEGER NOT NULL, muteAlarm INTEGER NOT NULL)");
 
@@ -107,38 +71,27 @@ public abstract class JournalDatabase extends RoomDatabase {
         public void migrate(SupportSQLiteDatabase database) {
             // Create the new table
             database.execSQL(
-                    "CREATE TABLE black_person ('id' INTEGER PRIMARY KEY NOT NULL, _id TEXT UNIQUE, firstName TEXT, lastName TEXT, email TEXT, personId TEXT, dateOfBirth TEXT, motherMaidenName TEXT, primaryContactPhoneNo TEXT, expectedDateOfDelivery TEXT, profileImage TEXT, week TEXT, day INTEGER)");
+                    "CREATE TABLE black_person ('id' INTEGER PRIMARY KEY NOT NULL, _id TEXT UNIQUE, firstName TEXT, lastName TEXT, email TEXT, personId TEXT, dateOfBirth TEXT, motherMaidenName TEXT, primaryContactPhoneNo TEXT, ExpectedDateOfDelivery TEXT, profileImage TEXT, week TEXT, day INTEGER NOT NULL, forums TEXT)");
 // Copy the data
             database.execSQL(
-                    "INSERT INTO black_person (id, firstName, lastName, email, personId, dateOfBirth, motherMaidenName, primaryContactPhoneNo, expectedDateOfDelivery, profileImage) SELECT id, firstName, lastName, email, personId, dateOfBirth, motherMaidenName, primaryContactPhoneNo, expectedDateOfDelivery, profileImage FROM person");
-
+                    "INSERT INTO black_person (id, firstName, lastName, email, personId, dateOfBirth, motherMaidenName, primaryContactPhoneNo, expectedDateOfDelivery, profileImage, day) SELECT id, firstName, lastName, email, personId, dateOfBirth, motherMaidenName, primaryContactPhoneNo, expectedDateOfDelivery, profileImage, 0 FROM person");
 
             database.execSQL("DROP TABLE person");
 
             database.execSQL("ALTER TABLE black_person RENAME TO person");
 
-            database.execSQL("DROP TABLE kickcounter");
+            database.execSQL("CREATE UNIQUE INDEX `index_person__id` ON `person` (`_id`)");
 
-            database.execSQL(
-                    "CREATE TABLE kickcounter ('_id' INTEGER PRIMARY KEY NOT NULL, kicks INTEGER NOT NULL, week TEXT, duration TEXT, date INTEGER NOT NULL, day INTEGER NOT NULL)");
+            database.execSQL("ALTER TABLE kickcounter ADD COLUMN day INTEGER NOT NULL DEFAULT 0");
+
+            database.execSQL("CREATE TABLE `weeklyprogressdata` (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, _id TEXT, `week` INTEGER NOT NULL, `day` INTEGER NOT NULL, `title` TEXT, `intro` TEXT, `body` TEXT)");
+            database.execSQL("CREATE UNIQUE INDEX `index_weeklyprogressdata__id` ON `weeklyprogressdata` (`_id`)");
+
+            database.execSQL("ALTER TABLE chat ADD COLUMN createdAt TEXT");
+
+            database.execSQL("ALTER TABLE chat ADD COLUMN updatedAt TEXT");
 
         }
     };
 
-    static final Migration MIGRATION_3_4 = new Migration(3, 4) {
-        @Override
-        public void migrate(SupportSQLiteDatabase database) {
-            //add the forums column to the Person table
-            database.execSQL("ALTER TABLE person ADD COLUMN forums TEXT");
-        }
-    };
-
-    static final Migration MIGRATION_4_5 = new Migration(4, 5) {
-
-        @Override
-        public void migrate(@NonNull SupportSQLiteDatabase db) {
-            db.execSQL("CREATE TABLE `weeklyprogressdata` (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, _id TEXT, `week` INTEGER NOT NULL, `day` INTEGER NOT NULL, `title` TEXT, `intro` TEXT, `body` TEXT)");
-            db.execSQL("CREATE UNIQUE INDEX `index_weeklyprogressdata__id` ON `weeklyprogressdata` (`_id`)");
-        }
-    };
 }

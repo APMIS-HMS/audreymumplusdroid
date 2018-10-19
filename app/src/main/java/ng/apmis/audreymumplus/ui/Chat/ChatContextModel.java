@@ -19,7 +19,15 @@ public class ChatContextModel {
     private String createdAt;
     private String updatedAt;
 
-    public ChatContextModel(String _id, String forumName, String message, String email, String userName, String createdAt, String updatedAt) {
+    public ChatContextModel(String forumName, String message, String email, String userName) {
+        this.forumName = forumName;
+        this.message = message;
+        this.email = email;
+        this.userName = userName;
+    }
+
+    @Ignore()
+    public ChatContextModel(String forumName, String message, String email, String userName, String createdAt, String updatedAt, String _id) {
         this._id = _id;
         this.forumName = forumName;
         this.message = message;
@@ -29,36 +37,44 @@ public class ChatContextModel {
         this.updatedAt = updatedAt;
     }
 
-    @Ignore()
-    public ChatContextModel(String forumName, String message, String email, String userName) {
-        this.forumName = forumName;
-        this.message = message;
-        this.email = email;
-        this.userName = userName;
-    }
-
     @NonNull
     public String get_id() {
         return _id;
+    }
+
+    public void set_id(@NonNull String _id) {
+        this._id = _id;
     }
 
     public String getForumName() {
         return forumName;
     }
 
+    public void setForumName(String forumName) {
+        this.forumName = forumName;
+    }
+
     public String getMessage() {
         return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public String getEmail() {
         return email;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getUserName() {
         return userName;
     }
 
-    public void setUserName (String userName) {
+    public void setUserName(String userName) {
         this.userName = userName;
     }
 
