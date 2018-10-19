@@ -163,9 +163,12 @@ public class AddPillReminder extends Fragment implements PillTimesAdapter.TimeRe
 
                     AlarmMangerSingleton.setRepeatingPillReminderAlarm(getActivity(), newPill);
 
-                    new Handler().postDelayed(() -> {
-                        getActivity().onBackPressed();
-                    }, 500);
+                    getActivity().runOnUiThread(() -> {
+                        Toast.makeText(getActivity(), "Pill reminder saved", Toast.LENGTH_SHORT).show();
+                        new Handler().postDelayed(() -> {
+                            getActivity().onBackPressed();
+                        }, 500);
+                    });
 
                 });
             } else {

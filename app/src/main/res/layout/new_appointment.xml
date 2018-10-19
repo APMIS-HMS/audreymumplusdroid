@@ -14,7 +14,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_margin="20dp">
 
             <CalendarView
                 android:id="@+id/calendar_view"
@@ -22,62 +23,80 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="20dp"
+                android:text="Appointment Title"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                android:textStyle="bold" />
+
+
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/appointment_title"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="24dp"
                 android:background="@drawable/edittext_background"
-                android:hint="Appointment Title"
-                android:imeOptions="actionNext"
-                android:inputType="textCapWords"
-                android:maxLines="1"
+                android:focusable="true"
+                android:gravity="top"
+                android:inputType="textCapSentences"
                 android:padding="6dp"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:imeOptions="actionNext" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="20dp"
+                android:text="Location"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                android:textStyle="bold" />
+
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/location_address"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="24dp"
                 android:background="@drawable/edittext_background"
-                android:hint="Location address"
+                android:focusable="true"
+                android:gravity="top"
                 android:imeOptions="actionNext"
-                android:inputType="textCapWords"
-                android:maxLines="1"
-                android:padding="6dp"
-                android:singleLine="true" />
+                android:inputType="textCapSentences"
+                android:padding="6dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="20dp"
+                android:text="Details"
+                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                android:textStyle="bold" />
+
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/appointment_details"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="24dp"
                 android:background="@drawable/edittext_background"
-                android:hint="Appointment Name and Details"
-                android:imeOptions="actionNext"
+                android:focusable="true"
                 android:gravity="top"
+                android:imeOptions="actionNext"
                 android:inputType="textCapSentences"
                 android:padding="6dp" />
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/appointment_time"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
+                android:layout_height="48dp"
                 android:focusable="false"
                 android:layout_marginTop="24dp"
                 android:background="@drawable/edittext_background"
                 android:hint=" Select Appointment time"
-                android:imeOptions="actionNext"
-                android:gravity="top"
+                android:imeOptions="actionDone"
+                android:gravity="center"
                 android:inputType="textCapSentences"
                 android:padding="6dp" />
 

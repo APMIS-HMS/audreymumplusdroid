@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -119,19 +120,21 @@ public class ChatContextFragment extends Fragment {
 
     @Override
     public void onStop() {
-        super.onStop();
+        Log.e("is on stop called ?", "yes");
         DashboardActivity.globalOpenChatForum = null;
         ((DashboardActivity) getActivity()).setActionBarButton(false, getString(R.string.app_name));
         ((DashboardActivity) getActivity()).bottomNavVisibility(true);
         activity.startService(new Intent(getContext(), ChatSocketService.class).setAction("start-background"));
+        super.onStop();
     }
 
     @Override
     public void onPause() {
         //TODO confirm is new time of last chat is saved
+        Log.e("Last chat time", chatContextAdapter.getItem(chatContextAdapter.getItemCount()).getCreatedAt() + "chatCount " + chatContextAdapter.getItemCount());
         ChatContextModel chatContextModel = chatContextAdapter.getItem(chatContextAdapter.getItemCount());
         if (chatContextModel != null)
-            sharedPreferencesManager.addForumNameAndLastCreatedAtAsStringInPrefs(forumName, chatContextAdapter.getItem(chatContextAdapter.getItemCount()).getCreatedAt(), chatContextAdapter.getItemCount());
+            sharedPreferencesManager.addForumNameAndLastCreatedAtAsStringInPrefs(forumName, chatContextModel.getCreatedAt(), chatContextAdapter.getItemCount());
         InputUtils.hideKeyboard();
         super.onPause();
     }

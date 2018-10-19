@@ -151,16 +151,16 @@ public class AddAppointmentFragment extends Fragment {
 
             AlarmMangerSingleton.setSingleAppointmentAlarm(getActivity(), thisAppointment);
 
-            new Handler().postDelayed(() -> {
-                getActivity().runOnUiThread(() -> {
+            getActivity().runOnUiThread(() -> {
+                new Handler().postDelayed(() -> {
                     new AlertDialog.Builder(getActivity())
                             .setTitle("Success")
                             .setMessage("Appointment set successfully")
                             .setPositiveButton("Ok", (dialogInterface, i) -> getActivity().getSupportFragmentManager().popBackStack("ADD_APPOINTMENT", FragmentManager.POP_BACK_STACK_INCLUSIVE)).show();
 
-                });
-            }, 500);
 
+                }, 500);
+            });
         });
     }
 

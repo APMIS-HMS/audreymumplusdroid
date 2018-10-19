@@ -249,8 +249,6 @@ public class MumplusNetworkDataSource {
 
     public void getChats(String forumName) {
 
-        sharedPreferencesManager.addForumNameAndLastCreatedAtAsStringInPrefs(forumName, Utils.localDateToDbString(Calendar.getInstance().getTime()), 0);
-
         JSONObject getChatJsonObject = new JSONObject();
         try {
             getChatJsonObject.put("forumName", forumName);

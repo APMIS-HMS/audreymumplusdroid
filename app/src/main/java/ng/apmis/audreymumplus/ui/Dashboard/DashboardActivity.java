@@ -31,6 +31,7 @@ import com.bumptech.glide.Glide;
 import com.mikhaellopez.circularimageview.CircularImageView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
@@ -59,6 +60,7 @@ import ng.apmis.audreymumplus.utils.BottomNavigationViewHelper;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 import ng.apmis.audreymumplus.utils.NotificationUtils;
 import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
+import ng.apmis.audreymumplus.utils.Utils;
 import ng.apmis.audreymumplus.utils.Week;
 
 import static ng.apmis.audreymumplus.utils.SharedPreferencesManager.PREF_NAME;
@@ -128,8 +130,11 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
                     if (person.getDay() == UNKWOWN_PROGRESS || sharedPreferencesManager.justLoggedIn()) {
 
+                        for (String forumName: person.getForums()) {
+                            sharedPreferencesManager.addForumNameAndLastCreatedAtAsStringInPrefs(forumName, Utils.localDateToDbString(Calendar.getInstance().getTime()), 0);
+                        }
+
                         InjectorUtils.provideRepository(this).getDayWeek(person);
-                    /*Set repeat alarm for week update start*/
                         AlarmMangerSingleton.setDailyWeekDayProgress(this);
 
                     }
@@ -148,12 +153,12 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
                     startService(new Intent(this, ChatSocketService.class).putStringArrayListExtra("forums", new ArrayList<>(forums)));
 
+                    sharedPreferencesManager.setJustLoggedIn(false);
                 }
 
                 DashboardActivity.this.person.postValue(person == null ? new Person("", "", "", "", Week.Week0.week, "", "", "", "", "", "", UNKWOWN_PROGRESS) : person);
 
             });
-            sharedPreferencesManager.setJustLoggedIn(false);
         });
 
         launchKickCounter.setOnClickListener((view) -> {
