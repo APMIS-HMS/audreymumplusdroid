@@ -1,5 +1,6 @@
 package ng.apmis.audreymumplus.data;
 
+import android.app.ProgressDialog;
 import android.arch.lifecycle.LiveData;
 import android.text.TextUtils;
 import android.util.Log;
@@ -267,18 +268,19 @@ public class AudreyRepository {
         mExecutors.diskIO().execute(() -> mJournalDao.bulkInsertWeeklyProgress(progressData));
     }
 
-    public void clearAllTables(){
+    public void clearAllTables(ProgressDialog pd){
         mExecutors.diskIO().execute(new Runnable() {
             @Override
             public void run() {
-                mJournalDao.deleteAppointments();
+                mJournalDao.deletePerson();
+               /* mJournalDao.deleteAppointments();
                 mJournalDao.deleteChats();
                 mJournalDao.deleteForums();
                 mJournalDao.deleteJournals();
                 mJournalDao.deleteKicks();
-                mJournalDao.deletePerson();
                 mJournalDao.deletePillReminders();
-                mJournalDao.deleteWeeklyProgressData();
+                mJournalDao.deleteWeeklyProgressData();*/
+               pd.dismiss();
             }
         });
     }
