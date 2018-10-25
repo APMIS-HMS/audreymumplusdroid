@@ -46,7 +46,7 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
     ForumViewModel forumViewModel;
     @BindView(R.id.forums_list)
     RecyclerView forumRecycler;
-    ArrayList<ChatForumModel> dbForums;
+
     ForumAdapter forumAdapter;
     AppCompatActivity activity;
     @BindView(R.id.empty_view)
@@ -68,8 +68,9 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_chat_forums, container, false);
         ButterKnife.bind(this, rootView);
-        dbForums = new ArrayList<>();
+
         sharedPreferencesManager = new SharedPreferencesManager(getActivity());
+
 
         forumAdapter = new ForumAdapter(getActivity(), this);
         forumRecycler.setLayoutManager(new LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false));
@@ -77,32 +78,16 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
         forumRecycler.addItemDecoration(new DividerItemDecoration(getContext(),
                 DividerItemDecoration.VERTICAL));
 
-        searchBar.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                forumAdapter.getFilter().filter(s);
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                forumAdapter.getFilter().filter(s);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-
 
         ForumFactory forumFactory = InjectorUtils.provideForumFactory(activity);
         forumViewModel = ViewModelProviders.of(this, forumFactory).get(ForumViewModel.class);
 
         forumViewModel.getUpdatedForums().observe(this, forumModelList -> {
             if (forumModelList.size() > 0) {
-                dbForums = (ArrayList<ChatForumModel>) forumModelList;
+
                 progressBar.setVisibility(View.GONE);
                 emptyView.setVisibility(View.GONE);
-                forumAdapter.setForums(dbForums);
+                forumAdapter.setForums(forumModelList);
             } else {
                 //check internet connectivity if true setLoading and emit  get forums
                 progressBar.setVisibility(View.VISIBLE);
@@ -110,6 +95,20 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
             }
         });
 
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                forumAdapter.getFilter().filter(s);
+            }
+        });
 
         forumRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -170,6 +169,10 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
     public void onAttach(Context context) {
         super.onAttach(context);
         activity = (AppCompatActivity) context;
+    }
+
+    void initViewModel () {
+
     }
 
 

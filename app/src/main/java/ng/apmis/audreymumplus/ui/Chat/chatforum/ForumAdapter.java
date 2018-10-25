@@ -22,22 +22,22 @@ import ng.apmis.audreymumplus.R;
 
 public class ForumAdapter extends RecyclerView.Adapter<ForumAdapter.ForumViewHolder> implements Filterable {
 
-    List<ChatForumModel> chatForums;
-    List<ChatForumModel> filteredForums;
+    List<ChatForumModel> chatForums = new ArrayList<>();
+    List<ChatForumModel> filteredForums = new ArrayList<>();
     Context mContext;
     public ClickForumListener clickForumListener;
 
     public ForumAdapter(Context context, ClickForumListener listener) {
         mContext = context;
-        chatForums = new ArrayList<>();
-        filteredForums = new ArrayList<>();
         clickForumListener = listener;
     }
 
     public void setForums(List<ChatForumModel> forums) {
-        chatForums = forums;
-        filteredForums = chatForums;
-        notifyDataSetChanged();
+        if (chatForums.size() != 0)
+            chatForums = new ArrayList<>();
+            chatForums = forums;
+            filteredForums = chatForums;
+            notifyDataSetChanged();
     }
 
     void swapForums (final List<ChatForumModel> newChatForums) {
@@ -113,7 +113,6 @@ public class ForumAdapter extends RecyclerView.Adapter<ForumAdapter.ForumViewHol
                     Log.e("empty", charString);
                     filteredForums = chatForums;
                 } else {
-                    Log.e("e", charString);
                     List<ChatForumModel> filteredList = new ArrayList<>();
                     for (ChatForumModel row : chatForums) {
 
@@ -160,7 +159,7 @@ public class ForumAdapter extends RecyclerView.Adapter<ForumAdapter.ForumViewHol
 
         @Override
         public void onClick(View view) {
-            clickForumListener.onForumClick(chatForums.get(getAdapterPosition()));
+            clickForumListener.onForumClick(filteredForums.get(getAdapterPosition()));
         }
     }
 

@@ -124,7 +124,6 @@ public class ChatContextFragment extends Fragment {
 
     @Override
     public void onStop() {
-        Log.e("is on stop called ?", "yes");
         DashboardActivity.globalOpenChatForum = null;
         ((DashboardActivity) getActivity()).setActionBarButton(false, getString(R.string.app_name));
         ((DashboardActivity) getActivity()).bottomNavVisibility(true);
