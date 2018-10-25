@@ -166,6 +166,8 @@ public class SignupActivity extends AppCompatActivity implements SignupFragmentB
                     String token = response.getString("accessToken");
                     Person user = new Gson().fromJson(response.getJSONObject("user").toString(), Person.class);
 
+                    sharedPreferencesManager.storeUser_id(user.get_id());
+
                     sharedPreferencesManager.storeUserToken(token);
 
                     InjectorUtils.provideJournalNetworkDataSource(this).fetchPeopleAndSaveToDb(user.getPersonId());

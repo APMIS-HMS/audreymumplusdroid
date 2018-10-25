@@ -191,15 +191,15 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
             progressDialog.setCancelable(false);
             progressDialog.show();
 
-            InjectorUtils.provideRepository(this).clearAllTables(progressDialog);
-           /* InjectorUtils.provideRepository(this).getAllWeeklyProgressData().observe(this, data -> {
+            InjectorUtils.provideRepository(this).clearAllTables();
+            InjectorUtils.provideRepository(this).getPerson().observe(this, data -> {
                 //Log out when all has been deleted
-                if (data == null || data.size() == 0) {
+                if (data == null || TextUtils.isEmpty(data.get_id())) {
                     progressDialog.dismiss();
                     finish();
                     startActivity(new Intent(this, LoginActivity.class));
                 }
-            });*/
+            });
         });
 
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {

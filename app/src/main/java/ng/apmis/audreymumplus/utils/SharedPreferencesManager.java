@@ -46,6 +46,8 @@ public class SharedPreferencesManager {
 
     private static final String LAST_CHAT_TIME_FORUM_LIST_STRING = "lastchat";
 
+    private static final String USER_ID = "userid";
+
 
     public SharedPreferencesManager(Context context) {
         this._context = context;
@@ -141,4 +143,12 @@ public class SharedPreferencesManager {
     }
 
 
+    public void storeUser_id(String _id) {
+        editor.putString(USER_ID, _id);
+        editor.commit();
+    }
+
+    public String getUser_id () {
+        return pref.getString(USER_ID, "");
+    }
 }

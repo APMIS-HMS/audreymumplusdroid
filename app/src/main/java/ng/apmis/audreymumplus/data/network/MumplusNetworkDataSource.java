@@ -57,6 +57,7 @@ import ng.apmis.audreymumplus.utils.Utils;
 import ng.apmis.audreymumplus.utils.Week;
 
 import static ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity.UNKWOWN_PROGRESS;
+import static ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity.globalPerson;
 import static ng.apmis.audreymumplus.utils.Constants.BASE_URL;
 import static ng.apmis.audreymumplus.utils.SharedPreferencesManager.USER_PASSWORD;
 
@@ -215,7 +216,7 @@ public class MumplusNetworkDataSource {
                                     if (DashboardActivity.globalOpenChatForum != null && DashboardActivity.globalOpenChatForum.equals(forumName)) {
                                         NotificationUtils.buildForegroundChatNotification(mContext);
                                     } else {
-                                        NotificationUtils.buildBackgroundChatNotification(mContext, allListFromServer.get(allListFromServer.size() -1));
+                                        NotificationUtils.buildBackgroundChatNotification(mContext, allListFromServer.get(allListFromServer.size() - 1));
                                     }
                                     AudreyMumplus.getInstance().diskIO().execute(() -> InjectorUtils.provideRepository(mContext).insertAllChats(allListFromServer));
                                 }
@@ -607,7 +608,7 @@ public class MumplusNetworkDataSource {
 
     }
 
-    public void changePassword (Context context, SharedPreferences sharedPreferences, SharedPreferences.OnSharedPreferenceChangeListener listener, String oldPassword) {
+    public void changePassword(Context context, SharedPreferences sharedPreferences, SharedPreferences.OnSharedPreferenceChangeListener listener, String oldPassword) {
 
         String newPassword = sharedPreferences.getString(USER_PASSWORD, "").trim();
 
@@ -621,19 +622,20 @@ public class MumplusNetworkDataSource {
         try {
             changePasswordObject.put("newPassword", newPassword);
             changePasswordObject.put("reEnterPassword", newPassword);
+            changePasswordObject.put("email", globalPerson.getEmail());
+            changePasswordObject.put("id", sharedPreferencesManager.getUser_id());
+            changePasswordObject.put("accessToken", sharedPreferencesManager.getUserToken());
         } catch (JSONException e) {
         }
 
-        //TODO call on backpressed when successfully changed or failed in a handler
         AudreyMumplus.getInstance().networkIO().execute(() -> {
 
             sharedPreferences.unregisterOnSharedPreferenceChangeListener(listener);
             JsonObjectRequest changePasswordRequest = new JsonObjectRequest(Request.Method.POST, BASE_URL + "reset-password", changePasswordObject,
                     response -> {
-                        Log.d("Change pwd response", response.toString());
                         sharedPreferencesManager.storeUserPassword(newPassword);
                         pd.dismiss();
-                        ((Activity)context).onBackPressed();
+                        ((Activity) context).onBackPressed();
                         Toast.makeText(mContext, "Password changed successfully", Toast.LENGTH_SHORT).show();
                     },
                     error -> {
@@ -643,10 +645,18 @@ public class MumplusNetworkDataSource {
                         Log.e("Change password err", "message: " + error.toString());
                         sharedPreferencesManager.storeUserPassword(oldPassword);
                         pd.dismiss();
-                        ((Activity)context).onBackPressed();
+                        ((Activity) context).onBackPressed();
 
                         Toast.makeText(mContext, "Something went wrong", Toast.LENGTH_SHORT).show();
-                    });
+                    }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<>();
+                    params.put("Content-Type", "application/json; charset=utf-8");
+                    params.put("Authorization", "Bearer " + sharedPreferencesManager.getUserToken());
+                    return params;
+                }
+            };
 
             changePasswordRequest.setRetryPolicy(new DefaultRetryPolicy(30000, 1, 1));
 

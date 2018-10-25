@@ -268,7 +268,7 @@ public class AudreyRepository {
         mExecutors.diskIO().execute(() -> mJournalDao.bulkInsertWeeklyProgress(progressData));
     }
 
-    public void clearAllTables(ProgressDialog pd){
+    public void clearAllTables(){
         mExecutors.diskIO().execute(new Runnable() {
             @Override
             public void run() {
@@ -280,7 +280,6 @@ public class AudreyRepository {
                 mJournalDao.deleteKicks();
                 mJournalDao.deletePillReminders();
                 mJournalDao.deleteWeeklyProgressData();*/
-               pd.dismiss();
             }
         });
     }

@@ -34,8 +34,8 @@ public class ForumAdapter extends RecyclerView.Adapter<ForumAdapter.ForumViewHol
 
     public void setForums(List<ChatForumModel> forums) {
         if (chatForums.size() != 0)
-            chatForums = new ArrayList<>();
-            chatForums = forums;
+            chatForums =  filteredForums = new ArrayList<>();
+            chatForums.addAll(forums);
             filteredForums = chatForums;
             notifyDataSetChanged();
     }
