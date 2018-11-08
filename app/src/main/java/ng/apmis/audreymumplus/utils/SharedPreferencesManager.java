@@ -83,29 +83,6 @@ public class SharedPreferencesManager {
         return pref.getBoolean(IS_LOGGED_IN, false);
     }
 
-    public void storeLoggedInUserKeys (String accessToken, String personId, String email, String dbId) {
-        editor.putString(ACCESS_TOKEN, EncryptionUtils.encrypt(accessToken));
-        editor.putString(PERSON_ID, EncryptionUtils.encrypt(personId));
-        editor.putString(EMAIL, EncryptionUtils.encrypt(email));
-        editor.putString(DB_ID, EncryptionUtils.encrypt(dbId));
-        editor.commit();
-    }
-
-    public JSONObject storedLoggedInUser () {
-        JSONObject loggedUser = new JSONObject();
-        try {
-            loggedUser.put(ACCESS_TOKEN, EncryptionUtils.decrypt(pref.getString(ACCESS_TOKEN,"")));
-            loggedUser.put(PERSON_ID, EncryptionUtils.decrypt(pref.getString(PERSON_ID, "")));
-            loggedUser.put(EMAIL, EncryptionUtils.decrypt(pref.getString(EMAIL, "")));
-            loggedUser.put(DB_ID, EncryptionUtils.decrypt(pref.getString(DB_ID, "")));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return loggedUser;
-
-    }
-
     public int getTotalRoomCountOnserver () {
         return pref.getInt(SERVER_ROOM_COUNT, 0);
     }

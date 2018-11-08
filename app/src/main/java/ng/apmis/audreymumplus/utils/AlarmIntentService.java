@@ -11,6 +11,10 @@ import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.ui.Appointments.Appointment;
 import ng.apmis.audreymumplus.ui.pills.PillModel;
 
+/**
+ * Background task to manage alarm triggers
+ */
+
 
 public class AlarmIntentService extends IntentService {
 

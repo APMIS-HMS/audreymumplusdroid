@@ -18,6 +18,7 @@ import ng.apmis.audreymumplus.ui.pregnancymodule.pregnancyweeklyprogress.Pregnan
 
 /**
  * Created by Thadeus-APMIS on 5/15/2018.
+ * This is an injector class satisfying dependencies for database calls
  */
 
 public class InjectorUtils {

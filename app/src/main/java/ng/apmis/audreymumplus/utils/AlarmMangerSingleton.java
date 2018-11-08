@@ -15,6 +15,7 @@ import ng.apmis.audreymumplus.ui.pills.PillModel;
 
 /**
  * Created by Thadeus-APMIS on 8/8/2018.
+ * Manage alarms with a single instance
  */
 
 public class AlarmMangerSingleton {
