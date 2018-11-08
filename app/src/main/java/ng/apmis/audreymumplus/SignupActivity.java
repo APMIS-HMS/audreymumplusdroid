@@ -103,11 +103,9 @@ public class SignupActivity extends AppCompatActivity implements SignupFragmentB
 
     void signUp(JSONObject uniquePerson) {
 
-        Log.v("Unique person", String.valueOf(uniquePerson));
 
         JsonObjectRequest strRequest = new JsonObjectRequest(Request.Method.POST, BASE_URL + "save-person", uniquePerson, response -> {
 
-            Log.v("Sign up response", String.valueOf(response));
             try {
                 JSONObject signUpJob = new JSONObject(response.toString());
                 if (signUpJob.getString("status").equals("error")) {

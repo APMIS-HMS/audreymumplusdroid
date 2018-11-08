@@ -6,12 +6,19 @@ import android.arch.persistence.room.PrimaryKey;
 
 import java.io.Serializable;
 
+/**
+ * Defines a day in a week of weekly progress
+ */
+
 @Entity(tableName = "weeklyprogressdata", indices = {@Index(value = {"_id"}, unique = true)})
 public class WeeklyProgressData implements Serializable{
 
     @PrimaryKey(autoGenerate = true)
     private int id;
     private String _id;
+    /**
+     *Week in current progress
+     */
     private int week;
     private int day;
     private String title;

@@ -19,6 +19,8 @@ import ng.apmis.audreymumplus.ui.pregnancymodule.journal.JournalModel;
 
 /**
  * Created by Thadeus-APMIS on 5/15/2018.
+ * Database initializer registers the models as tables
+ * Connect TypeConverters
  */
 @Database(entities = {JournalModel.class, Person.class, Appointment.class, ChatForumModel.class,
         ChatContextModel.class, PillModel.class, KickCounterModel.class, WeeklyProgressData.class}, version = 3, exportSchema = false)

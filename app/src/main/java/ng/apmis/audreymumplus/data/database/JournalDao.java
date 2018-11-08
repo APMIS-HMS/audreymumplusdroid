@@ -20,6 +20,7 @@ import ng.apmis.audreymumplus.ui.pregnancymodule.journal.JournalModel;
 
 /**
  * Created by Thadeus-APMIS on 5/15/2018.
+ * Data Access Object for interaction with sqlite db
  */
 
 @Dao

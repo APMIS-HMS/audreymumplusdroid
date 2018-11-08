@@ -1,14 +1,15 @@
 package ng.apmis.audreymumplus.data.network;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -21,13 +22,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.firebase.jobdispatcher.Constraint;
-import com.firebase.jobdispatcher.Driver;
-import com.firebase.jobdispatcher.FirebaseJobDispatcher;
-import com.firebase.jobdispatcher.GooglePlayDriver;
-import com.firebase.jobdispatcher.Job;
-import com.firebase.jobdispatcher.Lifetime;
-import com.firebase.jobdispatcher.Trigger;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -36,15 +30,12 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.logging.Handler;
 
 import ng.apmis.audreymumplus.AudreyMumplus;
-import ng.apmis.audreymumplus.data.DatabaseFirebaseJobService;
+import ng.apmis.audreymumplus.LoginActivity;
 import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.ui.Chat.ChatContextModel;
 import ng.apmis.audreymumplus.ui.Chat.chatforum.ChatForumModel;
@@ -53,7 +44,6 @@ import ng.apmis.audreymumplus.ui.pregnancymodule.journal.JournalModel;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 import ng.apmis.audreymumplus.utils.NotificationUtils;
 import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
-import ng.apmis.audreymumplus.utils.Utils;
 import ng.apmis.audreymumplus.utils.Week;
 
 import static ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity.UNKWOWN_PROGRESS;
@@ -63,6 +53,7 @@ import static ng.apmis.audreymumplus.utils.SharedPreferencesManager.USER_PASSWOR
 
 /**
  * Created by Thadeus-APMIS on 5/15/2018.
+ * Service to manage all calls for data over the network
  */
 
 public class MumplusNetworkDataSource {
@@ -107,6 +98,10 @@ public class MumplusNetworkDataSource {
         return sInstance;
     }
 
+    /**
+     * Fetch other biodata related to a person after a successful login
+     * @param personId
+     */
     public void fetchPeopleAndSaveToDb(String personId) {
         mExecutors.networkIO().execute(() -> {
 
@@ -155,6 +150,11 @@ public class MumplusNetworkDataSource {
         return personName;
     }
 
+    /**
+     * Send user message to server
+     * @param chat
+     * @param forum
+     */
     public void postChat(Object chat, String forum) {
         AudreyMumplus.getInstance().networkIO().execute(() -> {
             JsonObjectRequest job = new JsonObjectRequest(Request.Method.POST, BASE_URL + "chat", (JSONObject) chat,
@@ -188,6 +188,10 @@ public class MumplusNetworkDataSource {
 
     }
 
+    /**
+     * Get chat triggered by socket listener
+     * @param forumName
+     */
     public void getChat(String forumName) {
 
         JSONObject getChatJsonObject = new JSONObject();
@@ -248,6 +252,10 @@ public class MumplusNetworkDataSource {
         });
     }
 
+    /**
+     * Get all chats from a forum passed in query from time of last chat
+     * @param forumName
+     */
     public void getChats(String forumName) {
 
         JSONObject getChatJsonObject = new JSONObject();
@@ -302,7 +310,12 @@ public class MumplusNetworkDataSource {
 
     }
 
-
+    /**
+     * Update profile details or request for Audrey pack
+     * @param personId
+     * @param changeFields
+     * @param context
+     */
     public void updateProfileGetAudrey(String personId, JSONObject changeFields, FragmentActivity context) {
         ProgressDialog pd = new ProgressDialog(context);
         pd.setTitle("Updating Profile");
@@ -369,6 +382,11 @@ public class MumplusNetworkDataSource {
         });
     }
 
+    /**
+     * Update profile image to server
+     * @param changeFields
+     * @param context
+     */
     public void updateProfileImage(JSONObject changeFields, Context context) {
         ProgressDialog pd = new ProgressDialog(context);
         pd.setTitle("Updating Profile Image");
@@ -417,10 +435,13 @@ public class MumplusNetworkDataSource {
         });
     }
 
+    /**
+     * Get forums from server a paginate per 10 items
+     * @param paginate
+     */
+    public void getForums(int paginate) {
 
-    public void getForums(int skipCount) {
-
-        String url = String.format(BASE_URL + "forum?approved=%1$s&$skip=" + skipCount, true);
+        String url = String.format(BASE_URL + "forum?approved=%1$s&$skip=" + paginate, true);
         Log.e("forum url", url);
 
         JsonObjectRequest getForumRequest = new JsonObjectRequest(Request.Method.GET, url, null,
@@ -471,49 +492,12 @@ public class MumplusNetworkDataSource {
 
 
     /**
-     * Schedules a repeating job service which fetches the weather.
+     * User requests to join forum
+     * Waits for admin approval
+     * @param context
+     * @param personId
+     * @param forumName
      */
-    public void scheduleDailyDayWeekUpdate() {
-
-        final int periodicity = (int) TimeUnit.HOURS.toSeconds(12); // Every 12 hours periodicity expressed as seconds
-        final int toleranceInterval = (int) TimeUnit.HOURS.toSeconds(1); // a small(ish) window of time when triggering is OK
-
-        Driver driver = new GooglePlayDriver(mContext);
-        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(driver);
-
-        // Create the Job to periodically sync Sunshine
-        Job databaseSyncJob = dispatcher.newJobBuilder()
-                // The Service that will be used to sync Sunshine's data
-                .setService(DatabaseFirebaseJobService.class)
-                //   Set the UNIQUE tag used to identify this Job
-                .setTag(WEEK_DAY_SYNC_TAG)
-/*
-                 * Network constraints on which this Job should run. We choose to run on any
-                 * network, but you can also choose to run only on un-metered networks or when the
-                 * device is charging. It might be a good idea to include a preference for this,
-                 * as some users may not want to download any data on their mobile plan. ($$$)
-*/
-                .setConstraints(Constraint.ON_ANY_NETWORK)
-                .setTrigger(Trigger.executionWindow(periodicity, periodicity + toleranceInterval))
-                .setLifetime(Lifetime.FOREVER)
-/*
-
-                 * We want the weather data to be synced every 3 to 4 hours. The first argument for
-                 * Trigger's static executionWindow method is the start of the time frame when the
-                 * sync should be performed. The second argument is the latest point in time at
-                 * which the data should be synced. Please note that this end time is not
-                 * guaranteed, but is more of a guideline for FirebaseJobDispatcher to go off of.
-*/
-                .setReplaceCurrent(true)
-                //  Once the Job is ready, call the builder's build method to return the Job
-                .build();
-
-        // Schedule the Job with the dispatcher
-        dispatcher.schedule(databaseSyncJob);
-        Log.d(LOG_TAG, "Job scheduled");
-    }
-
-
     public void joinForum(Context context, String personId, String forumName) {
         ProgressDialog pd = new ProgressDialog(context);
         pd.setTitle("Requesting Forum Creation");
@@ -562,6 +546,11 @@ public class MumplusNetworkDataSource {
 
     }
 
+    /**
+     * User creates a forum and waits for admin approval
+     * @param forumName
+     * @param context
+     */
     public void createForum(String forumName, Context context) {
         ProgressDialog pd = new ProgressDialog(context);
         pd.setTitle("Requesting Forum Creation");
@@ -608,6 +597,14 @@ public class MumplusNetworkDataSource {
 
     }
 
+    /**
+     * Initiates password change, updates the server
+     * On success updates hashed password stored in sharedprefs
+     * @param context
+     * @param sharedPreferences
+     * @param listener
+     * @param oldPassword
+     */
     public void changePassword(Context context, SharedPreferences sharedPreferences, SharedPreferences.OnSharedPreferenceChangeListener listener, String oldPassword) {
 
         String newPassword = sharedPreferences.getString(USER_PASSWORD, "").trim();
@@ -665,6 +662,12 @@ public class MumplusNetworkDataSource {
 
     }
 
+    /**
+     * Initiates a password reset call
+     * Success sends mail to user and returns void
+     * @param context
+     * @param email
+     */
     public void resetPassword(Context context, String email) {
         ProgressDialog pd = new ProgressDialog(context);
         pd.setTitle("Resetting password");
@@ -700,6 +703,67 @@ public class MumplusNetworkDataSource {
             resetPasswordRequest.setRetryPolicy(new DefaultRetryPolicy(30000, 1, 1));
 
             queue.add(resetPasswordRequest);
+        });
+
+    }
+
+    public void signIn (Context context, String email, String password) {
+
+        ProgressDialog progressDialog = new ProgressDialog(context);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setCancelable(false);
+        progressDialog.setTitle("Signing In");
+        progressDialog.setMessage("Please wait...");
+        progressDialog.show();
+
+        sharedPreferencesManager.storeUserEmail(email);
+
+        AudreyMumplus.getInstance().networkIO().execute(() -> {
+
+            //Put parameters in JSON Object
+            JSONObject job = new JSONObject();
+            try {
+                job.put("email", email);
+                job.put("password", password);
+                job.put("strategy", "local");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            JsonObjectRequest loginRequest = new JsonObjectRequest(Request.Method.POST, BASE_URL + "authentication", job, response -> {
+
+                try {
+                    String token = response.getString("accessToken");
+                    Person user = new Gson().fromJson(response.getJSONObject("user").toString(), Person.class);
+
+                    sharedPreferencesManager.storeUser_id(user.get_id());
+
+                    sharedPreferencesManager.storeUserToken(token);
+
+                    InjectorUtils.provideJournalNetworkDataSource(context).fetchPeopleAndSaveToDb(user.getPersonId());
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+                sharedPreferencesManager.setJustLoggedIn(true);
+                progressDialog.dismiss();
+                context.startActivity(new Intent(context, DashboardActivity.class));
+                ((Activity)context).finish();
+            }, error -> {
+                Log.e("error", String.valueOf(error) + "Error");
+                progressDialog.dismiss();
+                new AlertDialog.Builder(context)
+                        .setTitle("Login Failed")
+                        .setMessage("Please try again !!!")
+                        .setPositiveButton("Dismiss", (dialog, which) -> {
+                            dialog.dismiss();
+                        })
+                        .show();
+            });
+
+            queue.add(loginRequest);
+
         });
 
     }

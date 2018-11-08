@@ -201,7 +201,7 @@ public class PregnancyWeeklyProgressFragment extends Fragment {
     }
 
     private void getWeeklyProgress() {
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, "https://audrey-mum.herokuapp.com/weekly-progres", new JSONObject(),
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, "https://audrey-mum.herokuapp.com/weekly-progres?$limit=42", new JSONObject(),
                 response -> {
                     progressBar.setVisibility(View.GONE);
 

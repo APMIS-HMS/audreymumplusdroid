@@ -56,12 +56,11 @@ import static ng.apmis.audreymumplus.utils.Constants.BASE_URL;
  * Created by Thadeus on 6/15/2018.
  */
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+public class LoginActivity extends AppCompatActivity {
 
     RequestQueue queue;
 
     SharedPreferencesManager sharedPreferencesManager;
-    ProgressDialog progressDialog;
 
     @BindView(R.id.sign_in_btn)
     Button signInBtn;
@@ -94,9 +93,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             passwordEditText.setText(sharedPreferencesManager.getStoredUserPassword());
             rememberMe.setChecked(true);
         }
-
-
-        rememberMe.setOnClickListener(this);
 
         signInBtn.setOnClickListener((view) -> {
             if (checkFields()) {
@@ -134,63 +130,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void attemptLogin(String email, String password) {
 
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setCancelable(false);
-        progressDialog.setTitle("Signing In");
-        progressDialog.setMessage("Please wait...");
-        progressDialog.show();
-
-        sharedPreferencesManager.storeUserEmail(email);
-
-        AudreyMumplus.getInstance().networkIO().execute(() -> {
-
-            //Put parameters in JSON Object
-            JSONObject job = new JSONObject();
-            try {
-                job.put("email", email);
-                job.put("password", password);
-                job.put("strategy", "local");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            JsonObjectRequest loginRequest = new JsonObjectRequest(Request.Method.POST, BASE_URL + "authentication", job, response -> {
-
-                try {
-                    String token = response.getString("accessToken");
-                    Person user = new Gson().fromJson(response.getJSONObject("user").toString(), Person.class);
-
-                    sharedPreferencesManager.storeUser_id(user.get_id());
-
-                    sharedPreferencesManager.storeUserToken(token);
-
-                    InjectorUtils.provideJournalNetworkDataSource(this).fetchPeopleAndSaveToDb(user.getPersonId());
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-
-                sharedPreferencesManager.setJustLoggedIn(true);
-                progressDialog.dismiss();
-                startActivity(new Intent(LoginActivity.this, DashboardActivity.class));
-                finish();
-            }, error -> {
-                Log.e("error", String.valueOf(error) + "Error");
-                progressDialog.dismiss();
-                new AlertDialog.Builder(LoginActivity.this)
-                        .setTitle("Login Failed")
-                        .setMessage("Please try again !!!")
-                        .setPositiveButton("Dismiss", (dialog, which) -> {
-                            dialog.dismiss();
-                        })
-                        .show();
-            });
-
-            queue.add(loginRequest);
-
-        });
-
+        InjectorUtils.provideJournalNetworkDataSource(this)
+                .signIn(this, email, password);
 
     }
 
@@ -215,16 +156,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             return false;
         }
         return true;
-    }
-
-
-    @Override
-    public void onClick(View view) {
-        if (((CheckBox) view).isChecked()) {
-            sharedPreferencesManager.storeUserPassword(passwordEditText.getText().toString());
-        } else {
-            sharedPreferencesManager.storeUserPassword("");
-        }
     }
 
 

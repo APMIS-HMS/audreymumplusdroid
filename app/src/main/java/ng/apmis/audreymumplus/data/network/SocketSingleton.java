@@ -13,6 +13,7 @@ import static ng.apmis.audreymumplus.utils.Constants.BASE_URL;
 
 /**
  * Created by Thadeus-APMIS on 7/9/2018.
+ * Instantiate socket object for use across the application
  */
 
 public class SocketSingleton {
@@ -44,6 +45,9 @@ public class SocketSingleton {
         return socketInstance;
     }
 
+    /**
+     * @return instance of connected socket object
+     */
     public Socket getSocketInstance () {
         return mSocket;
     }

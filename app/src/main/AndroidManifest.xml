@@ -36,21 +36,26 @@
         <activity
             android:name=".SignupActivity"
             android:configChanges="orientation|screenSize"
-            android:theme="@style/SignupTheme" />
+            android:theme="@style/SignupTheme"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.Dashboard.DashboardActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".ForgotPasswordActivity"
             android:configChanges="orientation|screenSize"
-            android:theme="@style/SignupTheme" />
+            android:theme="@style/SignupTheme"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".LoginActivity"
             android:configChanges="orientation|screenSize"
-            android:theme="@style/SignupTheme" />
+            android:theme="@style/SignupTheme"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".WelcomeActivity"
-            android:configChanges="orientation|screenSize">
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -58,10 +63,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.onboarding.OnboardingActivity"
-            android:configChanges="orientation|screenSize"/>
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait"/>
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:theme="@style/Base.Theme.AppCompat" />
+            android:theme="@style/Base.Theme.AppCompat"
+            android:screenOrientation="portrait" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -72,13 +79,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-        <service
-            android:name=".data.DatabaseFirebaseJobService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
-            </intent-filter>
-        </service>
         <service android:name=".data.network.ChatSocketService" />
 
         <receiver

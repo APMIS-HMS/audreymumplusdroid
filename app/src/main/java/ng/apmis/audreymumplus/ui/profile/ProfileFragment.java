@@ -111,7 +111,6 @@ public class ProfileFragment extends Fragment {
                 @Override
                 public void onChanged(@Nullable Person userDetails) {
                     if (userDetails != null) {
-                        Log.v("User Details", userDetails.toString());
                         firstNameEdittext.setText(ProfileFragment.this.getContext().getString(R.string.user_firstname, userDetails.getFirstName()));
                         lastNameEdittext.setText(ProfileFragment.this.getContext().getString(R.string.user_lastname, userDetails.getLastName()));
                         userEmail.setText(ProfileFragment.this.getContext().getString(R.string.user_email, userDetails.getEmail()));
@@ -234,7 +233,7 @@ public class ProfileFragment extends Fragment {
                 startActivityForResult(camIntent, CAMERA_REQUEST_CODE);
             } else {
                 if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 9000);
+                    requestPermissions(new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 9000);
                 } else {
                     startActivityForResult(camIntent, CAMERA_REQUEST_CODE);
                 }
@@ -374,7 +373,6 @@ public class ProfileFragment extends Fragment {
 
     @SuppressLint("StaticFieldLeak")
     public void uploadImage(String image) {
-        Log.v("currentperson", updateProfileDbId);
         JSONObject changeFields = new JSONObject();
         try {
             changeFields.put("uri", "data:image/jpeg;base64," + image);

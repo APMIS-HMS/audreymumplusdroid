@@ -12,6 +12,7 @@ import ng.apmis.audreymumplus.utils.Week;
 
 /**
  * Created by Thadeus on 6/21/2018.
+ * Model for each person registered on Audrey
  */
 
 @Entity(tableName = "person", indices = {@Index(value = {"_id"}, unique = true)})

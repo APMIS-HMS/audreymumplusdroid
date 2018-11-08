@@ -2,10 +2,19 @@ package ng.apmis.audreymumplus.data.database;
 
 import java.util.List;
 
+
+/**
+ * Model for weekly progress items
+ * Group Weekly progresses by the week
+ */
 public class WeeklyProgress {
 
     private String _id;
     private int week;
+
+    /**
+     * A list of all the items in a week
+     */
     private List<WeeklyProgressData> data;
 
     public WeeklyProgress(String _id, int week, List<WeeklyProgressData> data) {

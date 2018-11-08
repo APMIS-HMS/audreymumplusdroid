@@ -39,13 +39,6 @@ public class KickCounterFragment extends Fragment {
 
     @BindView(R.id.add_kick)
     FloatingActionButton addKick;
-/*
-
-    @BindView(R.id.kick_count_list)
-    ListView kickCountList;
-*/
-
-    //KickCounterListAdapter kickCounterListAdapter;
 
     Handler handler;
     int durationSecondsTracker = 0;

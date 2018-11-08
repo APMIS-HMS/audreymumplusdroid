@@ -131,7 +131,6 @@ public class AppointmentFragment extends Fragment implements AppointmentAdapter.
 
 
         if (title.equals(getString(R.string.mute_alarm))) {
-            //Cancel pending intent
             PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), (int) selectedAppointment.get_id(), alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             new AlarmMangerSingleton(getActivity()).getInstance().getAlarmManager().cancel(pendingIntent);
             AudreyMumplus.getInstance().diskIO().execute(() -> {

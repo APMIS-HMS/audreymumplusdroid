@@ -26,6 +26,7 @@ import ng.apmis.audreymumplus.utils.NotificationUtils;
 
 /**
  * Created by Thadeus-APMIS on 7/26/2018.
+ * Handles and set up chat socket listeners in the background
  */
 
 public class ChatSocketService extends IntentService {
@@ -36,17 +37,11 @@ public class ChatSocketService extends IntentService {
         super(name);
     }
 
-    private static boolean isForeground = false;
-
-    private static boolean isConnected = false;
-
-    private static String globalEmail;
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
 
         Socket mSocket = InjectorUtils.provideSocketInstance();
-        mSocket.connect();
 
         //Listen on all forum events
         if (intent.getExtras() != null && intent.hasExtra("forums")) {
@@ -55,6 +50,9 @@ public class ChatSocketService extends IntentService {
                 List<String> forums = intent.getExtras().getStringArrayList("forums");
 
                 //When any forum event occurs, get the chat messages on it via REST
+                /**
+                 * Set up listeners for the forums a person is joined to and appears in the forums array
+                 */
                 for (String forum : forums) {
                     Log.v("ForumEmit", "Listening to " + forum);
 

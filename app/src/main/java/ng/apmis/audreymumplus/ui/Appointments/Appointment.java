@@ -15,6 +15,10 @@ public class Appointment {
     private long _id;
     private String title, appointmentAddress, appointmentDetails;
     private long appointmentTime;
+
+    /**
+     * Alarm status 1 for muted 0 for unmuted
+     */
     private int muteAlarm;
 
     public Appointment(long _id, String title, String appointmentAddress, String appointmentDetails, long appointmentTime, int muteAlarm) {

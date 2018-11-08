@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 /**
  * Created by Thadeus-APMIS on 8/21/2018.
+ * Converts list of longs to string and stores in database and converts back
  */
 
 public class PillsTypeConverter {

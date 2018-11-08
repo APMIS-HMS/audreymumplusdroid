@@ -10,6 +10,7 @@ import java.lang.reflect.Field;
 
 /**
  * Created by Thadeus-APMIS on 5/16/2018.
+ * Helper class to allow more than 3 items to show in the bottomnavigationview
  */
 
 public class BottomNavigationViewHelper {

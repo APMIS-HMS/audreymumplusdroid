@@ -27,6 +27,7 @@ import ng.apmis.audreymumplus.utils.Week;
 
 /**
  * Created by Thadeus-APMIS on 5/15/2018.
+ * Service to manage database transactions
  */
 
 public class AudreyRepository {
@@ -181,7 +182,6 @@ public class AudreyRepository {
 
             AudreyMumplus.getInstance().diskIO().execute(() -> {
                     updatePersonWithPregWeekDay(person);
-                Log.v("FIFTEEN MINUTES", person.toString());
             });
 
         }
@@ -268,6 +268,9 @@ public class AudreyRepository {
         mExecutors.diskIO().execute(() -> mJournalDao.bulkInsertWeeklyProgress(progressData));
     }
 
+    /**
+     * Clear all data when a user logs out
+     */
     public void clearAllTables(){
         mExecutors.diskIO().execute(new Runnable() {
             @Override

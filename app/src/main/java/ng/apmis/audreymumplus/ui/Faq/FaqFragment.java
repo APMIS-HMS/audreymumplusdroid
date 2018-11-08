@@ -45,25 +45,11 @@ public class FaqFragment  extends Fragment {
         FaqAdapter faqAdapter = new FaqAdapter(getActivity(), faqModelList);
         listView.setAdapter(faqAdapter);
 
-//        gridView.setColumnWidth(1);
-
-        //gridItems.setDivider(null);
-
         listView.setOnItemClickListener((parent, view, position, id) -> {
             FaqModel clicked = (FaqModel) parent.getItemAtPosition(position);
             Toast.makeText(getActivity(), clicked.getTitleText(), Toast.LENGTH_SHORT).show();
         });
 
-        /*fab2.setOnClickListener((view) -> {
-
-
-         *//*
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container, new AddJournalFragment())
-                    .addToBackStack("ADD_NEW")
-                    .commit();*//*
-        });
-*/
         return rootView;
 
     }

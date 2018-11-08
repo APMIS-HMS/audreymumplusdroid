@@ -130,7 +130,7 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
 
                     if (person.getDay() == UNKWOWN_PROGRESS || sharedPreferencesManager.justLoggedIn()) {
 
-                        for (String forumName: person.getForums()) {
+                        for (String forumName : person.getForums()) {
                             sharedPreferencesManager.addForumNameAndLastCreatedAtAsStringInPrefs(forumName, Utils.localDateToDbString(Calendar.getInstance().getTime()), 0);
                         }
 
@@ -346,17 +346,10 @@ public class DashboardActivity extends AppCompatActivity implements HomeFragment
                     .setListener(null);
 
             fab.setOnClickListener((view ->
-                /*AudreyMumplus.getInstance().diskIO().execute(() ->
-                    InjectorUtils.provideRepository(this).getDaysJournal(String.valueOf(globalPerson.getDay())).observe(this, journalModel -> {
-                        if (journalModel != null) {
-                            Toast.makeText(this, "You have inputed a journal today", Toast.LENGTH_SHORT).show();
-                        }*/
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.fragment_container, new JournalAddFragment())
                             .addToBackStack(null)
                             .commit()
-               /*     })
-                )*/
             ));
         } else {
             fab.setVisibility(View.GONE);

@@ -9,6 +9,9 @@ import android.widget.EditText;
 
 import java.util.Objects;
 
+/**
+ * Helper class to manage dismissing keyboard
+ */
 
 public class InputUtils {
 

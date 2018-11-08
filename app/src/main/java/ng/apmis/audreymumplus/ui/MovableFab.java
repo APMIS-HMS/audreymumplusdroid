@@ -8,6 +8,7 @@ import android.view.View;
 
 /**
  * Created by Thadeus-APMIS on 10/17/2018.
+ * Manages draggable FAB
  */
 
 public class MovableFab extends FloatingActionButton implements View.OnTouchListener {
