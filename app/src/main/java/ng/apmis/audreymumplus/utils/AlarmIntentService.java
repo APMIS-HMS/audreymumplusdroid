@@ -3,6 +3,7 @@ package ng.apmis.audreymumplus.utils;
 import android.app.IntentService;
 import android.content.Intent;
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 
 import java.util.Date;
@@ -37,18 +38,27 @@ public class AlarmIntentService extends IntentService {
     public static void startResettingAllAppointmentAlarm (Context context) {
         Intent intent = new Intent(context, AlarmIntentService.class);
         intent.setAction(RESET_ALL_APPOINTMENT_ALARMS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(intent);
+            return;
+        }
         context.startService(intent);
     }
 
     public static void startResettingAllPillReminderAlarm (Context context) {
         Intent intent = new Intent(context, AlarmIntentService.class);
         intent.setAction(RESET_ALL_PILL_REMINDER_ALARMS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(intent);
+            return;
+        }
         context.startService(intent);
     }
 
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        Log.e("Check intent type", intent.getType() + " bundle" + intent.getExtras());
         if (intent != null) {
             final String action = intent.getAction();
             Log.d(TAG, "Alarms are being rescheduled");

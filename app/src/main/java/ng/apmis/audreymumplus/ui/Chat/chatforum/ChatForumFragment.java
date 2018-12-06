@@ -2,6 +2,7 @@ package ng.apmis.audreymumplus.ui.Chat.chatforum;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -25,11 +26,13 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import ng.apmis.audreymumplus.AudreyMumplus;
 import ng.apmis.audreymumplus.R;
+import ng.apmis.audreymumplus.data.network.ChatSocketService;
 import ng.apmis.audreymumplus.ui.Chat.ChatContextFragment;
 import ng.apmis.audreymumplus.ui.Dashboard.DashboardActivity;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
@@ -77,6 +80,18 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
         forumRecycler.setAdapter(forumAdapter);
         forumRecycler.addItemDecoration(new DividerItemDecoration(getContext(),
                 DividerItemDecoration.VERTICAL));
+
+        InjectorUtils.provideRepository(getActivity()).getPerson().observe(this, person -> {
+            if (person != null) {
+                List<String> forums = person.getForums();
+                for (String forum : forums) {
+                    InjectorUtils.provideJournalNetworkDataSource(getActivity())
+                            .getChats(forum);
+                }
+
+                getActivity().startService(new Intent(getContext(), ChatSocketService.class).putStringArrayListExtra("forums", new ArrayList<>(forums)));
+            }
+        });
 
 
         ForumFactory forumFactory = InjectorUtils.provideForumFactory(activity);
@@ -169,10 +184,6 @@ public class ChatForumFragment extends Fragment implements ForumAdapter.ClickFor
     public void onAttach(Context context) {
         super.onAttach(context);
         activity = (AppCompatActivity) context;
-    }
-
-    void initViewModel () {
-
     }
 
 

@@ -145,6 +145,7 @@ public class GetAudreyFragment extends Fragment {
             address.setError("Address field cannot be empty");
             return false;
         }
+
         if (occupation.getText().toString().equals("")) {
             occupation.setError("Input occupation");
             return false;

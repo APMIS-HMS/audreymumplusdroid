@@ -1,6 +1,7 @@
 package ng.apmis.audreymumplus.data.network;
 
 import android.app.Activity;
+import android.app.IntentService;
 import android.app.ProgressDialog;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
@@ -125,6 +126,7 @@ public class MumplusNetworkDataSource {
                 AudreyMumplus.getInstance().diskIO().execute(() -> {
                     InjectorUtils.provideRepository(mContext).savePerson(personFromPeople);
                 });
+
 
             }, error -> {
 
@@ -500,7 +502,7 @@ public class MumplusNetworkDataSource {
      */
     public void joinForum(Context context, String personId, String forumName) {
         ProgressDialog pd = new ProgressDialog(context);
-        pd.setTitle("Requesting Forum Creation");
+        pd.setTitle("Joining forum");
         pd.setMessage("Please wait...");
         pd.setCancelable(false);
         pd.setIndeterminate(true);
@@ -515,12 +517,18 @@ public class MumplusNetworkDataSource {
 
         AudreyMumplus.getInstance().networkIO().execute(() -> {
 
-            JsonObjectRequest joinForumRequest = new JsonObjectRequest(Request.Method.POST, BASE_URL + "join-forum", joinForumObject,
+            JsonObjectRequest joinForumRequest = new JsonObjectRequest(Request.Method.POST, BASE_URL + "join-forum-channel", joinForumObject,
                     response -> {
                         Log.d("joinforum response", response.toString());
 
+
+                        //on successful request to join forums, query people to update
+                        AudreyMumplus.getInstance().networkIO().execute(() -> {
+                            fetchPeopleAndSaveToDb(personId);
+                        });
+
                         pd.dismiss();
-                        Toast.makeText(mContext, "Request sent to admin", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, "You've been joined to " + forumName, Toast.LENGTH_SHORT).show();
                     },
                     error -> {
                         if (error.getMessage() != null) {
@@ -528,7 +536,7 @@ public class MumplusNetworkDataSource {
                         }
                         Log.e("join forums err", "message: " + error.toString());
                         pd.dismiss();
-                        Toast.makeText(mContext, "There was an error joining forums", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, "There was an error joining" + forumName, Toast.LENGTH_SHORT).show();
                     }) {
                 @Override
                 public Map<String, String> getHeaders() throws AuthFailureError {
