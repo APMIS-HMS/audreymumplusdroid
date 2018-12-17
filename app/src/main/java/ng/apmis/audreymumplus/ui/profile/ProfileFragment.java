@@ -23,6 +23,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -120,6 +121,7 @@ public class ProfileFragment extends Fragment {
                         Log.e("TAGGED", "Called frag as " + userDetails.getFirstName() +" "+userDetails.getId());
 
 
+                        //loadProfileImage(userDetails);
                         Glide.with(ProfileFragment.this.getContext())
                                 .load(userDetails.getProfileImage() != null ? userDetails.getProfileImage() : R.drawable.ic_profile_place_holder)
                                 .into(userImage);
@@ -397,5 +399,25 @@ public class ProfileFragment extends Fragment {
     }
 
 
+    public void loadProfileImage (Person person) {
+        File profilePhotoDir = new File(getContext().getFilesDir(), "profilePhotos");
+        profilePhotoDir.mkdir();
+
+        File localFile = null;
+
+     /*   if (!TextUtils.isEmpty(person.getProfileImage()))
+            localFile = new File(profilePhotoDir, person.getProfileImageFileName());
+
+        if (localFile != null && localFile.exists()){
+            imageProgress.setVisibility(View.GONE);
+            try {
+                Glide.with(getContext()).load(localFile).into(profileImageView);
+            } catch (Exception e){
+
+            }
+
+        }
+        */
+    }
 
 }

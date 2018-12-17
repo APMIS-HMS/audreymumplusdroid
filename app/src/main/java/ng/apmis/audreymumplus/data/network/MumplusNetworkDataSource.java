@@ -71,8 +71,10 @@ public class MumplusNetworkDataSource {
     private final MutableLiveData<Person> personName;
     private SharedPreferencesManager sharedPreferencesManager;
     private RequestQueue queue;
+    private MutableLiveData<String> profilePhotoPath;
 
     private static final String WEEK_DAY_SYNC_TAG = "week-day";
+    private String forumInUpdate = "";
 
 
     private MumplusNetworkDataSource(Context context, AudreyMumplus executors) {
@@ -82,6 +84,7 @@ public class MumplusNetworkDataSource {
         queue = Volley.newRequestQueue(context);
         sharedPreferencesManager = new SharedPreferencesManager(context);
         personName = new MutableLiveData<>();
+        profilePhotoPath = new MutableLiveData<>();
     }
 
     public LiveData<List<JournalModel>> getCurrentDailyJournal() {
@@ -774,5 +777,9 @@ public class MumplusNetworkDataSource {
 
         });
 
+    }
+
+    public void setProfilePhotoPath (String imagePath) {
+        profilePhotoPath.postValue(imagePath);
     }
 }

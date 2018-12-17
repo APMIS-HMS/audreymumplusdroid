@@ -35,7 +35,7 @@ public class AlarmIntentService extends IntentService {
      * @see IntentService
      */
 
-    public static void startResettingAllAppointmentAlarm (Context context) {
+    public static void startResettingAllAppointmentAlarm(Context context) {
         Intent intent = new Intent(context, AlarmIntentService.class);
         intent.setAction(RESET_ALL_APPOINTMENT_ALARMS);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -45,7 +45,7 @@ public class AlarmIntentService extends IntentService {
         context.startService(intent);
     }
 
-    public static void startResettingAllPillReminderAlarm (Context context) {
+    public static void startResettingAllPillReminderAlarm(Context context) {
         Intent intent = new Intent(context, AlarmIntentService.class);
         intent.setAction(RESET_ALL_PILL_REMINDER_ALARMS);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -59,33 +59,31 @@ public class AlarmIntentService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         Log.e("Check intent type", intent.getType() + " bundle" + intent.getExtras());
-        if (intent != null) {
-            final String action = intent.getAction();
-            Log.d(TAG, "Alarms are being rescheduled");
-            if (RESET_ALL_APPOINTMENT_ALARMS.equals(action)) {
-                AudreyMumplus.getInstance().diskIO().execute(() -> {
-                    for (Appointment x : InjectorUtils.provideRepository(this).getStaticAppointmentList()) {
-                        Log.v("Got list", x.toString());
-                        if (new Date(x.getAppointmentTime()).after(new Date())) {
-                            AlarmMangerSingleton.setSingleAppointmentAlarm(this, x);
-                            Log.v(TAG + " active", x.toString());
-                        } else {
-                            Log.v(TAG + " passed", x.toString());
-                        }
+        final String action = intent.getAction();
+        Log.d(TAG, "Alarms are being rescheduled");
+        if (RESET_ALL_APPOINTMENT_ALARMS.equals(action)) {
+            AudreyMumplus.getInstance().diskIO().execute(() -> {
+                for (Appointment x : InjectorUtils.provideRepository(this).getStaticAppointmentList()) {
+                    Log.v("Got list", x.toString());
+                    if (new Date(x.getAppointmentTime()).after(new Date())) {
+                        AlarmMangerSingleton.setSingleAppointmentAlarm(this, x);
+                        Log.v(TAG + " active", x.toString());
+                    } else {
+                        Log.v(TAG + " passed", x.toString());
                     }
-                });
+                }
+            });
 
-                AlarmMangerSingleton.setDailyWeekDayProgress(this);
-            }
-            if (RESET_ALL_PILL_REMINDER_ALARMS.equals(action)) {
-                AudreyMumplus.getInstance().diskIO().execute(() -> {
-                    for (PillModel x: InjectorUtils.provideRepository(this).getStaticPillReminderList()) {
-                        Log.v(TAG + " pills", x.toString());
-                        //TODO check time when date is set on pill object
-                        AlarmMangerSingleton.setRepeatingPillReminderAlarm(this, x);
-                    }
-                });
-            }
+            AlarmMangerSingleton.setDailyWeekDayProgress(this);
+        }
+        if (RESET_ALL_PILL_REMINDER_ALARMS.equals(action)) {
+            AudreyMumplus.getInstance().diskIO().execute(() -> {
+                for (PillModel x : InjectorUtils.provideRepository(this).getStaticPillReminderList()) {
+                    Log.v(TAG + " pills", x.toString());
+                    //TODO check time when date is set on pill object
+                    AlarmMangerSingleton.setRepeatingPillReminderAlarm(this, x);
+                }
+            });
         }
     }
 
