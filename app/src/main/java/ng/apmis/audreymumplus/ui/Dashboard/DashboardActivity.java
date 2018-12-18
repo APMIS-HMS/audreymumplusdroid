@@ -63,8 +63,6 @@ import ng.apmis.audreymumplus.utils.SharedPreferencesManager;
 import ng.apmis.audreymumplus.utils.Utils;
 import ng.apmis.audreymumplus.utils.Week;
 
-import static ng.apmis.audreymumplus.utils.SharedPreferencesManager.PREF_NAME;
-
 public class DashboardActivity extends AppCompatActivity implements HomeFragment.OnfragmentInteractionListener {
     @BindView(R.id.bottom_navigation)
     BottomNavigationView bottomNavigationView;

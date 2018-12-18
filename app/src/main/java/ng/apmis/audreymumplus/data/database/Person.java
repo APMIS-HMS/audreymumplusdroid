@@ -5,10 +5,7 @@ import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import ng.apmis.audreymumplus.utils.Week;
 
 /**
  * Created by Thadeus on 6/21/2018.
@@ -29,31 +26,16 @@ public class Person {
     private String motherMaidenName;
     private String primaryContactPhoneNo;
     private String ExpectedDateOfDelivery;
+    //Profile image url
     private String profileImage;
+    private String profileImageLocalPath;
     private String week;
     private int day;
 
     private List<String> forums;
 
-    @Override
-    public String toString() {
-        return "Person{" +
-                "id=" + id +
-                ", _id='" + _id + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", personId='" + personId + '\'' +
-                ", dateOfBirth='" + dateOfBirth + '\'' +
-                ", motherMaidenName='" + motherMaidenName + '\'' +
-                ", primaryContactPhoneNo='" + primaryContactPhoneNo + '\'' +
-                ", ExpectedDateOfDelivery='" + ExpectedDateOfDelivery + '\'' +
-                ", profileImage='" + profileImage + '\'' +
-                ", week='" + week + '\'' +
-                ", day=" + day +
-                ", forums=" + forums +
-                '}';
-    }
+    public Person(){}
+
 
     @Ignore
     public Person(String _id, String firstName, String lastName, String email, String personId, String dateOfBirth, String motherMaidenName, String primaryContactPhoneNo, String ExpectedDateOfDelivery, String profileImage, String week, int day) {
@@ -71,7 +53,7 @@ public class Person {
         this.day = day;
     }
 
-    public Person(int id, String _id, String firstName, String lastName, String email, String personId, String dateOfBirth, String motherMaidenName, String primaryContactPhoneNo, String ExpectedDateOfDelivery, String profileImage, String week, int day, List<String> forums) {
+    public Person(int id, String _id, String firstName, String lastName, String email, String personId, String dateOfBirth, String motherMaidenName, String primaryContactPhoneNo, String expectedDateOfDelivery, String profileImage, String profileImageLocalPath, String week, int day, List<String> forums) {
         this.id = id;
         this._id = _id;
         this.firstName = firstName;
@@ -81,8 +63,9 @@ public class Person {
         this.dateOfBirth = dateOfBirth;
         this.motherMaidenName = motherMaidenName;
         this.primaryContactPhoneNo = primaryContactPhoneNo;
-        this.ExpectedDateOfDelivery = ExpectedDateOfDelivery;
+        this.ExpectedDateOfDelivery = expectedDateOfDelivery;
         this.profileImage = profileImage;
+        this.profileImageLocalPath = profileImageLocalPath;
         this.week = week;
         this.day = day;
         this.forums = forums;
@@ -92,59 +75,111 @@ public class Person {
         return id;
     }
 
-    public String get_id () {
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String get_id() {
         return _id;
     }
 
-    public String getEmail() {
-        return email;
+    public void set_id(String _id) {
+        this._id = _id;
     }
 
     public String getFirstName() {
         return firstName;
     }
 
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
     public String getLastName() {
         return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPersonId() {
         return personId;
     }
 
+    public void setPersonId(String personId) {
+        this.personId = personId;
+    }
+
     public String getDateOfBirth() {
         return dateOfBirth;
+    }
+
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
     public String getMotherMaidenName() {
         return motherMaidenName;
     }
 
+    public void setMotherMaidenName(String motherMaidenName) {
+        this.motherMaidenName = motherMaidenName;
+    }
+
     public String getPrimaryContactPhoneNo() {
         return primaryContactPhoneNo;
+    }
+
+    public void setPrimaryContactPhoneNo(String primaryContactPhoneNo) {
+        this.primaryContactPhoneNo = primaryContactPhoneNo;
     }
 
     public String getExpectedDateOfDelivery() {
         return ExpectedDateOfDelivery;
     }
 
-    public String getWeek () {
-        return week;
+    public void setExpectedDateOfDelivery(String expectedDateOfDelivery) {
+        ExpectedDateOfDelivery = expectedDateOfDelivery;
     }
 
-    public int getDay () {
-        return day;
-    }
-
-    public String getProfileImage () {
+    public String getProfileImage() {
         return profileImage;
     }
 
-    public void setWeek (String week) {
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
+    public String getProfileImageLocalPath() {
+        return profileImageLocalPath;
+    }
+
+    public void setProfileImageLocalPath(String profileImageLocalPath) {
+        this.profileImageLocalPath = profileImageLocalPath;
+    }
+
+    public String getWeek() {
+        return week;
+    }
+
+    public void setWeek(String week) {
         this.week = week;
     }
 
-    public void setDay (int day) {
+    public int getDay() {
+        return day;
+    }
+
+    public void setDay(int day) {
         this.day = day;
     }
 
@@ -156,5 +191,24 @@ public class Person {
         this.forums = forums;
     }
 
-
+    @Override
+    public String toString() {
+        return "Person{" +
+                "id=" + id +
+                ", _id='" + _id + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", personId='" + personId + '\'' +
+                ", dateOfBirth='" + dateOfBirth + '\'' +
+                ", motherMaidenName='" + motherMaidenName + '\'' +
+                ", primaryContactPhoneNo='" + primaryContactPhoneNo + '\'' +
+                ", ExpectedDateOfDelivery='" + ExpectedDateOfDelivery + '\'' +
+                ", profileImage='" + profileImage + '\'' +
+                ", profileImageLocalPath='" + profileImageLocalPath + '\'' +
+                ", week='" + week + '\'' +
+                ", day=" + day +
+                ", forums=" + forums +
+                '}';
+    }
 }

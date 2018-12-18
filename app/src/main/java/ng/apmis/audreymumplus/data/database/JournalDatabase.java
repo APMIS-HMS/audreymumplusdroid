@@ -23,7 +23,7 @@ import ng.apmis.audreymumplus.ui.pregnancymodule.journal.JournalModel;
  * Connect TypeConverters
  */
 @Database(entities = {JournalModel.class, Person.class, Appointment.class, ChatForumModel.class,
-        ChatContextModel.class, PillModel.class, KickCounterModel.class, WeeklyProgressData.class}, version = 3, exportSchema = false)
+        ChatContextModel.class, PillModel.class, KickCounterModel.class, WeeklyProgressData.class}, version = 4, exportSchema = false)
 @TypeConverters({JournalConverters.class, PillsTypeConverter.class})
 public abstract class JournalDatabase extends RoomDatabase {
     public abstract JournalDao dailyJournalDao();
@@ -40,7 +40,7 @@ public abstract class JournalDatabase extends RoomDatabase {
                 if (sInstance == null) {
                     sInstance = Room.databaseBuilder(context.getApplicationContext(),
                             JournalDatabase.class, JournalDatabase.DATABASE_NAME)
-                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
                             .build();
                 }
             }
@@ -68,7 +68,7 @@ public abstract class JournalDatabase extends RoomDatabase {
         }
     };
 
-    static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+    private static final Migration MIGRATION_2_3 = new Migration(2, 3) {
         @Override
         public void migrate(SupportSQLiteDatabase database) {
             // Create the new table
@@ -93,6 +93,14 @@ public abstract class JournalDatabase extends RoomDatabase {
 
             database.execSQL("ALTER TABLE chat ADD COLUMN updatedAt TEXT");
 
+        }
+    };
+
+    private static final Migration MIGRATION_3_4 = new Migration(3, 4) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+
+            database.execSQL("ALTER TABLE person ADD COLUMN profileImageLocalPath TEXT");
         }
     };
 
