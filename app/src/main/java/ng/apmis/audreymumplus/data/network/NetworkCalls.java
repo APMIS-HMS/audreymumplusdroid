@@ -3,12 +3,9 @@ package ng.apmis.audreymumplus.data.network;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
-import android.widget.ImageView;
 
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.ImageRequest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -17,7 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import ng.apmis.audreymumplus.AudreyMumplus;
-import ng.apmis.audreymumplus.utils.Constants;
+import ng.apmis.audreymumplus.data.database.Person;
 import ng.apmis.audreymumplus.utils.InjectorUtils;
 
 /**
@@ -34,7 +31,7 @@ public class NetworkCalls {
         gson = new GsonBuilder().create();
     }
 
-    public void getProfileImage (String imageUrl, File downloadFile) {
+    public void getProfileImage (Person person, File downloadFile) {
 
         ImageLoader.ImageListener imageListener = new ImageLoader.ImageListener() {
             @Override
@@ -45,7 +42,8 @@ public class NetworkCalls {
                     //compress bitmap and save to file
                     response.getBitmap().compress(Bitmap.CompressFormat.PNG, 100, out);
                     //notify that image has been saved
-                    InjectorUtils.provideJournalNetworkDataSource(context).setProfilePhotoPath(downloadFile.getPath());
+                    person.setProfileImageLocalFileName(downloadFile.getName());
+                    InjectorUtils.provideJournalNetworkDataSource(context).updatePerson(person);
 
 
                     Log.v("Image reponse", "Download image completed to "+downloadFile.getAbsolutePath());
@@ -59,14 +57,20 @@ public class NetworkCalls {
                 try {
                     Log.e("TAG", error.getLocalizedMessage());
                     //Notify an error occurred
-                    InjectorUtils.provideJournalNetworkDataSource(context).setProfilePhotoPath("error");
+                    InjectorUtils.provideJournalNetworkDataSource(context).updatePerson(person);
                 } catch (Exception e){
 
                 }
             }
         };
 
-        AudreyMumplus.getInstance().getImageLoader().get(imageUrl, imageListener);
+        try {
+            Log.e("Profile image url", person.getProfileImage());
+
+            AudreyMumplus.getInstance().getImageLoader().get(person.getProfileImage(), imageListener);
+        } catch (NullPointerException ex) {
+            Log.e("upload image exception", ex.getMessage());
+        }
 
     }
 

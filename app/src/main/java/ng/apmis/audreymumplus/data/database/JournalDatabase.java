@@ -100,7 +100,7 @@ public abstract class JournalDatabase extends RoomDatabase {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
 
-            database.execSQL("ALTER TABLE person ADD COLUMN profileImageLocalPath TEXT");
+            database.execSQL("ALTER TABLE person ADD COLUMN profileImageLocalFileName TEXT");
         }
     };
 

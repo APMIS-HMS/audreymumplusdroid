@@ -29,6 +29,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -779,7 +780,11 @@ public class MumplusNetworkDataSource {
 
     }
 
-    public void setProfilePhotoPath (String imagePath) {
-        profilePhotoPath.postValue(imagePath);
+    public void updatePerson(Person person) {
+        personName.postValue(person);
+    }
+
+    public void getProfileImageFromUrl (Person imageUrl, File downloadedFile) {
+        new NetworkCalls(mContext).getProfileImage(imageUrl, downloadedFile);
     }
 }

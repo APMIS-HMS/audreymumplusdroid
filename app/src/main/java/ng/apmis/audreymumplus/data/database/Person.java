@@ -28,7 +28,7 @@ public class Person {
     private String ExpectedDateOfDelivery;
     //Profile image url
     private String profileImage;
-    private String profileImageLocalPath;
+    private String profileImageLocalFileName;
     private String week;
     private int day;
 
@@ -53,7 +53,7 @@ public class Person {
         this.day = day;
     }
 
-    public Person(int id, String _id, String firstName, String lastName, String email, String personId, String dateOfBirth, String motherMaidenName, String primaryContactPhoneNo, String expectedDateOfDelivery, String profileImage, String profileImageLocalPath, String week, int day, List<String> forums) {
+    public Person(int id, String _id, String firstName, String lastName, String email, String personId, String dateOfBirth, String motherMaidenName, String primaryContactPhoneNo, String expectedDateOfDelivery, String profileImage, String profileImageLocalFileName, String week, int day, List<String> forums) {
         this.id = id;
         this._id = _id;
         this.firstName = firstName;
@@ -65,7 +65,7 @@ public class Person {
         this.primaryContactPhoneNo = primaryContactPhoneNo;
         this.ExpectedDateOfDelivery = expectedDateOfDelivery;
         this.profileImage = profileImage;
-        this.profileImageLocalPath = profileImageLocalPath;
+        this.profileImageLocalFileName = profileImageLocalFileName;
         this.week = week;
         this.day = day;
         this.forums = forums;
@@ -159,12 +159,12 @@ public class Person {
         this.profileImage = profileImage;
     }
 
-    public String getProfileImageLocalPath() {
-        return profileImageLocalPath;
+    public String getProfileImageLocalFileName() {
+        return profileImageLocalFileName;
     }
 
-    public void setProfileImageLocalPath(String profileImageLocalPath) {
-        this.profileImageLocalPath = profileImageLocalPath;
+    public void setProfileImageLocalFileName(String profileImageLocalFileName) {
+        this.profileImageLocalFileName = profileImageLocalFileName;
     }
 
     public String getWeek() {
@@ -205,7 +205,7 @@ public class Person {
                 ", primaryContactPhoneNo='" + primaryContactPhoneNo + '\'' +
                 ", ExpectedDateOfDelivery='" + ExpectedDateOfDelivery + '\'' +
                 ", profileImage='" + profileImage + '\'' +
-                ", profileImageLocalPath='" + profileImageLocalPath + '\'' +
+                ", profileImageLocalFileName='" + profileImageLocalFileName + '\'' +
                 ", week='" + week + '\'' +
                 ", day=" + day +
                 ", forums=" + forums +
