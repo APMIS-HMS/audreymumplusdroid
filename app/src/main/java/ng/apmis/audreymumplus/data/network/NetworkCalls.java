@@ -3,9 +3,12 @@ package ng.apmis.audreymumplus.data.network;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
+import android.widget.ImageView;
 
+import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.ImageRequest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -32,6 +35,13 @@ public class NetworkCalls {
     }
 
     public void getProfileImage (Person person, File downloadFile) {
+
+        ImageRequest imageRequest = new ImageRequest(person.getProfileImage(), new Response.Listener<Bitmap>() {
+            @Override
+            public void onResponse(Bitmap response) {
+
+            }
+        }, 0, 0, ImageView.ScaleType.FIT_CENTER, )
 
         ImageLoader.ImageListener imageListener = new ImageLoader.ImageListener() {
             @Override

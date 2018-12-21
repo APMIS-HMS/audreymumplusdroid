@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.LruCache;
 
 import com.android.volley.Request;
@@ -23,20 +24,19 @@ import java.util.concurrent.Executors;
 
 public class AudreyMumplus extends Application {
 
-    private static Object LOCK = new Object();
+    private static final Object LOCK = new Object();
     private static AudreyMumplus sInstance;
     private final Executor diskIO;
     private final Executor mainThread;
     private final Executor networkIO;
     private RequestQueue mRequestQueue;
-    private Context mCtx;
+    private static Context mCtx;
     private final static String TAG = "AUDREY";
-    private ImageLoader mImageLoader;
 
-    private AudreyMumplus (Executor diskIO, Executor networkIO, Executor mainThread) {
-        this.diskIO = diskIO;
-        this.networkIO = networkIO;
-        this.mainThread = mainThread;
+    public AudreyMumplus () {
+        diskIO = null;
+        mainThread = null;
+        networkIO = null;
     }
 
     @Override
@@ -45,12 +45,20 @@ public class AudreyMumplus extends Application {
         mCtx = getApplicationContext();
     }
 
+    private AudreyMumplus(Executor diskIO, Executor networkIO, Executor mainThread, Context context) {
+        this.diskIO = diskIO;
+        this.networkIO = networkIO;
+        this.mainThread = mainThread;
+        mCtx = context;
+        mRequestQueue = getRequestQueue();
+    }
+
     public static AudreyMumplus getInstance() {
         if (sInstance == null) {
             synchronized (LOCK) {
-                sInstance = new AudreyMumplus (Executors.newSingleThreadExecutor(),
+                sInstance = new AudreyMumplus(Executors.newSingleThreadExecutor(),
                         Executors.newFixedThreadPool(3),
-                        new MainThreadExecutor());
+                        new MainThreadExecutor(), mCtx);
             }
         }
         return sInstance;
@@ -79,26 +87,7 @@ public class AudreyMumplus extends Application {
 
     public RequestQueue getRequestQueue() {
         if (mRequestQueue == null) {
-            // getApplicationContext() is key, it keeps you from leaking the
-            // Activity or BroadcastReceiver if someone passes one in.
             mRequestQueue = Volley.newRequestQueue(mCtx.getApplicationContext());
-
-            mImageLoader = new ImageLoader(mRequestQueue,
-                    new ImageLoader.ImageCache() {
-                        private final LruCache<String, Bitmap>
-                                cache = new LruCache<>(20);
-
-                        @Override
-                        public Bitmap getBitmap(String url) {
-                            return cache.get(url);
-                        }
-
-                        @Override
-                        public void putBitmap(String url, Bitmap bitmap) {
-                            cache.put(url, bitmap);
-                        }
-                    });
-
         }
         return mRequestQueue;
     }
@@ -111,10 +100,6 @@ public class AudreyMumplus extends Application {
 
     public <T> void addToRequestQueue(Request<T> req) {
         getRequestQueue().add(req);
-    }
-
-    public ImageLoader getImageLoader() {
-        return mImageLoader;
     }
 
     public void cancelPendingRequests(Object tag) {

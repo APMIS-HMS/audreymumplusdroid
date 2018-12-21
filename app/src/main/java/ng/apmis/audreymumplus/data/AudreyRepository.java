@@ -2,6 +2,7 @@ package ng.apmis.audreymumplus.data;
 
 import android.app.ProgressDialog;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -40,11 +41,12 @@ public class AudreyRepository {
     private final JournalDao mJournalDao;
     private final MumplusNetworkDataSource mJournalNetworkData;
     private final AudreyMumplus mExecutors;
+    private final MutableLiveData<Person> person;
     private boolean mInitialized = false;
 
     private AudreyRepository(JournalDao weatherDao,
-                               MumplusNetworkDataSource weatherNetworkDataSource,
-                               AudreyMumplus executors) {
+                             MumplusNetworkDataSource weatherNetworkDataSource,
+                             AudreyMumplus executors) {
         mJournalDao = weatherDao;
         mJournalNetworkData = weatherNetworkDataSource;
         mExecutors = executors;
@@ -58,67 +60,67 @@ public class AudreyRepository {
             mJournalDao.bulkInsertJournal(networkdata);
             Log.d(LOG_TAG, "New values inserted");
         }));
-
+        person = new MutableLiveData<>();
     }
 
     public LiveData<List<JournalModel>> getAllJournals() {
         return mJournalDao.getAllJournalEntries();
     }
 
-    public LiveData<List<JournalModel>> getJournalByWeek (String week) {
+    public LiveData<List<JournalModel>> getJournalByWeek(String week) {
         return mJournalDao.getJournalByWeek(week);
     }
 
-    public void saveJournal (JournalModel journalModel) {
+    public void saveJournal(JournalModel journalModel) {
         mJournalDao.insertJournal(journalModel);
     }
 
-    public void savePerson (Person person) {
+    public void savePerson(Person person) {
         mJournalDao.insertPerson(person);
     }
 
-    public void updatePerson (Person person) {
-        Log.e("TAGGED", "Updated person DAO "+person.getFirstName()  +" "+person.getId());
+    public void updatePerson(Person person) {
+        Log.e("TAGGED", "Updated person DAO " + person.getFirstName() + " " + person.getId());
         mJournalDao.updatePerson(person);
     }
 
-    public void deletePerson () {
+    public void deletePerson() {
         mJournalDao.deletePerson();
     }
 
-    public LiveData<Person> getPerson () {
+    public LiveData<Person> getPerson() {
         return mJournalDao.getPerson();
     }
 
-    public Person getStaticPerson () {
+    public Person getStaticPerson() {
         return mJournalDao.getStaticPerson();
     }
 
-    public long saveAppointment (Appointment appointment) {
+    public long saveAppointment(Appointment appointment) {
         return mJournalDao.insertAppointment(appointment);
     }
 
-    public void updateAppointment (Appointment appointment) {
+    public void updateAppointment(Appointment appointment) {
         mJournalDao.updateAppointment(appointment);
     }
 
-    public LiveData<List<Appointment>> getAllAppointments () {
+    public LiveData<List<Appointment>> getAllAppointments() {
         return mJournalDao.getSavedAppointments();
     }
 
-    public List<Appointment> getStaticAppointmentList () {
+    public List<Appointment> getStaticAppointmentList() {
         return mJournalDao.getStaticAppointmentList();
     }
 
-    public Appointment getStaticAppointment (long appointment_id) {
+    public Appointment getStaticAppointment(long appointment_id) {
         return mJournalDao.getStaticAppointment(appointment_id);
     }
 
-    public void deleteAppointment (Appointment appointment) {
+    public void deleteAppointment(Appointment appointment) {
         mJournalDao.deleteAppointment(appointment);
     }
 
-    public void updatePersonWithPregWeekDay (Person person) {
+    public void updatePersonWithPregWeekDay(Person person) {
         mJournalDao.updatePerson(person);
     }
 
@@ -130,7 +132,7 @@ public class AudreyRepository {
         return mJournalDao.totalKicksInWeek(week);
     }
 
-    public void getDayWeek (Person person) {
+    public void getDayWeek(Person person) {
 
         if (!TextUtils.isEmpty(person.getExpectedDateOfDelivery())) {
 
@@ -181,66 +183,67 @@ public class AudreyRepository {
             person.setDay(currentDayProgress);
 
             AudreyMumplus.getInstance().diskIO().execute(() -> {
-                    updatePersonWithPregWeekDay(person);
+                updatePersonWithPregWeekDay(person);
             });
 
         }
 
     }
 
-    public void insertAllForums (List<ChatForumModel> allForums) {
+    public void insertAllForums(List<ChatForumModel> allForums) {
         mJournalDao.bulkInsertForums(allForums);
     }
 
-    public LiveData<List<ChatForumModel>> getUpdatedForums () {
+    public LiveData<List<ChatForumModel>> getUpdatedForums() {
         return mJournalDao.getChatForums();
     }
 
-    public void insertAllChats (List<ChatContextModel> allForums) {
+    public void insertAllChats(List<ChatContextModel> allForums) {
         mJournalDao.bulkInsertChats(allForums);
     }
 
-    public LiveData<List<ChatContextModel>> getUpdatedChats (String forumName) {
+    public LiveData<List<ChatContextModel>> getUpdatedChats(String forumName) {
         return mJournalDao.getChats(forumName);
     }
 
-    public void insertChat (ChatContextModel chatContextModel) {
+    public void insertChat(ChatContextModel chatContextModel) {
         mJournalDao.insertChat(chatContextModel);
     }
 
-    public long insertPillReminder (PillModel pillModel) {
+    public long insertPillReminder(PillModel pillModel) {
         return mJournalDao.insertPillReminder(pillModel);
     }
 
-    public void deletePillReminder (PillModel pillModel) {
+    public void deletePillReminder(PillModel pillModel) {
         mJournalDao.deletePillReminder(pillModel);
     }
 
-    public void updatePillReminder (PillModel pillModel) {
+    public void updatePillReminder(PillModel pillModel) {
         mJournalDao.updatePillReminder(pillModel);
     }
 
-    public PillModel getPillModel (long _id) {
+    public PillModel getPillModel(long _id) {
         return mJournalDao.getPillModel(_id);
     }
 
-    public LiveData<List<PillModel>> getAllPills () {
+    public LiveData<List<PillModel>> getAllPills() {
         return mJournalDao.getAllPills();
     }
 
-    public LiveData<List<KickCounterModel>> getAllKickCount () {
+    public LiveData<List<KickCounterModel>> getAllKickCount() {
         return mJournalDao.getAllKickData();
     }
 
-    public long insertKickCount (KickCounterModel kickCounterModel) {
+    public long insertKickCount(KickCounterModel kickCounterModel) {
         return mJournalDao.insertKickCounter(kickCounterModel);
     }
-    public LiveData<Integer> getKickCountPerDay (int day) {
+
+    public LiveData<Integer> getKickCountPerDay(int day) {
         return mJournalDao.getKickCountPerDay(day);
     }
 
 
-    public synchronized static AudreyRepository getInstance (JournalDao journalDao, MumplusNetworkDataSource mumplusNetworkDataSource, AudreyMumplus audreyMumplus) {
+    public synchronized static AudreyRepository getInstance(JournalDao journalDao, MumplusNetworkDataSource mumplusNetworkDataSource, AudreyMumplus audreyMumplus) {
         Log.d(LOG_TAG, "Getting the repository");
         if (sInstance == null) {
             synchronized (LOCK) {
@@ -256,22 +259,22 @@ public class AudreyRepository {
         return mJournalDao.getTodaysJournal(day);
     }
 
-    public LiveData<List<WeeklyProgressData>> getAllWeeklyProgressData(){
+    public LiveData<List<WeeklyProgressData>> getAllWeeklyProgressData() {
         return mJournalDao.getAllWeeklyProgressData();
     }
 
-    public LiveData<List<WeeklyProgressData>> getSelectedWeeklyProgressData(int week){
+    public LiveData<List<WeeklyProgressData>> getSelectedWeeklyProgressData(int week) {
         return mJournalDao.getSelectedWeeklyProgressData(week);
     }
 
-    public void bulkInsertWeeklyProgressData(List<WeeklyProgressData> progressData){
+    public void bulkInsertWeeklyProgressData(List<WeeklyProgressData> progressData) {
         mExecutors.diskIO().execute(() -> mJournalDao.bulkInsertWeeklyProgress(progressData));
     }
 
     /**
      * Clear all data when a user logs out
      */
-    public void clearAllTables(){
+    public void clearAllTables() {
         mExecutors.diskIO().execute(new Runnable() {
             @Override
             public void run() {

@@ -32,6 +32,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.android.volley.toolbox.ImageLoader;
 import com.bumptech.glide.Glide;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -417,9 +418,19 @@ public class ProfileFragment extends Fragment {
             return;
         }
 
-        AudreyMumplus.getInstance().networkIO().execute(() -> {
-            InjectorUtils.provideJournalNetworkDataSource(getContext()).getProfileImageFromUrl(person, profilePhotoDir);
-        });
+        ImageLoader.ImageListener imageListener = InjectorUtils.provideJournalNetworkDataSource(getContext()).getProfileImageFromUrl(person, profilePhotoDir);
+
+      /*  AudreyMumplus.getInstance().networkIO().execute(() -> {
+
+            try {
+                Log.e("Profile image url", person.getProfileImage());
+
+            } catch (NullPointerException ex) {
+                Log.e("upload image exception", ex.getMessage());
+            }
+
+        });*/
+        AudreyMumplus.getInstance().getImageLoader().get(person.getProfileImage(), imageListener);
 
     }
 
